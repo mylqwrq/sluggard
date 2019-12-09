@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Sluggard</title>
+    <link rel="stylesheet" href="../resource/layui/css/layui.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">Sluggard</div>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a href="javascript:">核心功能</a>
+                    <dl class="layui-nav-child">
+                        <dd class="main_left"><a href="javascript:">项目管理</a></dd>
+                        <dd class="main_left"><a href="javascript:">数据管理</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:">基础设置</a>
+                    <dl class="layui-nav-child">
+                        <dd class="main_left"><a src="basic/template.html">模板管理</a></dd>
+                        <dd class="main_left"><a src="basic/mapping.html">映射管理</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body" style="bottom: 0">
+        <div class="main_right">
+            <iframe frameborder="0" scrolling="yes" style="width: 100%" src="" id="aa">
+            </iframe>
+        </div>
+    </div>
+</div>
+
+<script src="../resource/jquery/jquery-3.4.1.min.js"></script>
+<script src="../resource/layui/layui.js"></script>
+<script>
+    layui.use(['element', 'layer'], function () {
+
+        $(".main_left a").on("click", function () {
+            $("iframe").attr("src", $(this).attr("src"));
+        });
+
+        $("#aa").css("height", $(window).height());
+    });
+</script>
+</body>
+</html>

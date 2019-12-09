@@ -1,0 +1,105 @@
+package com.mylq.sluggard.core.common.util;
+/**
+ * 字符串工具类
+ *
+ * @author WangRunQian
+ * @date 2019/12/4
+ * @since 1.0.0
+ */
+public class StringUtil {
+
+    private StringUtil() {
+    }
+
+    /**
+     * 文件分隔符
+     */
+    public static final String STR_FILE_SEPARATOR = System.getProperty("file.separator", "\\");
+
+    /**
+     * 根据包路径获取文件目录
+     *
+     * @param packagePath 包路径
+     * @return 文件目录
+     */
+    public static String getFilePathByPackage(String packagePath) {
+        String[] dirs = packagePath.split("\\.");
+        StringBuilder sb = new StringBuilder();
+        for (String dir : dirs) {
+            sb.append(dir).append(STR_FILE_SEPARATOR);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 获取去掉扩展名后的文件名称
+     *
+     * @param fileFullName 文件全名
+     * @param extension 扩展名
+     * @return 去掉扩展名后的名称
+     */
+    public static String getFileName(String fileFullName, String extension) {
+        return fileFullName.substring(0, fileFullName.lastIndexOf(extension));
+    }
+
+    /**
+     * 字符串首字符大写
+     *
+     * @param str 输入字符串
+     * @return 首字符大写字符串
+     */
+    public static String firstLetterToUpperCase(String str) {
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
+    /**
+     * 字符串首字符小写
+     *
+     * @param str 输入字符串
+     * @return 首字符大写字符串
+     */
+    public static String firstLetterToLowerCase(String str) {
+        return str.substring(0, 1).toLowerCase() + str.substring(1);
+    }
+
+    /**
+     * 下划线命名转换为驼峰命名
+     *
+     * @param param 输入的下划线命名字符串
+     * @param isFirstUpperCase 首字母是否大写
+     * @return 驼峰命名字符串
+     */
+    public static String underlineToHump(String param, boolean isFirstUpperCase) {
+        // 以下划线分隔字符串
+        String[] params = param.split("_");
+        // 初始化返回对象
+        StringBuilder result = new StringBuilder();
+        // 遍历
+        for (String str : params) {
+            if (isAllLetters(str)) {
+                if (isFirstUpperCase) {
+                    result.append(str.substring(0, 1).toUpperCase());
+                    result.append(str.substring(1).toLowerCase());
+                } else {
+                    if (result.length() == 0) {
+                        result.append(str.toLowerCase());
+                    } else {
+                        result.append(str.substring(0, 1).toUpperCase());
+                        result.append(str.substring(1).toLowerCase());
+                    }
+                }
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * 判断字符串是否全部由数字和字母组成
+     *
+     * @param str 输入的字符串
+     * @return 判断结果
+     */
+    private static boolean isAllLetters(String str) {
+        return str.matches("[0-9a-zA-Z]+");
+    }
+}

@@ -1,0 +1,65 @@
+package com.mylq.sluggard.controller.basic;
+
+import com.mylq.sluggard.core.basic.service.MappingService;
+import com.mylq.sluggard.core.basic.vo.MappingVO;
+import com.mylq.sluggard.core.common.base.result.JsonResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+/**
+ * Mapping控制层接口
+ *
+ * @author WangRunQian
+ * @date 2019/12/5
+ * @since 1.0.0
+ */
+@RestController
+@RequestMapping("/basic/mapping")
+public class MappingController {
+
+    @Autowired
+    private MappingService mappingService;
+
+    @GetMapping(value = "/getList")
+    public JsonResult<List> getList(@RequestParam String dbName) {
+        JsonResult<List> jsonResult;
+        try {
+            List<MappingVO> result = mappingService.getList(dbName);
+            jsonResult = JsonResult.success(result);
+        } catch (Exception e) {
+            jsonResult = JsonResult.error(e);
+        }
+        return jsonResult;
+    }
+
+    @PostMapping(value = "/save")
+    public JsonResult<Void> save(@RequestBody MappingVO mappingVO) {
+        JsonResult<Void> jsonResult;
+        try {
+            mappingService.save(mappingVO);
+            jsonResult = JsonResult.success();
+        } catch (Exception e) {
+            jsonResult = JsonResult.error(e);
+        }
+        return jsonResult;
+    }
+
+    @GetMapping(value = "/del")
+    public JsonResult<Void> del(@RequestParam String dbName, @RequestParam String dataType) {
+        JsonResult<Void> jsonResult;
+        try {
+            mappingService.delete(dbName, dataType);
+            jsonResult = JsonResult.success();
+        } catch (Exception e) {
+            jsonResult = JsonResult.error(e);
+        }
+        return jsonResult;
+    }
+}

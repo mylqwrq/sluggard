@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>映射管理</title>
+    <link rel="stylesheet" href="../../resource/layui/css/layui.css">
+</head>
+<body>
+<form class="layui-form" style="text-align: center;margin-right:30px;margin-top:30px;" lay-filter="init">
+    <div class="layui-form-item">
+        <label class="layui-form-label">数据库名</label>
+        <div class="layui-input-block">
+            <input class="layui-input" id="dbName" name="dbName" type="text" autocomplete="off" readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">数据类型</label>
+        <div class="layui-input-block">
+            <input class="layui-input" id="dataType" name="dataType" type="text" autocomplete="off">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">Java类型</label>
+        <div class="layui-input-block">
+            <input class="layui-input" id="javaType" name="javaType" type="text" autocomplete="off">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">Jdbc类型</label>
+        <div class="layui-input-block">
+            <input class="layui-input" id="jdbcType" name="jdbcType" type="text" autocomplete="off">
+        </div>
+    </div>
+</form>
+
+<script src="../../resource/jquery/jquery-3.4.1.min.js"></script>
+<script src="../../resource/layui/layui.js"></script>
+<script src="../../common/tool.js"></script>
+<script>
+    layui.use(['form', 'layer'], function () {
+
+        $("#dataType").blur(function () {
+            filter(this, '.');
+        });
+
+        $("#javaType").blur(function () {
+            filter(this, ',');
+        });
+
+        $("#jdbcType").blur(function () {
+            filter(this, ',');
+        });
+    });
+
+    //新建初始化
+    function initForm(obj) {
+        var form = layui.form;
+        form.val('init', {
+            "dbName": obj.dbName,
+            "dataType": "",
+            "javaType": "",
+            "jdbcType": ""
+        });
+    }
+
+    //编辑初始化
+    function initEditForm(obj) {
+        var form = layui.form;
+        form.val('init', {
+            "dbName": obj.dbName,
+            "dataType": obj.dataType,
+            "javaType": obj.javaType,
+            "jdbcType": obj.jdbcType
+        });
+        document.getElementById("dataType").readOnly = true;
+    }
+
+    //校验表单
+    function validationForm() {
+        if ($("#dbName").val() === "") {
+            msg.warn("数据库名不可为空！");
+            return false;
+        }
+        if ($("#dataType").val() === "") {
+            msg.warn("数据类型不可为空！");
+            return false;
+        }
+        if ($("#javaType").val() === "") {
+            msg.warn("Java类型不可为空！");
+            return false;
+        }
+        if ($("#jdbcType").val() === "") {
+            msg.warn("Jdbc类型不可为空！");
+            return false;
+        }
+        return true;
+    }
+</script>
+</body>
+</html>

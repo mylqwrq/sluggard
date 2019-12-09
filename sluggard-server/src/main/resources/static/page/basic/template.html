@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>模板管理</title>
+    <link rel="stylesheet" href="../../resource/layui/css/layui.css">
+</head>
+<body style="margin-top: 15px">
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <div class="layui-inline">
+                    <form class="layui-form" style="padding-top: 15px;">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">模板名称</label>
+                            <div class="layui-inline" style="width: 200px;">
+                                <input class="layui-input" id="name" name="name" type="text">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <span class="layui-btn-container">
+                    <button class="layui-btn" data-type="add"><i class="layui-icon"></i>新建</button>
+                </span>
+                <table class="layui-hide" id="dt" lay-filter="dtFilter"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../resource/jquery/jquery-3.4.1.min.js"></script>
+<script src="../../resource/layui/layui.js"></script>
+<script src="../../common/msg.js"></script>
+<script src="../../common/opener.js"></script>
+<script src="../../common/tool.js"></script>
+<script src="../../common/web.js"></script>
+<script type="text/html" id="toolbarOperation">
+    <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="remove">删除</a>
+</script>
+<script type="text/html" id="toolbarFileOperation">
+    <a class="layui-btn layui-btn-sm" lay-event="editFile">编辑</a>
+    <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="removeFile">删除</a>
+</script>
+<script type="text/html" id="fileTypeTpl">
+    <span>{{d.fileType.option}}</span>
+</script>
+<script>
+    layui.use(['form', 'table'], function () {
+
+        var form = layui.form;
+        var table = layui.table;
+
+        //监听表名称输入框值变更事件
+        $("#name").bind('input propertychange', function () {
+            reload();
+        });
+
+        //表格属性
+        var tableOption = {
+            elem: '#dt',
+            url: WEB_CONTEXT + '/basic/template/getList',
+            cellMinWidth: 80,
+            even: true,
+            cols: [[
+                {type: 'numbers', title: '序号', width: 100},
+                {field: 'name', title: '模板名称', width: 200},
+                {field: 'fileType', title: '目标文件类型', width: 200, templet: '#fileTypeTpl'},
+                {field: 'fileRelativePath', title: '目标文件相对路径', width: 200},
+                {field: 'fileNamePrefix', title: '目标文件名前缀', width: 200},
+                {field: 'fileNameSuffix', title: '目标文件名后缀', width: 200},
+                {field: 'right', title: '操作', width: 200, align: 'center', toolbar: '#toolbarOperation'},
+                {field: 'right', title: '文件操作', width: 200, align: 'center', toolbar: '#toolbarFileOperation'}
+            ]],
+            where: {
+                name: $("#name").val()
+            },
+            response: {
+                statusCode: 200,
+                statusName: 'statusCode',
+                msgName: 'message',
+                countName: '',
+                dataName: 'data'
+            }
+        };
+
+        //表格渲染
+        table.render(tableOption);
+
+        //表格加载
+        function reload() {
+            table.reload('dt', {
+                url: WEB_CONTEXT + '/basic/template/getList',
+                where: {
+                    name: $("#name").val()
+                }
+            });
+        }
+
+        //按钮事件
+        var active = {
+            add: modelAdd
+        };
+        $('.layui-btn-container .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        //新建方法
+        function modelAdd() {
+            opener.add('templateEdit.html', save, {});
+        }
+
+        //监听操作列工具条
+        table.on('tool(dtFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === "edit") {
+                modelEdit(data);
+            } else if (obj.event === 'remove') {
+                modelRemove(data)
+            }
+        });
+
+        //编辑方法
+        function modelEdit(data) {
+            opener.edit('templateEdit.html', save, data);
+        }
+
+        //删除方法
+        function modelRemove(data) {
+            msg.confirm(remove, data);
+        }
+
+        function save(data) {
+            postRest("/basic/template/save", data, function () {
+                reload();
+            });
+        }
+
+        function remove(data) {
+            var obj = {};
+            obj["name"] = data.name;
+            getRest("/basic/template/del", obj, function () {
+                reload();
+            });
+        }
+    });
+</script>
+</body>
+</html>
