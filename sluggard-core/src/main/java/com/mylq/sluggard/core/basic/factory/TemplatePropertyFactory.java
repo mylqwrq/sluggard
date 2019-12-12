@@ -1,5 +1,19 @@
 package com.mylq.sluggard.core.basic.factory;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
+
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.mylq.sluggard.core.basic.util.BasicUtil;
@@ -11,21 +25,9 @@ import com.mylq.sluggard.core.common.enums.FileTypeEnum;
 import com.mylq.sluggard.core.common.factory.PropertyFactory;
 import com.mylq.sluggard.core.common.util.FileUtil;
 import com.mylq.sluggard.core.common.util.StringUtil;
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Properties;
 
 /**
  * Template Properties工厂
@@ -57,6 +59,7 @@ public class TemplatePropertyFactory {
                 }
             }
             LOGGER.info("Load default template.");
+            saveProperties();
             createDefaultTemplateFiles();
         }
     }
@@ -86,7 +89,7 @@ public class TemplatePropertyFactory {
         for (Object key : PROP.keySet()) {
             String name = String.valueOf(key);
             String[] keys = name.split("\\" + Constant.PROP_KEY_SEPARATOR);
-            String[] values = PROP.getProperty(name).split(Constant.PROP_VALUE_SEPARATOR);
+            String[] values = PROP.getProperty(name).split(Constant.PROP_VALUE_SEPARATOR, -1);
             if (keys.length != 2 || values.length != 4) {
                 LOGGER.warn("Illegal mapping data: key={}.", name);
                 continue;
@@ -115,10 +118,9 @@ public class TemplatePropertyFactory {
 
     public static String getText(String key) {
         try {
-            return FileUtil.readFile(
-                    Constant.FILE_ROOT_PATH_TEMPLATE + StringUtil.STR_FILE_SEPARATOR + getTemplateFileName(key));
+            return readTemplateFile(key);
         } catch (IOException e) {
-            LOGGER.error("Failed to read context from template: {}.", key, e);
+            LOGGER.warn("Failed to read context from template: {}.", key, e);
             return "";
         }
     }
@@ -153,6 +155,18 @@ public class TemplatePropertyFactory {
     private static String getTemplateFileName(String name) {
         BasicUtil.requireNotNullOrBlank("template name", name);
         return name.endsWith(FileTypeEnum.FTL.getName()) ? name : name + FileTypeEnum.FTL.getName();
+    }
+
+    /**
+     * 读取模板文件
+     *
+     * @param name 模板名称
+     * @return 模板内容
+     * @throws IOException IO异常
+     */
+    private static String readTemplateFile(String name) throws IOException {
+        return FileUtil
+                .readFile(Constant.FILE_ROOT_PATH_TEMPLATE + StringUtil.STR_FILE_SEPARATOR + getTemplateFileName(name));
     }
 
     /**

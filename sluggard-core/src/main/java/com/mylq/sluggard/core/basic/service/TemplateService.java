@@ -1,14 +1,16 @@
 package com.mylq.sluggard.core.basic.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import com.google.common.base.Strings;
 import com.mylq.sluggard.core.basic.factory.TemplatePropertyFactory;
 import com.mylq.sluggard.core.basic.util.BasicUtil;
 import com.mylq.sluggard.core.basic.vo.TemplateVO;
-import lombok.NonNull;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.NonNull;
 
 /**
  * Template服务
@@ -20,9 +22,15 @@ import java.util.stream.Collectors;
 @Service
 public class TemplateService {
 
-    public String getTextByName(String name) {
+    public String getText(String name) {
         BasicUtil.requireNotNullOrBlank("name", name);
         return TemplatePropertyFactory.getText(name);
+    }
+
+    public void setText(String name, String context) {
+        BasicUtil.requireNotNullOrBlank("name", name);
+        BasicUtil.requireNotNullOrBlank("context", context);
+        TemplatePropertyFactory.setText(name, context);
     }
 
     public List<TemplateVO> getList(String name) {
@@ -37,15 +45,13 @@ public class TemplateService {
         BasicUtil.requireNotNullOrBlank("name", templateVO.getName());
         BasicUtil.requireNotNull("fileType", templateVO.getFileType());
         BasicUtil.requireNotNullOrBlank("fileRelativePath", templateVO.getFileRelativePath());
-        BasicUtil.requireNotNullOrBlank("context", templateVO.getContext());
 
         BasicUtil.checkPropValuePart("fileRelativePath", templateVO.getFileRelativePath());
         BasicUtil.checkPropValuePart("fileNamePrefix", templateVO.getFileNamePrefix());
         BasicUtil.checkPropValuePart("fileNameSuffix", templateVO.getFileNameSuffix());
         TemplatePropertyFactory.set(templateVO.getName(),
                 BasicUtil.propValueFormat(templateVO.getFileType().getId().toString(), templateVO.getFileRelativePath(),
-                        templateVO.getFileNamePrefix(), templateVO.getFileNameSuffix()),
-                templateVO.getContext(), isAbsent);
+                        templateVO.getFileNamePrefix(), templateVO.getFileNameSuffix()), isAbsent);
     }
 
     public void delete(String name) {

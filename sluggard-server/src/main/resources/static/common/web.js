@@ -11,6 +11,38 @@ function getRestUrl(url) {
     return WEB_CONTEXT + "/" + url;
 }
 
+function getRestResult(url, data) {
+    var result = {};
+    var length = arguments.length;
+    if (length >= 2) {
+        if (Object.prototype.toString.call(data) === '[object Object]' && $.isEmptyObject(data) === false) {
+            url += "?";
+            for (var field in data) {
+                url = url + field + "=" + data[field] + "&";
+            }
+            url = url.substring(0, url.length - 1);
+        }
+    }
+    $.ajax({
+        type: 'get',
+        url: getRestUrl(url),
+        cache: false,
+        async: false,
+        dataType: 'json',
+        success: function (resp) {
+            result = resp;
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            if (XMLHttpRequest.status === 555) {
+                //window.location.href = "/login.html";
+            } else {
+                msg.error("错误状态码:" + XMLHttpRequest.readyState);
+            }
+        }
+    });
+    return result;
+}
+
 function getRest(url, data, fun) {
     var result = {};
     var length = arguments.length;

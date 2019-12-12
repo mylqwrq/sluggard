@@ -35,3 +35,6 @@ build/
 
 ### JRebel ###
 rebel.xml
+
+### Sluggard ###
+files/

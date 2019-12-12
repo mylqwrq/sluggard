@@ -1,8 +1,7 @@
 package com.mylq.sluggard.controller.basic;
 
-import com.mylq.sluggard.core.basic.service.TemplateService;
-import com.mylq.sluggard.core.basic.vo.TemplateVO;
-import com.mylq.sluggard.core.common.base.result.JsonResult;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.mylq.sluggard.core.basic.service.TemplateService;
+import com.mylq.sluggard.core.basic.vo.TemplateVO;
+import com.mylq.sluggard.core.common.base.result.JsonResult;
 
 /**
  * Template控制层接口
@@ -31,8 +32,20 @@ public class TemplateController {
     public JsonResult<String> getText(@RequestParam String name) {
         JsonResult<String> jsonResult;
         try {
-            String result = templateService.getTextByName(name);
+            String result = templateService.getText(name);
             jsonResult = JsonResult.success(result);
+        } catch (Exception e) {
+            jsonResult = JsonResult.error(e);
+        }
+        return jsonResult;
+    }
+
+    @PostMapping(value = "/saveText")
+    public JsonResult<Void> saveText(@RequestBody TemplateVO templateVO) {
+        JsonResult<Void> jsonResult;
+        try {
+            templateService.setText(templateVO.getName(), templateVO.getContext());
+            jsonResult = JsonResult.success();
         } catch (Exception e) {
             jsonResult = JsonResult.error(e);
         }

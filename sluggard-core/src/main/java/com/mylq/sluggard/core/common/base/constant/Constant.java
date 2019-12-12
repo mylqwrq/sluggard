@@ -20,13 +20,13 @@ public class Constant {
     /**
      * Properties文件根目录
      */
-    public static final String FILE_ROOT_PATH_PROP = System.getProperty("user.dir") + "/properties/";
+    public static final String FILE_ROOT_PATH_PROP = System.getProperty("user.dir") + "/files/properties/";
     /**
      * 模板文件根目录
      */
-    public static final String FILE_ROOT_PATH_TEMPLATE = System.getProperty("user.dir") + "/templates/";
+    public static final String FILE_ROOT_PATH_TEMPLATE = System.getProperty("user.dir") + "/files/templates/";
     /**
      * 临时文件根目录
      */
-    public static final String FILE_ROOT_PATH_TEMP = System.getProperty("java.io.tmpdir") + "/Sluggard/";
+    public static final String FILE_ROOT_PATH_TEMP = System.getProperty("java.io.tmpdir") + "/sluggard/";
 }

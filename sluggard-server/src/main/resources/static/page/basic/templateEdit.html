@@ -15,37 +15,28 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">目标文件类型</label>
+        <label class="layui-form-label">文件类型</label>
         <div class="layui-input-block">
             <select id="fileTypeSelect" name="fileType" lay-filter="fileTypeFilter">
             </select>
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">目标文件相对路径</label>
+        <label class="layui-form-label">相对路径</label>
         <div class="layui-input-block">
             <input class="layui-input" id="fileRelativePath" name="fileRelativePath" type="text" autocomplete="off">
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">目标文件名前缀</label>
+        <label class="layui-form-label">文件前缀</label>
         <div class="layui-input-block">
             <input class="layui-input" id="fileNamePrefix" name="fileNamePrefix" type="text" autocomplete="off">
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">目标文件名后缀</label>
+        <label class="layui-form-label">文件后缀</label>
         <div class="layui-input-block">
             <input class="layui-input" id="fileNameSuffix" name="fileNameSuffix" type="text" autocomplete="off">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">模板内容</label>
-        <div class="layui-input-block"
-             style="bottom: 0;position: absolute;width: 98%;margin-left: 10px;height: 78%;margin-right: 10px;">
-            <textarea class="layui-textarea"
-                      style="background-color:#13151A;color:#999;width:100%;height:100%;resize:none;"
-                      id="context" name="context" placeholder="请输入内容"></textarea>
         </div>
     </div>
 </form>
@@ -110,10 +101,6 @@
             "fileNameSuffix": obj.fileNameSuffix
         });
         document.getElementById("name").readOnly = true;
-        var result = getRest("/template/getTextByName?name=" + obj.name);
-        if (result.success) {
-            $("#context").text(result.data);
-        }
     }
 
     //校验表单
@@ -128,10 +115,6 @@
         }
         if ($("#fileRelativePath").val() === "") {
             msg.warn("目标文件相对路径不可为空！");
-            return false;
-        }
-        if ($("#context").val() === "") {
-            msg.warn("模板内容不可为空！");
             return false;
         }
         return true;

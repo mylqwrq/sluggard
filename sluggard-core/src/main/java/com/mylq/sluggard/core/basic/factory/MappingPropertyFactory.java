@@ -1,20 +1,21 @@
 package com.mylq.sluggard.core.basic.factory;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.mylq.sluggard.core.basic.vo.MappingVO;
-import com.mylq.sluggard.core.common.base.constant.Constant;
-import com.mylq.sluggard.core.common.factory.PropertyFactory;
-import com.mylq.sluggard.core.common.util.FileUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.mylq.sluggard.core.basic.vo.MappingVO;
+import com.mylq.sluggard.core.common.base.constant.Constant;
+import com.mylq.sluggard.core.common.factory.PropertyFactory;
+import com.mylq.sluggard.core.common.util.FileUtil;
 
 /**
  * Mapping Properties工厂
@@ -47,6 +48,7 @@ public class MappingPropertyFactory {
                 }
             }
             LOGGER.info("Load default mapping.");
+            saveProperties();
         }
     }
 
@@ -57,7 +59,7 @@ public class MappingPropertyFactory {
             String name = String.valueOf(key);
             if (name.startsWith(keyPrefixAndDbName)) {
                 String[] keys = name.split("\\" + Constant.PROP_KEY_SEPARATOR);
-                String[] values = PROP.getProperty(name).split(Constant.PROP_VALUE_SEPARATOR);
+                String[] values = PROP.getProperty(name).split(Constant.PROP_VALUE_SEPARATOR, -1);
                 if (keys.length != 3 || values.length != 2) {
                     LOGGER.warn("Illegal mapping data: key={}.", name);
                     continue;

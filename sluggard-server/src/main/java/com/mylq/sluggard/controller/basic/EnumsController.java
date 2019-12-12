@@ -1,15 +1,16 @@
 package com.mylq.sluggard.controller.basic;
 
-import com.mylq.sluggard.core.common.base.enums.BaseEnum;
-import com.mylq.sluggard.core.common.base.result.JsonResult;
-import com.mylq.sluggard.core.common.enums.DbTypeEnum;
-import com.mylq.sluggard.core.common.enums.FileTypeEnum;
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
-import java.util.List;
+import com.mylq.sluggard.core.common.base.enums.BaseEnum;
+import com.mylq.sluggard.core.common.base.result.JsonResult;
+import com.mylq.sluggard.core.common.enums.DbTypeEnum;
+import com.mylq.sluggard.core.common.enums.FileTypeEnum;
 
 /**
  * 枚举控制层接口

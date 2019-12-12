@@ -38,11 +38,8 @@
 <script src="../../common/web.js"></script>
 <script type="text/html" id="toolbarOperation">
     <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-sm" lay-event="editFile">内容</a>
     <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="remove">删除</a>
-</script>
-<script type="text/html" id="toolbarFileOperation">
-    <a class="layui-btn layui-btn-sm" lay-event="editFile">编辑</a>
-    <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="removeFile">删除</a>
 </script>
 <script type="text/html" id="fileTypeTpl">
     <span>{{d.fileType.option}}</span>
@@ -71,8 +68,7 @@
                 {field: 'fileRelativePath', title: '目标文件相对路径', width: 200},
                 {field: 'fileNamePrefix', title: '目标文件名前缀', width: 200},
                 {field: 'fileNameSuffix', title: '目标文件名后缀', width: 200},
-                {field: 'right', title: '操作', width: 200, align: 'center', toolbar: '#toolbarOperation'},
-                {field: 'right', title: '文件操作', width: 200, align: 'center', toolbar: '#toolbarFileOperation'}
+                {field: 'right', title: '操作', width: 200, align: 'center', toolbar: '#toolbarOperation'}
             ]],
             where: {
                 name: $("#name").val()
@@ -119,18 +115,25 @@
             if (obj.event === "edit") {
                 modelEdit(data);
             } else if (obj.event === 'remove') {
-                modelRemove(data)
+                modelRemove(data);
+            } else if (obj.event === 'editFile') {
+                fileEdit(data);
             }
         });
 
         //编辑方法
         function modelEdit(data) {
-            opener.edit('templateEdit.html', save, data);
+            opener.edit('templateEdit.html', edit, data);
         }
 
         //删除方法
         function modelRemove(data) {
             msg.confirm(remove, data);
+        }
+
+        //编辑文件方法
+        function fileEdit(data) {
+            opener.edit('templateFileEdit.html', saveFile, data, "编辑模板内容", '50%', '80%');
         }
 
         function save(data) {
@@ -139,10 +142,22 @@
             });
         }
 
+        function edit(data) {
+            postRest("/basic/template/edit", data, function () {
+                reload();
+            });
+        }
+
         function remove(data) {
             var obj = {};
             obj["name"] = data.name;
             getRest("/basic/template/del", obj, function () {
+                reload();
+            });
+        }
+
+        function saveFile(data) {
+            postRest("/basic/template/saveText", data, function () {
                 reload();
             });
         }

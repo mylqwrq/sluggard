@@ -1,14 +1,16 @@
 package com.mylq.sluggard.core.basic.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.mylq.sluggard.core.basic.factory.MappingPropertyFactory;
 import com.mylq.sluggard.core.basic.util.BasicUtil;
 import com.mylq.sluggard.core.basic.vo.MappingVO;
 import com.mylq.sluggard.core.common.base.constant.Constant;
 import com.mylq.sluggard.core.common.enums.DbTypeEnum;
-import lombok.NonNull;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
+import lombok.NonNull;
 
 /**
  * Mapping服务
@@ -29,14 +31,14 @@ public class MappingService {
         DbTypeEnum.check(dbName);
         BasicUtil.requireNotNullOrBlank("dataType", dataType);
         return MappingPropertyFactory.get(BasicUtil.propKeyFormat(dbName, dataType))
-                .split("\\" + Constant.PROP_KEY_SEPARATOR)[0];
+                .split(Constant.PROP_VALUE_SEPARATOR)[0];
     }
 
     public String getJdbcType(String dbName, String dataType) {
         DbTypeEnum.check(dbName);
         BasicUtil.requireNotNullOrBlank("dataType", dataType);
         return MappingPropertyFactory.get(BasicUtil.propKeyFormat(dbName, dataType))
-                .split("\\" + Constant.PROP_KEY_SEPARATOR)[1];
+                .split(Constant.PROP_VALUE_SEPARATOR)[1];
     }
 
     public void save(@NonNull MappingVO mappingVO) {
