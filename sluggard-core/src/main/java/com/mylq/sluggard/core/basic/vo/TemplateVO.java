@@ -1,14 +1,15 @@
 package com.mylq.sluggard.core.basic.vo;
 
+import java.io.Serializable;
+
 import com.mylq.sluggard.core.common.enums.FileTypeEnum;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.io.Serializable;
 
 /**
  * Template视图对象
@@ -36,4 +37,6 @@ public class TemplateVO implements Serializable {
     private String fileNameSuffix;
 
     private String context;
+
+    private Boolean disabled;
 }

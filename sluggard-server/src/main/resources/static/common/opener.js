@@ -70,18 +70,10 @@ opener.prototype = {
             skin: 'layui-layer-molv',
             resize: false,
             content: url + "?tm=" + new Date().getTime(),
-            btn: ['提交', '取消'],
-            yes: function (index, layero) {
-                var validation = $(layero).find('iframe')[0].contentWindow.validationForm();
-                if (length >= 2 && (validation)) {
-                    var fm = layer.getChildFrame('body', index).find('form')[0];
-                    fun(formToObj($(fm)));
-                    layer.close(index);
-                }
-            },
+            btn: ['取消'],
             success: function (layero, index) {
                 if (length >= 3) {
-                    $(layero).find('iframe')[0].contentWindow.initScanForm(obj);
+                    $(layero).find('iframe')[0].contentWindow.initEditForm(obj);
                 }
             }
         });

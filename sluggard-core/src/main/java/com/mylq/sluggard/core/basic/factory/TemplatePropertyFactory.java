@@ -95,7 +95,8 @@ public class TemplatePropertyFactory {
                 continue;
             }
             list.add(TemplateVO.builder().name(keys[1]).fileType(FileTypeEnum.get(Integer.parseInt(values[0])))
-                    .fileRelativePath(values[1]).fileNamePrefix(values[2]).fileNameSuffix(values[3]).build());
+                    .fileRelativePath(values[1]).fileNamePrefix(values[2]).fileNameSuffix(values[3])
+                    .disabled(PropertyFactory.getProperties().containsKey(name)).build());
         }
         list.sort(Comparator.comparing(TemplateVO::getName));
         return list;
@@ -104,13 +105,18 @@ public class TemplatePropertyFactory {
     public static void set(String key, String value, boolean isAbsent) {
         if (isAbsent && Objects.nonNull(PROP.putIfAbsent(addKeyPrefix(key), value))) {
             throw new SluggardBusinessException("Template {0} already exists.", key);
-        } else {
-            PROP.setProperty(addKeyPrefix(key), value);
         }
+        if (PropertyFactory.getProperties().containsKey(addKeyPrefix(key))) {
+            throw new SluggardBusinessException("Default template is not allowed to operate: {0}.", key);
+        }
+        PROP.setProperty(addKeyPrefix(key), value);
         saveProperties();
     }
 
     public static void remove(String key) {
+        if (PropertyFactory.getProperties().containsKey(addKeyPrefix(key))) {
+            throw new SluggardBusinessException("Default template is not allowed to operate: {0}.", key);
+        }
         PROP.remove(addKeyPrefix(key));
         saveProperties();
         deleteTemplateFile(key);
@@ -126,6 +132,9 @@ public class TemplatePropertyFactory {
     }
 
     public static void setText(String key, String context) {
+        if (PropertyFactory.getProperties().containsKey(addKeyPrefix(key))) {
+            throw new SluggardBusinessException("Default template is not allowed to operate: {0}.", key);
+        }
         try {
             saveTemplateFile(key, context);
         } catch (IOException e) {

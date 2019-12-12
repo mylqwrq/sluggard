@@ -37,9 +37,11 @@
 <script src="../../common/tool.js"></script>
 <script src="../../common/web.js"></script>
 <script type="text/html" id="toolbarOperation">
-    <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-sm" lay-event="editFile">内容</a>
+    {{#  if(d.disabled == false){ }}
+    <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="remove">删除</a>
+    {{# } }}
 </script>
 <script type="text/html" id="fileTypeTpl">
     <span>{{d.fileType.option}}</span>
@@ -68,6 +70,7 @@
                 {field: 'fileRelativePath', title: '目标文件相对路径', width: 200},
                 {field: 'fileNamePrefix', title: '目标文件名前缀', width: 200},
                 {field: 'fileNameSuffix', title: '目标文件名后缀', width: 200},
+                {field: 'disabled', hide: true},
                 {field: 'right', title: '操作', width: 200, align: 'center', toolbar: '#toolbarOperation'}
             ]],
             where: {
@@ -133,7 +136,11 @@
 
         //编辑文件方法
         function fileEdit(data) {
-            opener.edit('templateFileEdit.html', saveFile, data, "编辑模板内容", '50%', '80%');
+            if (data.disabled) {
+                opener.scan('templateFileEdit.html', saveFile, data, "查看模板内容", '50%', '80%');
+            } else {
+                opener.edit('templateFileEdit.html', saveFile, data, "编辑模板内容", '50%', '80%');
+            }
         }
 
         function save(data) {
