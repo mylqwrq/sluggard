@@ -26,7 +26,7 @@ public enum DbTypeEnum implements BaseEnum<Integer> {
     /**
      * MySQL
      */
-    MYSQL(0, "mysql", "com.mysql.jdbc.Driver", "jdbc:mysql://{0}:{1}/{2}"),
+    MYSQL(0, "mysql", "com.mysql.cj.jdbc.Driver", "jdbc:mysql://{0}:{1}/{2}"),
     /**
      * Oracle
      */

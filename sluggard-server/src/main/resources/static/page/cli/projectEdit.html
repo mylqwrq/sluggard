@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>项目管理</title>
+    <link rel="stylesheet" href="../../resource/layui/css/layui.css">
+</head>
+<body>
+<div class="layui-collapse">
+    <div class="layui-colla-item">
+        <h2 class="layui-colla-title">项目信息</h2>
+        <div class="layui-colla-content layui-show">
+            <form class="layui-form" style="margin-right:20px;margin-top:10px;" lay-filter="projectFormFilter">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">项目名称</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" id="name" name="name" type="text" autocomplete="off">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">使用模板</label>
+                    <div class="layui-input-block" id="templateCheck">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="layui-colla-item">
+        <h2 class="layui-colla-title">数据源信息</h2>
+        <div class="layui-colla-content layui-show">
+            <div class="layui-inline">
+                <form class="layui-form" style="margin-right:20px;margin-top:10px;" lay-filter="dbFormFilter"
+                      id="dbForm">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">类型</label>
+                            <div class="layui-input-inline">
+                                <select id="dbTypeSelect" name="dbType" lay-filter="dbTypeFilter">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">地址</label>
+                            <div class="layui-input-inline">
+                                <input class="layui-input" id="ip" name="ip" type="text" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">端口</label>
+                            <div class="layui-input-inline">
+                                <input class="layui-input" id="port" name="port" type="text" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">名称</label>
+                            <div class="layui-input-inline">
+                                <input class="layui-input" id="dbName" name="name" type="text" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">用户</label>
+                            <div class="layui-input-inline">
+                                <input class="layui-input" id="user" name="user" type="text" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">密码</label>
+                            <div class="layui-input-inline">
+                                <input class="layui-input" id="pwd" name="pwd" type="password" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <span class="layui-btn-container">
+                <button class="layui-btn" data-type="test"><i class="layui-icon"></i>测试连接</button>
+            </span>
+        </div>
+    </div>
+    <div class="layui-colla-item">
+        <h2 class="layui-colla-title">配置信息</h2>
+        <div class="layui-colla-content layui-show">
+            <table class="layui-hide" id="dt" lay-filter="dtFilter"></table>
+        </div>
+    </div>
+</div>
+
+<script src="../../resource/jquery/jquery-3.4.1.min.js"></script>
+<script src="../../resource/layui/layui.js"></script>
+<script src="../../common/msg.js"></script>
+<script src="../../common/tool.js"></script>
+<script src="../../common/web.js"></script>
+<script type="text/html" id="toolbarOperation">
+    <a class="layui-btn layui-btn-sm" lay-event="add">新建</a>
+    <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="remove">删除</a>
+</script>
+<script>
+    layui.use(['form', 'table'], function () {
+
+        var form = layui.form;
+        var table = layui.table;
+
+        //加载复选框选项
+        $.get(WEB_CONTEXT + '/basic/template/getList?name=', {}, function (result) {
+            if (result.success && result.data != null) {
+                var dataList = result.data;
+                $.each(dataList, function (index, item) {
+                    $("#templateCheck").append("<input type=\"checkbox\" name=\"" + item.name + "\" title=\"" + item.name + "\">");
+                });
+            }
+            form.render("checkbox");
+        });
+
+        //加载下拉框选项
+        $.get(WEB_CONTEXT + '/server/enums/getDbTypes', {}, function (result) {
+            if (result.success && result.data != null) {
+                var dataList = result.data;
+                $.each(dataList, function (index, item) {
+                    $("#dbTypeSelect").append("<option value=" + item.id + ">" + item.name + "</option>");
+                });
+            }
+            form.render("select");
+        });
+
+        form.on('select(dbTypeFilter)', function (data) {
+            if (data.value === "0") {
+                $("#port").val("3306");
+            } else if (data.value === "1") {
+                $("#port").val("1521");
+            }
+        });
+
+        //按钮事件
+        var active = {
+            test: testConnection
+        };
+        $('.layui-btn-container .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        //测试连接方法
+        function testConnection() {
+            if ($("#dbType").selected === "" || $("#ip").val() === "" || $("#port").val() === ""
+                || $("#dbName").val() === "" || $("#user").val() === "" || $("#pwd").val() === "") {
+                msg.warn("请先填写完整的数据源信息！");
+                return;
+            }
+            var result = postRestResult("/server/db/test", formToObj($("#dbForm")));
+            if (result.success === true) {
+                msg.info("连接成功！");
+            } else {
+                msg.error("连接失败！");
+            }
+        }
+
+        //监听操作列工具条
+        table.on('tool(dtFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === "add") {
+                rowAdd(data);
+            } else if (obj.event === 'remove') {
+                rowRemove(data);
+            }
+        });
+
+        //新增行方法
+        function rowAdd(data) {
+            var oldData = table.cache["dt"];
+            var newRow = {key: '', value: ''};
+            oldData.push(newRow);
+            table.reload('dt', {
+                data: oldData
+            });
+        }
+
+        //删除行方法
+        function rowRemove(data) {
+            var oldData = table.cache["dt"];
+            for (var i = 0, row; i < oldData.length; i++) {
+                row = oldData[i];
+                if (row.key === data.key) {
+                    oldData.splice(i, 1);
+                    break;
+                }
+            }
+            table.reload('dt', {
+                data: oldData
+            });
+        }
+
+        $("#name").blur(function () {
+            filter(this, '.');
+            if ($(this).val() === "on") {
+                $(this).val("");
+            }
+        });
+    });
+
+    //初始化（type：1为新建，2为编辑）
+    function initForm(obj, type) {
+        var form = layui.form;
+        var table = layui.table;
+        var tableOption = {
+            elem: '#dt',
+            cellMinWidth: 80,
+            even: true,
+            cols: [[
+                {type: 'numbers', title: '序号', width: 100},
+                {field: 'key', title: '配置属性', width: 200, edit: 'text'},
+                {field: 'value', title: '配置属性值', width: 250, edit: 'text'},
+                {field: 'right', title: '操作', width: 200, align: 'center', toolbar: '#toolbarOperation'}
+            ]],
+            data: [{"key": "packageUrl", "value": ""}, {"key": "author", "value": ""}]
+        };
+
+        if (type === 1) {
+            form.val('projectFormFilter', {
+                "name": ""
+            });
+            form.val('dbFormFilter', {
+                "dbType": "0",
+                "ip": "",
+                "port": "3306",
+                "name": "",
+                "user": "",
+                "pwd": ""
+            });
+            document.getElementById("name").readOnly = false;
+            table.render(tableOption);
+        } else if (type === 2) {
+            var projectFormData = strArrToCheck(obj.templateNames);
+            projectFormData["name"] = obj.name;
+            form.val('projectFormFilter', projectFormData);
+            form.val('dbFormFilter', {
+                "dbType": obj.dbVO.dbType.id,
+                "ip": obj.dbVO.ip,
+                "port": obj.dbVO.port,
+                "name": obj.dbVO.name,
+                "user": obj.dbVO.user,
+                "pwd": obj.dbVO.pwd
+            });
+            document.getElementById("name").readOnly = true;
+            tableOption["data"] = obj.configs;
+            table.render(tableOption);
+        }
+    }
+
+    //校验表单
+    function validationForm() {
+        if ($("#name").val() === "") {
+            msg.warn("项目名称不可为空！");
+            return false;
+        }
+        if ($("#dbType").selected === "") {
+            msg.warn("数据库类型不可为空！");
+            return false;
+        }
+        if ($("#ip").val() === "") {
+            msg.warn("数据库地址不可为空！");
+            return false;
+        }
+        if ($("#port").val() === "") {
+            msg.warn("数据库端口不可为空！");
+            return false;
+        }
+        if ($("#dbName").val() === "") {
+            msg.warn("数据库名称/实例不可为空！");
+            return false;
+        }
+        if ($("#user").val() === "") {
+            msg.warn("数据库账号不可为空！");
+            return false;
+        }
+        if ($("#pwd").val() === "") {
+            msg.warn("数据库密码不能为空！");
+            return false;
+        }
+        var table = layui.table;
+        var data = table.cache["dt"];
+        var keyArray = [];
+        for (var i = 0, row; i < data.length; i++) {
+            row = data[i];
+            if (row.key === "") {
+                msg.warn("配置属性不可有空行！");
+                return false;
+            }
+            if (keyArray.indexOf(row.key) > -1) {
+                msg.warn("配置属性不可重复：" + row.key + "！");
+                return false;
+            }
+            keyArray.push(row.key);
+        }
+        return true;
+    }
+</script>
+</body>
+</html>

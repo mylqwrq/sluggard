@@ -1,10 +1,7 @@
 package com.mylq.sluggard.controller.server;
 
-import com.mylq.sluggard.core.common.base.result.JsonResult;
-import com.mylq.sluggard.core.db.entity.ColumnEntity;
-import com.mylq.sluggard.core.db.vo.DbVO;
-import com.mylq.sluggard.core.db.entity.TableEntity;
-import com.mylq.sluggard.core.db.service.DbService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,7 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.mylq.sluggard.core.common.base.result.JsonResult;
+import com.mylq.sluggard.core.db.entity.ColumnEntity;
+import com.mylq.sluggard.core.db.entity.TableEntity;
+import com.mylq.sluggard.core.db.service.DbService;
+import com.mylq.sluggard.core.db.vo.DbVO;
 
 /**
  * DB控制层接口
@@ -45,6 +46,18 @@ public class DbController {
         JsonResult<List> jsonResult;
         try {
             List<ColumnEntity> result = dbService.getColumnsList(dbVO, tableName);
+            jsonResult = JsonResult.success(result);
+        } catch (Exception e) {
+            jsonResult = JsonResult.error(e);
+        }
+        return jsonResult;
+    }
+
+    @PostMapping(value = "/test")
+    public JsonResult<Boolean> test(@RequestBody DbVO dbVO) {
+        JsonResult<Boolean> jsonResult;
+        try {
+            Boolean result = dbService.test(dbVO);
             jsonResult = JsonResult.success(result);
         } catch (Exception e) {
             jsonResult = JsonResult.error(e);

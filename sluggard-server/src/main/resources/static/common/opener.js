@@ -1,79 +1,89 @@
 function opener() {
 }
 
+function getLayerOption(title, width, height, src, initObj, initType, reqMethod, reqUrl, call, getReqObj) {
+    var length = arguments.length;
+    return {
+        type: 2,
+        title: title,
+        area: [width, height],
+        skin: 'layui-layer-molv',
+        resize: false,
+        content: src + '?tm=' + new Date().getTime(),
+        btn: ['提交', '取消'],
+        yes: function (index, layero) {
+            var validation = $(layero).find('iframe')[0].contentWindow.validationForm();
+            if (!validation) {
+                return;
+            }
+            if (length >= 8) {
+                var result = {};
+                var reqObj = {};
+                if (length >= 10) {
+                    reqObj = getReqObj(layer, index);
+                } else {
+                    if (layer.getChildFrame('body', index).find('form').length > 0) {
+                        var form = layer.getChildFrame('body', index).find('form')[0];
+                        reqObj = formToObj($(form));
+                    }
+                }
+                if (reqMethod === 'get') {
+                    result = getRestResult(reqUrl, reqObj);
+                } else if (reqMethod === 'post') {
+                    result = postRestResult(reqUrl, reqObj);
+                } else {
+                    return;
+                }
+                if (result.success === true) {
+                    msg.info(result.message);
+                    layer.close(index);
+                    if (length >= 9) {
+                        call();
+                    }
+                } else {
+                    msg.error(result.message);
+                }
+            }
+        },
+        success: function (layero, index) {
+            if (length >= 5) {
+                $(layero).find('iframe')[0].contentWindow.initForm(initObj, initType);
+            }
+        }
+    };
+}
+
 opener.prototype = {
-    add: function (url, fun, obj, t, w, h) {
+    add: function (t, w, h, src, initObj, reqMethod, reqUrl, call, getReqObj) {
         var length = arguments.length;
-        var title = length >= 4 ? t : "新建";
-        var width = length >= 5 ? w : '50%';
-        var height = length >= 6 ? h : '50%';
-        layer.open({
-            type: 2,
-            title: title,
-            area: [width, height],
-            skin: 'layui-layer-molv',
-            resize: false,
-            content: url + '?tm=' + new Date().getTime(),
-            btn: ['提交', '取消'],
-            yes: function (index, layero) {
-                var validation = $(layero).find('iframe')[0].contentWindow.validationForm(obj);
-                if (length >= 2 && (validation)) {
-                    var fm = layer.getChildFrame('body', index).find('form')[0];
-                    fun(formToObj($(fm)));
-                    layer.close(index);
-                }
-            },
-            success: function (layero, index) {
-                if (length >= 3) {
-                    $(layero).find('iframe')[0].contentWindow.initForm(obj);
-                }
-            }
-        });
+        var title = length >= 1 ? t : "新建";
+        var width = length >= 2 ? w : '50%';
+        var height = length >= 3 ? h : '50%';
+        layer.open(getLayerOption(title, width, height, src, initObj, 1, reqMethod, reqUrl, call, getReqObj));
     },
-    edit: function (url, fun, obj, t, w, h) {
+    edit: function (t, w, h, src, initObj, reqMethod, reqUrl, call, getReqObj) {
         var length = arguments.length;
-        var title = length >= 4 ? t : "编辑";
-        var width = length >= 5 ? w : '50%';
-        var height = length >= 6 ? h : '50%';
-        layer.open({
-            type: 2,
-            title: title,
-            area: [width, height],
-            skin: 'layui-layer-molv',
-            resize: false,
-            content: url + "?tm=" + new Date().getTime(),
-            btn: ['提交', '取消'],
-            yes: function (index, layero) {
-                var validation = $(layero).find('iframe')[0].contentWindow.validationForm(obj);
-                if (length >= 2 && (validation)) {
-                    var fm = layer.getChildFrame('body', index).find('form')[0];
-                    fun(formToObj($(fm)));
-                    layer.close(index);
-                }
-            },
-            success: function (layero, index) {
-                if (length >= 3) {
-                    $(layero).find('iframe')[0].contentWindow.initEditForm(obj);
-                }
-            }
-        });
+        var title = length >= 1 ? t : "编辑";
+        var width = length >= 2 ? w : '50%';
+        var height = length >= 3 ? h : '50%';
+        layer.open(getLayerOption(title, width, height, src, initObj, 2, reqMethod, reqUrl, call, getReqObj));
     },
-    scan: function (url, fun, obj, t, w, h) {
+    scan: function (t, w, h, src, initObj) {
         var length = arguments.length;
-        var title = length >= 4 ? t : "浏览";
-        var width = length >= 5 ? w : '50%';
-        var height = length >= 6 ? h : '50%';
+        var title = length >= 1 ? t : "浏览";
+        var width = length >= 2 ? w : '50%';
+        var height = length >= 3 ? h : '50%';
         layer.open({
             type: 2,
             title: title,
             area: [width, height],
             skin: 'layui-layer-molv',
             resize: false,
-            content: url + "?tm=" + new Date().getTime(),
+            content: src + "?tm=" + new Date().getTime(),
             btn: ['取消'],
             success: function (layero, index) {
-                if (length >= 3) {
-                    $(layero).find('iframe')[0].contentWindow.initEditForm(obj);
+                if (length >= 5) {
+                    $(layero).find('iframe')[0].contentWindow.initForm(initObj, 2);
                 }
             }
         });

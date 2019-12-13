@@ -1,16 +1,18 @@
 package com.mylq.sluggard.core.db.service;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.mylq.sluggard.core.basic.service.MappingService;
 import com.mylq.sluggard.core.common.util.StringUtil;
 import com.mylq.sluggard.core.db.dao.DbDao;
 import com.mylq.sluggard.core.db.entity.ColumnEntity;
-import com.mylq.sluggard.core.db.vo.DbVO;
 import com.mylq.sluggard.core.db.entity.TableEntity;
-import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.mylq.sluggard.core.db.vo.DbVO;
 
-import java.util.List;
+import lombok.NonNull;
 
 /**
  * 数据库服务
@@ -61,5 +63,15 @@ public class DbService {
             columnEntity.setJdbcType(mappingService.getJdbcType(dbVO.getDbType().getName(), columnEntity.getDataType()));
         }
         return list;
+    }
+
+    /**
+     * 测试DB连接
+     *
+     * @param dbVO 数据库信息
+     * @return 是否连接成功
+     */
+    public Boolean test(@NonNull DbVO dbVO) {
+        return dao.testConnection(dbVO);
     }
 }

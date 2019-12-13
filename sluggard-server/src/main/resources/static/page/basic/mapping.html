@@ -23,7 +23,7 @@
                     </form>
                 </div>
                 <span class="layui-btn-container">
-                    <button class="layui-btn" data-type="add"><i class="layui-icon"></i>新建</button>
+                    <button class="layui-btn" data-type="add"><i class="layui-icon">&#xe654;</i>新建</button>
                 </span>
                 <table class="layui-hide" id="dt" lay-filter="dtFilter"></table>
             </div>
@@ -48,7 +48,7 @@
         var table = layui.table;
 
         //加载下拉框选项
-        $.get(WEB_CONTEXT + '/basic/enums/getDbTypes', {}, function (result) {
+        $.get(WEB_CONTEXT + '/server/enums/getDbTypes', {}, function (result) {
             if (result.success && result.data != null) {
                 var dataList = result.data;
                 $.each(dataList, function (index, item) {
@@ -114,13 +114,6 @@
             active[type] ? active[type].call(this) : '';
         });
 
-        //新建方法
-        function modelAdd() {
-            var obj = {};
-            obj["dbName"] = $("#dbTypeSelect").find("option:selected").text();
-            opener.add('mappingEdit.html', save, obj);
-        }
-
         //监听操作列工具条
         table.on('tool(dtFilter)', function (obj) {
             var data = obj.data;
@@ -131,9 +124,16 @@
             }
         });
 
+        //新建方法
+        function modelAdd() {
+            var obj = {};
+            obj["dbName"] = $("#dbTypeSelect").find("option:selected").text();
+            opener.add("新建映射", '50%', '50%', 'mappingEdit.html', obj, 'post', '/basic/mapping/save', reload);
+        }
+
         //编辑方法
         function modelEdit(data) {
-            opener.edit('mappingEdit.html', save, data);
+            opener.edit("编辑映射", '50%', '50%', 'mappingEdit.html', data, 'post', '/basic/mapping/save', reload);
         }
 
         //删除方法
@@ -141,19 +141,11 @@
             msg.confirm(remove, data);
         }
 
-        function save(data) {
-            postRest("/basic/mapping/save", data, function () {
-                reload();
-            });
-        }
-
         function remove(data) {
             var obj = {};
             obj["dbName"] = data.dbName;
             obj["dataType"] = data.dataType;
-            getRest("/basic/mapping/del", obj, function () {
-                reload();
-            });
+            return getRestData("/basic/mapping/del", obj, reload);
         }
     });
 </script>

@@ -24,16 +24,15 @@
     layui.use(['layedit', 'form'], function () {
     });
 
-    //新建初始化
-    function initForm(obj) {
-    }
-
-    //编辑初始化
-    function initEditForm(obj) {
-        $("#name").val(obj.name);
-        var result = getRestResult("/basic/template/getText?name=" + obj.name);
-        if (result.success) {
-            $("#context").text(result.data);
+    //初始化（type：1为新建，2为编辑）
+    function initForm(obj, type) {
+        var form = layui.form;
+        if (type === 2) {
+            $("#name").val(obj.name);
+            var result = getRestResult("/basic/template/getText?name=" + obj.name);
+            if (result.success) {
+                $("#context").text(result.data);
+            }
         }
     }
 

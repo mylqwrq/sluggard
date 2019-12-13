@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>模板管理</title>
+    <title>项目管理</title>
     <link rel="stylesheet" href="../../resource/layui/css/layui.css">
 </head>
 <body style="margin-top: 15px">
@@ -14,7 +14,7 @@
                 <div class="layui-inline">
                     <form class="layui-form" style="padding-top: 15px;">
                         <div class="layui-form-item">
-                            <label class="layui-form-label">模板名称</label>
+                            <label class="layui-form-label">项目名称</label>
                             <div class="layui-inline" style="width: 200px;">
                                 <input class="layui-input" id="name" name="name" type="text">
                             </div>
@@ -37,14 +37,8 @@
 <script src="../../common/tool.js"></script>
 <script src="../../common/web.js"></script>
 <script type="text/html" id="toolbarOperation">
-    <a class="layui-btn layui-btn-sm" lay-event="editFile">内容</a>
-    {{#  if(d.disabled == false){ }}
     <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="remove">删除</a>
-    {{# } }}
-</script>
-<script type="text/html" id="fileTypeTpl">
-    <span>{{d.fileType.option}}</span>
 </script>
 <script>
     layui.use(['form', 'table'], function () {
@@ -60,17 +54,15 @@
         //表格属性
         var tableOption = {
             elem: '#dt',
-            url: WEB_CONTEXT + '/basic/template/getList',
+            url: WEB_CONTEXT + '/cli/project/getList',
             cellMinWidth: 80,
             even: true,
             cols: [[
                 {type: 'numbers', title: '序号', width: 100},
-                {field: 'name', title: '模板名称', width: 200},
-                {field: 'fileType', title: '目标文件类型', width: 200, templet: '#fileTypeTpl'},
-                {field: 'fileRelativePath', title: '目标文件相对路径', width: 200},
-                {field: 'fileNamePrefix', title: '目标文件名前缀', width: 200},
-                {field: 'fileNameSuffix', title: '目标文件名后缀', width: 200},
-                {field: 'disabled', hide: true},
+                {field: 'name', title: '项目名称', width: 200},
+                {field: 'templateNames', title: '模板', width: 400},
+                {field: 'dbVO', hide: true},
+                {field: 'configs', hide: true},
                 {field: 'right', title: '操作', width: 200, align: 'center', toolbar: '#toolbarOperation'}
             ]],
             where: {
@@ -91,7 +83,7 @@
         //表格加载
         function reload() {
             table.reload('dt', {
-                url: WEB_CONTEXT + '/basic/template/getList',
+                url: WEB_CONTEXT + '/cli/project/getList',
                 where: {
                     name: $("#name").val()
                 }
@@ -114,19 +106,41 @@
                 modelEdit(data);
             } else if (obj.event === 'remove') {
                 modelRemove(data);
-            } else if (obj.event === 'editFile') {
-                fileEdit(data);
             }
         });
 
         //新建方法
         function modelAdd() {
-            opener.add("新建模板", '50%', '60%', 'templateEdit.html', {}, 'post', '/basic/template/save', reload);
+            opener.add("新建项目", '60%', '80%', 'projectEdit.html', {}, 'post', '/cli/project/save', reload, getReqObj);
         }
 
         //编辑方法
         function modelEdit(data) {
-            opener.edit("编辑模板", '50%', '60%', 'templateEdit.html', data, 'post', '/basic/template/edit', reload);
+            opener.edit("编辑项目", '60%', '80%', 'projectEdit.html', data, 'post', '/cli/project/edit', reload, getReqObj);
+        }
+
+        function getReqObj(layer, index) {
+            var reqObj = {};
+
+            var projectForm = layer.getChildFrame('body', index).find('form')[0];
+            var projectInfo = formToObj($(projectForm));
+            var templateNames = checkToStrArr(projectInfo);
+            var dataSourceForm = layer.getChildFrame('body', index).find('form')[1];
+            var dataSourceInfo = formToObj($(dataSourceForm));
+            var configTable = layer.getChildFrame('body', index).find('table')[0];
+            var configs = [];
+            for (var i = 0, rows = configTable.rows.length; i < rows; i++) {
+                var config = {};
+                config["key"] = mytable.rows[i].cells[1].innerHTML;
+                config["value"] = mytable.rows[i].cells[2].innerHTML;
+                configs.push(config);
+            }
+
+            reqObj["name"] = projectInfo.name;
+            reqObj["templateNames"] = templateNames;
+            reqObj["dbVO"] = dataSourceInfo;
+            reqObj["configs"] = configs;
+            return reqObj;
         }
 
         //删除方法
@@ -137,16 +151,7 @@
         function remove(data) {
             var obj = {};
             obj["name"] = data.name;
-            return getRestData("/basic/template/del", obj, reload);
-        }
-
-        //编辑文件方法
-        function fileEdit(data) {
-            if (data.disabled) {
-                opener.scan("查看模板内容", '50%', '80%', 'templateFileEdit.html', data);
-            } else {
-                opener.edit("编辑模板内容", '50%', '80%', 'templateFileEdit.html', data, 'post', '/basic/template/saveText', reload);
-            }
+            return getRestData("/cli/project/del", obj, reload);
         }
     });
 </script>

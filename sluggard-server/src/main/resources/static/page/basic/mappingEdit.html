@@ -54,27 +54,26 @@
         });
     });
 
-    //新建初始化
-    function initForm(obj) {
+    //初始化（type：1为新建，2为编辑）
+    function initForm(obj, type) {
         var form = layui.form;
-        form.val('init', {
-            "dbName": obj.dbName,
-            "dataType": "",
-            "javaType": "",
-            "jdbcType": ""
-        });
-    }
-
-    //编辑初始化
-    function initEditForm(obj) {
-        var form = layui.form;
-        form.val('init', {
-            "dbName": obj.dbName,
-            "dataType": obj.dataType,
-            "javaType": obj.javaType,
-            "jdbcType": obj.jdbcType
-        });
-        document.getElementById("dataType").readOnly = true;
+        if (type === 1) {
+            form.val('init', {
+                "dbName": obj.dbName,
+                "dataType": "",
+                "javaType": "",
+                "jdbcType": ""
+            });
+            document.getElementById("dataType").readOnly = false;
+        } else if (type === 2) {
+            form.val('init', {
+                "dbName": obj.dbName,
+                "dataType": obj.dataType,
+                "javaType": obj.javaType,
+                "jdbcType": obj.jdbcType
+            });
+            document.getElementById("dataType").readOnly = true;
+        }
     }
 
     //校验表单

@@ -1,4 +1,4 @@
-package com.mylq.sluggard.controller.basic;
+package com.mylq.sluggard.controller.server;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +20,7 @@ import com.mylq.sluggard.core.common.enums.FileTypeEnum;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping("/basic/enums")
+@RequestMapping("/server/enums")
 public class EnumsController {
 
     @GetMapping(value = "/getDbTypes")

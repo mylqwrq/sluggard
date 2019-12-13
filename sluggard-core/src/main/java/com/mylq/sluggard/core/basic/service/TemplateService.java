@@ -37,7 +37,8 @@ public class TemplateService {
         if (Strings.isNullOrEmpty(name)) {
             return TemplatePropertyFactory.getList();
         } else {
-            return TemplatePropertyFactory.getList().stream().filter(t -> (t.getName().contains(name))).collect(Collectors.toList());
+            return TemplatePropertyFactory.getList().stream().filter(t -> (t.getName().contains(name)))
+                    .collect(Collectors.toList());
         }
     }
 
@@ -49,9 +50,11 @@ public class TemplateService {
         BasicUtil.checkPropValuePart("fileRelativePath", templateVO.getFileRelativePath());
         BasicUtil.checkPropValuePart("fileNamePrefix", templateVO.getFileNamePrefix());
         BasicUtil.checkPropValuePart("fileNameSuffix", templateVO.getFileNameSuffix());
+
         TemplatePropertyFactory.set(templateVO.getName(),
                 BasicUtil.propValueFormat(templateVO.getFileType().getId().toString(), templateVO.getFileRelativePath(),
-                        templateVO.getFileNamePrefix(), templateVO.getFileNameSuffix()), isAbsent);
+                        templateVO.getFileNamePrefix(), templateVO.getFileNameSuffix()),
+                isAbsent);
     }
 
     public void delete(String name) {

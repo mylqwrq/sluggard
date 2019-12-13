@@ -14,20 +14,19 @@ function getRestUrl(url) {
 function getRestResult(url, data) {
     var result = {};
     var length = arguments.length;
-    if (length >= 2) {
-        if (Object.prototype.toString.call(data) === '[object Object]' && $.isEmptyObject(data) === false) {
-            url += "?";
-            for (var field in data) {
-                url = url + field + "=" + data[field] + "&";
-            }
-            url = url.substring(0, url.length - 1);
+    if (length >= 2 && !isNullOrEmptyObject(data)) {
+        url += "?";
+        for (var field in data) {
+            url = url + field + "=" + data[field] + "&";
         }
+        url = url.substring(0, url.length - 1);
     }
     $.ajax({
         type: 'get',
         url: getRestUrl(url),
         cache: false,
         async: false,
+        contentType: 'application/json',
         dataType: 'json',
         success: function (resp) {
             result = resp;
@@ -43,65 +42,17 @@ function getRestResult(url, data) {
     return result;
 }
 
-function getRest(url, data, fun) {
+function postRestResult(url, data) {
     var result = {};
-    var length = arguments.length;
-    if (length >= 2) {
-        if (Object.prototype.toString.call(data) === '[object Object]' && $.isEmptyObject(data) === false) {
-            url += "?";
-            for (var field in data) {
-                url = url + field + "=" + data[field] + "&";
-            }
-            url = url.substring(0, url.length - 1);
-        }
-    }
-    $.ajax({
-        type: 'get',
-        url: getRestUrl(url),
-        cache: false,
-        async: false,
-        dataType: 'json',
-        success: function (resp) {
-            if (resp.success === true) {
-                msg.info(resp.message);
-                result = resp.data;
-                if (length >= 3) {
-                    fun();
-                }
-            } else {
-                msg.error(resp.message);
-            }
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            if (XMLHttpRequest.status === 555) {
-                //window.location.href = "/login.html";
-            } else {
-                msg.error("错误状态码:" + XMLHttpRequest.readyState);
-            }
-        }
-    });
-    return result;
-}
-
-function postRest(url, data, fun) {
-    var result = {};
-    var length = arguments.length;
     $.ajax({
         type: 'post',
         url: getRestUrl(url),
         data: JSON.stringify(data),
+        async: false,
         contentType: 'application/json',
         dataType: 'json',
         success: function (resp) {
-            if (resp.success === true) {
-                msg.info(resp.message);
-                result = resp.data;
-                if (length >= 3) {
-                    fun();
-                }
-            } else {
-                msg.error(resp.message)
-            }
+            result = resp;
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             if (textStatus === 555) {
@@ -111,5 +62,19 @@ function postRest(url, data, fun) {
             }
         }
     });
+    return result;
+}
+
+function getRestData(url, data, fun) {
+    var length = arguments.length;
+    var result = getRestResult(url, data);
+    if (result.success === true) {
+        msg.info(result.message);
+        if (length >= 3) {
+            fun();
+        }
+    } else {
+        msg.error(result.message);
+    }
     return result;
 }

@@ -1,5 +1,15 @@
 package com.mylq.sluggard.core.db.dao;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+
 import com.google.common.base.Strings;
 import com.mylq.sluggard.core.common.base.exception.SluggardBusinessException;
 import com.mylq.sluggard.core.db.entity.ColumnEntity;
@@ -7,16 +17,8 @@ import com.mylq.sluggard.core.db.entity.TableEntity;
 import com.mylq.sluggard.core.db.provider.DbSqlProvider;
 import com.mylq.sluggard.core.db.util.DBUtil;
 import com.mylq.sluggard.core.db.vo.DbVO;
-import lombok.NonNull;
-import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.handlers.BeanListHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
+import lombok.NonNull;
 
 /**
  * 数据库DAO
@@ -66,6 +68,21 @@ public class DbDao {
         } catch (SQLException e) {
             LOGGER.error("Failed to get column list. Db: {}, tableName: {}.", dbVO, tableName, e);
             throw new SluggardBusinessException("Failed to get column list.");
+        }
+    }
+
+    /**
+     * 测试连接
+     *
+     * @param dbVO 数据库信息
+     * @return 连接是否成功
+     */
+    public Boolean testConnection(@NonNull DbVO dbVO) {
+        try (Connection ignored = DBUtil.openConnection(dbVO)) {
+            return true;
+        } catch (SQLException e) {
+            LOGGER.error("Failed to connect to db: {}.", dbVO, e);
+            return false;
         }
     }
 }
