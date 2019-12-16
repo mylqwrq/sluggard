@@ -50,22 +50,8 @@
     layui.use(['form', 'layer'], function () {
         var form = layui.form;
 
-        //加载下拉框选项
-        $.get(WEB_CONTEXT + '/server/enums/getFileTypes', {}, function (result) {
-            if (result.success && result.data != null) {
-                var dataList = result.data;
-                $.each(dataList, function (index, item) {
-                    $("#fileTypeSelect").append("<option value=" + item.id + ">" + item.option + "</option>");
-                });
-            }
-            form.render("select");
-        });
-
         $("#name").blur(function () {
             filter(this, '.');
-            if ($(this).val() === "name") {
-                $(this).val("");
-            }
         });
 
         $("#fileRelativePath").blur(function () {
@@ -84,6 +70,16 @@
     //初始化（type：1为新建，2为编辑）
     function initForm(obj, type) {
         var form = layui.form;
+
+        //加载下拉框选项
+        var fileTypeResult = getRestResult("/server/enums/getFileTypes");
+        if (fileTypeResult.success && fileTypeResult.data != null) {
+            $.each(fileTypeResult.data, function (index, item) {
+                $("#fileTypeSelect").append("<option value=" + item.id + ">" + item.option + "</option>");
+            });
+        }
+        form.render("select");
+
         if (type === 1) {
             form.val('init', {
                 "name": "",

@@ -34,7 +34,7 @@ function strArrToCheck(strArr) {
     for (var index in strArr) {
         var str = strArr[index];
         if (str != null && str.length > 0) {
-            obj[str] = true;
+            obj["t-" + str] = true;
         }
     }
     return obj;
@@ -47,8 +47,8 @@ function checkToStrArr(obj) {
         return strArr;
     }
     for (var field in obj) {
-        if (obj[field] === "on") {
-            strArr.push(field);
+        if (field.indexOf("t-") === 0 && obj[field] === "on") {
+            strArr.push(field.substring(2));
         }
     }
     return strArr;

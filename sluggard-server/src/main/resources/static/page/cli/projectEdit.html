@@ -105,28 +105,6 @@
         var form = layui.form;
         var table = layui.table;
 
-        //加载复选框选项
-        $.get(WEB_CONTEXT + '/basic/template/getList?name=', {}, function (result) {
-            if (result.success && result.data != null) {
-                var dataList = result.data;
-                $.each(dataList, function (index, item) {
-                    $("#templateCheck").append("<input type=\"checkbox\" name=\"" + item.name + "\" title=\"" + item.name + "\">");
-                });
-            }
-            form.render("checkbox");
-        });
-
-        //加载下拉框选项
-        $.get(WEB_CONTEXT + '/server/enums/getDbTypes', {}, function (result) {
-            if (result.success && result.data != null) {
-                var dataList = result.data;
-                $.each(dataList, function (index, item) {
-                    $("#dbTypeSelect").append("<option value=" + item.id + ">" + item.name + "</option>");
-                });
-            }
-            form.render("select");
-        });
-
         form.on('select(dbTypeFilter)', function (data) {
             if (data.value === "0") {
                 $("#port").val("3306");
@@ -196,9 +174,6 @@
 
         $("#name").blur(function () {
             filter(this, '.');
-            if ($(this).val() === "on") {
-                $(this).val("");
-            }
         });
     });
 
@@ -218,6 +193,24 @@
             ]],
             data: [{"key": "packageUrl", "value": ""}, {"key": "author", "value": ""}]
         };
+
+        //加载复选框选项
+        var templateResult = getRestResult("/basic/template/getList?name=");
+        if (templateResult.success && templateResult.data != null) {
+            $.each(templateResult.data, function (index, item) {
+                $("#templateCheck").append("<input type=\"checkbox\" name=\"t-" + item.name + "\" title=\"" + item.name + "\">");
+            });
+        }
+        form.render("checkbox");
+
+        //加载下拉框选项
+        var dbTypeResult = getRestResult("/server/enums/getDbTypes");
+        if (dbTypeResult.success && dbTypeResult.data != null) {
+            $.each(dbTypeResult.data, function (index, item) {
+                $("#dbTypeSelect").append("<option value=" + item.id + ">" + item.name + "</option>");
+            });
+        }
+        form.render("select");
 
         if (type === 1) {
             form.val('projectFormFilter', {
@@ -246,7 +239,7 @@
                 "pwd": obj.dbVO.pwd
             });
             document.getElementById("name").readOnly = true;
-            tableOption["data"] = obj.configs;
+            tableOption["data"] = JSON.parse(JSON.stringify(obj.configs));
             table.render(tableOption);
         }
     }
@@ -297,6 +290,11 @@
             keyArray.push(row.key);
         }
         return true;
+    }
+
+    function getTableData() {
+        var table = layui.table;
+        return table.cache["dt"];
     }
 </script>
 </body>

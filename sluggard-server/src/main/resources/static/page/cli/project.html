@@ -40,6 +40,16 @@
     <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="remove">删除</a>
 </script>
+<script type="text/html" id="dbVOTpl">
+    <span>{{d.dbVO.name}}</span>
+</script>
+<script type="text/html" id="configsTpl">
+    {{#  if(d.configs.length > 0){ }}
+    <span style="color: #25f505;">已配置</span>
+    {{#  } else { }}
+    <span style="color: #f50b1b;">未配置</span>
+    {{#  } }}
+</script>
 <script>
     layui.use(['form', 'table'], function () {
 
@@ -60,9 +70,9 @@
             cols: [[
                 {type: 'numbers', title: '序号', width: 100},
                 {field: 'name', title: '项目名称', width: 200},
-                {field: 'templateNames', title: '模板', width: 400},
-                {field: 'dbVO', hide: true},
-                {field: 'configs', hide: true},
+                {field: 'templateNames', title: '使用模板', width: 400},
+                {field: 'dbVO', title: '数据源', width: 200, templet: '#dbVOTpl'},
+                {field: 'configs', title: '全局配置', width: 200, templet: '#configsTpl'},
                 {field: 'right', title: '操作', width: 200, align: 'center', toolbar: '#toolbarOperation'}
             ]],
             where: {
@@ -119,7 +129,7 @@
             opener.edit("编辑项目", '60%', '80%', 'projectEdit.html', data, 'post', '/cli/project/edit', reload, getReqObj);
         }
 
-        function getReqObj(layer, index) {
+        function getReqObj(layer, index, layero) {
             var reqObj = {};
 
             var projectForm = layer.getChildFrame('body', index).find('form')[0];
@@ -128,13 +138,7 @@
             var dataSourceForm = layer.getChildFrame('body', index).find('form')[1];
             var dataSourceInfo = formToObj($(dataSourceForm));
             var configTable = layer.getChildFrame('body', index).find('table')[0];
-            var configs = [];
-            for (var i = 0, rows = configTable.rows.length; i < rows; i++) {
-                var config = {};
-                config["key"] = mytable.rows[i].cells[1].innerHTML;
-                config["value"] = mytable.rows[i].cells[2].innerHTML;
-                configs.push(config);
-            }
+            var configs = $(layero).find('iframe')[0].contentWindow.getTableData();
 
             reqObj["name"] = projectInfo.name;
             reqObj["templateNames"] = templateNames;

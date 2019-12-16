@@ -20,7 +20,7 @@ function getLayerOption(title, width, height, src, initObj, initType, reqMethod,
                 var result = {};
                 var reqObj = {};
                 if (length >= 10) {
-                    reqObj = getReqObj(layer, index);
+                    reqObj = getReqObj(layer, index, layero);
                 } else {
                     if (layer.getChildFrame('body', index).find('form').length > 0) {
                         var form = layer.getChildFrame('body', index).find('form')[0];
