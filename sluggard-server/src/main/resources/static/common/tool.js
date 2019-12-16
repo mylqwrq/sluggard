@@ -28,18 +28,6 @@ function isObject(obj) {
     return Object.prototype.toString.call(obj) === '[object Object]';
 }
 
-// 将字符串数组转化为复选框赋值对象
-function strArrToCheck(strArr) {
-    var obj = {};
-    for (var index in strArr) {
-        var str = strArr[index];
-        if (str != null && str.length > 0) {
-            obj["t-" + str] = true;
-        }
-    }
-    return obj;
-}
-
 // 将复选框对象转化为字符串数组
 function checkToStrArr(obj) {
     var strArr = [];
@@ -52,4 +40,17 @@ function checkToStrArr(obj) {
         }
     }
     return strArr;
+}
+
+// 生成Form中的checkbox元素的赋值对象
+function strArrToCheckBoxByForm(formId, strArr) {
+    var obj = {};
+    var form = document.getElementById(formId);
+    for (var index in form.elements) {
+        var element = form.elements[index];
+        if (element.type === 'checkbox') {
+            obj[element.name] = strArr.indexOf(element.name.substring(2)) > -1;
+        }
+    }
+    return obj;
 }

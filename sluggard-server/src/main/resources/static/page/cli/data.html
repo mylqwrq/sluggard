@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>数据管理</title>
+    <link rel="stylesheet" href="../../resource/layui/css/layui.css">
+</head>
+<body style="margin-top: 15px">
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <div class="layui-inline">
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 5px;">
+                        <legend>项目信息</legend>
+                    </fieldset>
+                    <form class="layui-form" lay-filter="projectFormFilter" id="projectForm">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">选择项目</label>
+                            <div class="layui-inline" style="width: 200px;">
+                                <select id="projectSelect" name="name" lay-filter="projectFilter">
+                                    <option value="">请选择</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-inline">
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 5px;">
+                        <legend>模板信息</legend>
+                    </fieldset>
+                    <form class="layui-form" lay-filter="templateFormFilter" id="templateForm">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">使用模板</label>
+                            <div class="layui-input-block" id="templateCheck">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-inline">
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                        <legend>数据信息</legend>
+                    </fieldset>
+                    <form class="layui-form" lay-filter="dbFormFilter" id="dbForm">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">类型</label>
+                            <div class="layui-inline" style="width: 100px;">
+                                <select id="dbTypeSelect" name="dbType" lay-filter="dbTypeFilter">
+                                </select>
+                            </div>
+                            地址&#12288;
+                            <div class="layui-inline" style="width: 200px;">
+                                <input class="layui-input" type="text" name="ip" id="ip" autocomplete="off">
+                            </div>
+                            端口&#12288;
+                            <div class="layui-inline" style="width: 100px;">
+                                <input class="layui-input" type="text" name="port" id="port" autocomplete="off">
+                            </div>
+                            名称&#12288;
+                            <div class="layui-inline" style="width: 200px;">
+                                <input class="layui-input" type="text" name="name" id="dbName" autocomplete="off">
+                            </div>
+                            用户&#12288;
+                            <div class="layui-inline" style="width: 100px;">
+                                <input class="layui-input" type="text" name="user" id="user" autocomplete="off">
+                            </div>
+                            密码&#12288;
+                            <div class="layui-inline" style="width: 100px;">
+                                <input class="layui-input" type="password" name="pwd" id="pwd" autocomplete="off">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-inline">
+                    <form class="layui-form" lay-filter="tableFormFilter" id="tableForm" style="margin-top: 15px;">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">表名称</label>
+                            <div class="layui-inline" style="width: 360px;">
+                                <input class="layui-input" type="text" name="tableName" id="tableName">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <span class="layui-btn-container">
+                    <button class="layui-btn" data-type="search"><i class="layui-icon">&#xe615;</i>查询</button>
+                </span>
+                <table class="layui-hide" id="dt" lay-filter="dtFilter"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../resource/jquery/jquery-3.4.1.min.js"></script>
+<script src="../../resource/layui/layui.js"></script>
+<script src="../../common/msg.js"></script>
+<script src="../../common/opener.js"></script>
+<script src="../../common/tool.js"></script>
+<script src="../../common/web.js"></script>
+<script type="text/html" id="toolbarOperation">
+    <a class="layui-btn layui-btn-sm" lay-event="detail">明细</a>
+</script>
+<script>
+    layui.use(['form', 'table'], function () {
+        var form = layui.form;
+        var table = layui.table;
+
+        //加载项目下拉框选项列表
+        $.get(WEB_CONTEXT + '/cli/project/getList?name=', {}, function (result) {
+            if (result.success && result.data != null) {
+                $.each(result.data, function (index, item) {
+                    $("#projectSelect").append("<option value=" + item.name + ">" + item.name + "</option>");
+                });
+            }
+            form.render("select");
+        });
+
+        //加载模板复选框选项
+        $.get(WEB_CONTEXT + '/basic/template/getList?name=', {}, function (result) {
+            if (result.success && result.data != null) {
+                $.each(result.data, function (index, item) {
+                    $("#templateCheck").append("<input type=\"checkbox\" name=\"t-" + item.name + "\" title=\"" + item.name + "\">");
+                });
+            }
+            form.render("checkbox");
+        });
+
+        //加载数据库类型下拉框选项
+        $.get(WEB_CONTEXT + '/server/enums/getDbTypes', {}, function (result) {
+            if (result.success && result.data != null) {
+                $.each(result.data, function (index, item) {
+                    $("#dbTypeSelect").append("<option value=" + item.id + ">" + item.name + "</option>");
+                });
+            }
+            form.render("select");
+        });
+
+        //监听下拉框选择事件
+        form.on('select(projectFilter)', function (data) {
+            $("#tableName").val("");
+            table.render(tableOption);
+            if (data.value) {
+                var projectResult = getRestResult("/cli/project/getByName?name=" + data.value);
+                if (projectResult.success === true) {
+                    var project = projectResult.data;
+                    form.val('templateFormFilter', strArrToCheckBoxByForm("templateForm", project.templateNames));
+                    form.val('dbFormFilter', {
+                        "dbType": project.dbVO.dbType.id,
+                        "ip": project.dbVO.ip,
+                        "port": project.dbVO.port,
+                        "name": project.dbVO.name,
+                        "user": project.dbVO.user,
+                        "pwd": project.dbVO.pwd
+                    });
+                    return;
+                } else {
+                    msg.error(projectResult.message);
+                }
+            }
+            form.val('templateFormFilter', strArrToCheckBoxByForm("templateForm", []));
+            form.val('dbFormFilter', {
+                "dbType": "0",
+                "ip": "",
+                "port": "3306",
+                "name": "",
+                "user": "",
+                "pwd": ""
+            });
+        });
+
+        //表格属性
+        var tableOption = {
+            elem: '#dt',
+            cellMinWidth: 80,
+            even: true,
+            cols: [[
+                {type: 'numbers', title: '序号', width: 100},
+                {field: 'tableName', title: '表名称', sort: true, width: 300},
+                {field: 'tableComment', title: '表备注', width: 300},
+                {field: 'moduleName', title: '模块名称', width: 300},
+                {fixed: 'right', title: '操作', width: 300, align: 'center', toolbar: '#toolbarOperation'}
+            ]],
+            data: [],
+            response: {
+                statusCode: 200,
+                statusName: 'statusCode',
+                msgName: 'message',
+                countName: '',
+                dataName: 'data'
+            }
+        };
+
+        //表格渲染
+        table.render(tableOption);
+
+        //查询表方法
+        function reload() {
+            if ($("#dbType").selected === "" || $("#ip").val() === "" || $("#port").val() === ""
+                || $("#dbName").val() === "" || $("#user").val() === "" || $("#pwd").val() === "") {
+                msg.warn("请先填写完整的数据源信息！");
+                return;
+            }
+            var dbVO = formToObj($("#dbForm"));
+            table.reload('dt', {
+                url: WEB_CONTEXT + '/server/db/getTables?tableName=' + $("#tableName").val(),
+                method: "post",
+                contentType: "application/json",
+                where: {
+                    dbType: dbVO.dbType,
+                    ip: dbVO.ip,
+                    port: dbVO.port,
+                    name: dbVO.name,
+                    user: dbVO.user,
+                    pwd: dbVO.pwd
+                }
+            });
+        }
+
+        //按钮事件
+        var active = {
+            search: reload
+        };
+        $('.layui-btn-container .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        //监听操作列工具条
+        table.on('tool(dtFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'detail') {
+                openDetailFrame(data);
+            }
+        });
+
+        function openDetailFrame(data) {
+            layer.open({
+                type: 2,
+                title: "表结构明细",
+                area: ['80%', '80%'],
+                skin: 'layui-layer-molv',
+                resize: false,
+                content: "generatorTableDetail.html" + '?tm=' + new Date().getTime(),
+                btn: ['生成', '取消'],
+                yes: function (index, layero) {
+                    var tableForm = layer.getChildFrame('body', index).find('form')[0];
+                    var tableInfo = formToObj($(tableForm));
+                    if (tableInfo["tableComment"] == null || tableInfo["tableComment"] === "") {
+                        layer.msg("表备注不能为空！", {icon: 5});
+                        return;
+                    }
+                    if (tableInfo["moduleName"] == null || tableInfo["moduleName"] === "") {
+                        layer.msg("模块名不能为空！", {icon: 5});
+                        return;
+                    }
+                    var columnsInfo = $(layero).find('iframe')[0].contentWindow.getColumnTableData();
+                    var configsInfo = $(layero).find('iframe')[0].contentWindow.getConfigTableData();
+                    for (var i = 0, row; i < configsInfo.length; i++) {
+                        row = configsInfo[i];
+                        if (row["value"] === "" || row["value"] == null) {
+                            layer.msg(row["key"] + "不能为空！", {icon: 5});
+                            return;
+                        }
+                    }
+                    var obj = {};
+                    obj["projectName"] = project.name;
+                    obj["table"] = tableInfo;
+
+                    obj["columns"] = columnsInfo;
+                    obj["configs"] = configsInfo;
+                    opener.exportByPost("/code/generator", obj);
+                    layer.close(index);
+                },
+                success: function (layero, index) {
+                    var obj = {};
+                    obj["dataSource"] = project.database;
+                    obj["tableInfo"] = data;
+                    obj["name"] = project.name;
+                    $(layero).find('iframe')[0].contentWindow.initForm(obj);
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

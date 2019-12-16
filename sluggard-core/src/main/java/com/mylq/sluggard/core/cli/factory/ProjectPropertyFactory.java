@@ -54,6 +54,10 @@ public class ProjectPropertyFactory {
         return list;
     }
 
+    public static ProjectVO get(String key) {
+        return JsonUtil.parseObject(PROP.getProperty(addKeyPrefix(key)), ProjectVO.class);
+    }
+
     public static void set(String key, String value, boolean isAbsent) {
         if (isAbsent && Objects.nonNull(PROP.putIfAbsent(addKeyPrefix(key), value))) {
             throw new SluggardBusinessException("Project {0} already exists.", key);

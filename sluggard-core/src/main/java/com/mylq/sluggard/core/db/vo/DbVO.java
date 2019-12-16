@@ -1,16 +1,17 @@
 package com.mylq.sluggard.core.db.vo;
 
+import java.io.Serializable;
+import java.text.MessageFormat;
+import java.util.Objects;
+
 import com.mylq.sluggard.core.common.enums.DbTypeEnum;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.io.Serializable;
-import java.text.MessageFormat;
-import java.util.Objects;
 
 /**
  * DB视图对象
@@ -40,11 +41,11 @@ public class DbVO implements Serializable {
      */
     private String port;
     /**
-     * 名称/实例
+     * 名称
      */
     private String name;
     /**
-     * 用户名
+     * 用户
      */
     private String user;
     /**

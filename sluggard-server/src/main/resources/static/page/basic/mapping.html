@@ -50,8 +50,7 @@
         //加载下拉框选项
         $.get(WEB_CONTEXT + '/server/enums/getDbTypes', {}, function (result) {
             if (result.success && result.data != null) {
-                var dataList = result.data;
-                $.each(dataList, function (index, item) {
+                $.each(result.data, function (index, item) {
                     $("#dbTypeSelect").append("<option value=" + item.id + ">" + item.name + "</option>");
                 });
             }

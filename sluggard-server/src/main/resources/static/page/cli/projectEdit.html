@@ -18,6 +18,14 @@
                         <input class="layui-input" id="name" name="name" type="text" autocomplete="off">
                     </div>
                 </div>
+            </form>
+        </div>
+    </div>
+    <div class="layui-colla-item">
+        <h2 class="layui-colla-title">模板信息</h2>
+        <div class="layui-colla-content layui-show">
+            <form class="layui-form" style="margin-right:20px;margin-top:10px;" lay-filter="templateFormFilter"
+                  id="templateForm">
                 <div class="layui-form-item">
                     <label class="layui-form-label">使用模板</label>
                     <div class="layui-input-block" id="templateCheck">
@@ -78,7 +86,7 @@
                 </form>
             </div>
             <span class="layui-btn-container">
-                <button class="layui-btn" data-type="test"><i class="layui-icon"></i>测试连接</button>
+                <button class="layui-btn" data-type="test" style="margin-top:105px;"><i class="layui-icon"></i>Test</button>
             </span>
         </div>
     </div>
@@ -130,7 +138,7 @@
                 return;
             }
             var result = postRestResult("/server/db/test", formToObj($("#dbForm")));
-            if (result.success === true) {
+            if (result.success && result.data) {
                 msg.info("连接成功！");
             } else {
                 msg.error("连接失败！");
@@ -216,6 +224,7 @@
             form.val('projectFormFilter', {
                 "name": ""
             });
+            form.val('templateFormFilter', strArrToCheckBoxByForm("templateForm", []));
             form.val('dbFormFilter', {
                 "dbType": "0",
                 "ip": "",
@@ -227,9 +236,10 @@
             document.getElementById("name").readOnly = false;
             table.render(tableOption);
         } else if (type === 2) {
-            var projectFormData = strArrToCheck(obj.templateNames);
-            projectFormData["name"] = obj.name;
-            form.val('projectFormFilter', projectFormData);
+            form.val('projectFormFilter', {
+                "name": obj.name
+            });
+            form.val('templateFormFilter', strArrToCheckBoxByForm("templateForm", obj.templateNames));
             form.val('dbFormFilter', {
                 "dbType": obj.dbVO.dbType.id,
                 "ip": obj.dbVO.ip,

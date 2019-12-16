@@ -32,6 +32,10 @@ public class ProjectService {
         }
     }
 
+    public ProjectVO getByName(@NonNull String name) {
+        return ProjectPropertyFactory.get(name);
+    }
+
     public void save(@NonNull ProjectVO projectVO, boolean isAbsent) {
         BasicUtil.requireNotNullOrBlank("name", projectVO.getName());
         BasicUtil.requireNotNull("templateNames", projectVO.getTemplateNames());

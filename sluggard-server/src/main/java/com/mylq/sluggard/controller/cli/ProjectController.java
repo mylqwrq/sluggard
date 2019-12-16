@@ -40,6 +40,18 @@ public class ProjectController {
         return jsonResult;
     }
 
+    @GetMapping(value = "/getByName")
+    public JsonResult<ProjectVO> getByName(@RequestParam String name) {
+        JsonResult<ProjectVO> jsonResult;
+        try {
+            ProjectVO result = projectService.getByName(name);
+            jsonResult = JsonResult.success(result);
+        } catch (Exception e) {
+            jsonResult = JsonResult.error(e);
+        }
+        return jsonResult;
+    }
+
     @PostMapping(value = "/save")
     public JsonResult<Void> save(@RequestBody ProjectVO projectVO) {
         JsonResult<Void> jsonResult;
