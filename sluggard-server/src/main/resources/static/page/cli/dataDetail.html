@@ -52,7 +52,7 @@
             cellMinWidth: 80,
             even: true,
             cols: [[
-                {type: 'checkbox', width: 50},
+                {type: 'checkbox', fixed: 'left', width: 50},
                 {type: 'numbers', title: '序号', width: 50},
                 {field: 'columnName', title: '列名', width: 100},
                 {field: 'dataType', title: '数据类型', width: 100},
@@ -99,12 +99,16 @@
             msg.warn("模块名不可为空！");
             return false;
         }
+        if (getTableData().length === 0) {
+            msg.warn("请选择要操作的列！");
+            return false;
+        }
         return true;
     }
 
     function getTableData() {
         var table = layui.table;
-        return table.cache["dt"];
+        return table.checkStatus("dt").data;
     }
 </script>
 </body>

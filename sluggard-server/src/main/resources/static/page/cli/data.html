@@ -61,7 +61,7 @@
                             </div>
                             端口&#12288;
                             <div class="layui-inline" style="width: 100px;">
-                                <input class="layui-input" type="text" name="port" id="port" autocomplete="off">
+                                <input class="layui-input" type="text" name="port" id="port" autocomplete="off" value="3306">
                             </div>
                             名称&#12288;
                             <div class="layui-inline" style="width: 200px;">
@@ -198,6 +198,14 @@
                 "ignoreSuffix": ""
             });
             table.render(configTableOption);
+        });
+
+        form.on('select(dbTypeFilter)', function (data) {
+            if (data.value === "0") {
+                $("#port").val("3306");
+            } else if (data.value === "1") {
+                $("#port").val("1521");
+            }
         });
 
         //表格属性
