@@ -1,5 +1,8 @@
 package com.mylq.sluggard.core.common.util;
 
+import java.util.List;
+
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 /**
@@ -12,6 +15,10 @@ import com.alibaba.fastjson.JSONObject;
 public class JsonUtil {
 
     private JsonUtil() {
+    }
+
+    public static <T> List<T> parseArray(String jsonString, Class<T> clazz) {
+        return JSONArray.parseArray(jsonString, clazz);
     }
 
     public static <T> T parseObject(String jsonString, Class<T> clazz) {

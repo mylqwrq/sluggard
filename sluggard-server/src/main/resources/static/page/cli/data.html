@@ -39,8 +39,14 @@
                     </form>
                 </div>
                 <div class="layui-inline">
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 5px;">
+                        <legend>配置信息</legend>
+                    </fieldset>
+                    <table class="layui-hide" id="dtConfig" lay-filter="dtConfigFilter"></table>
+                </div>
+                <div class="layui-inline">
                     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                        <legend>数据信息</legend>
+                        <legend>数&ensp;据&ensp;源</legend>
                     </fieldset>
                     <form class="layui-form" lay-filter="dbFormFilter" id="dbForm">
                         <div class="layui-form-item">
@@ -70,9 +76,24 @@
                                 <input class="layui-input" type="password" name="pwd" id="pwd" autocomplete="off">
                             </div>
                         </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">忽略前缀</label>
+                            <div class="layui-inline" style="width: 360px;">
+                                <input class="layui-input" type="text" name="ignorePrefix" id="ignorePrefix"
+                                       autocomplete="off">
+                            </div>
+                            忽略后缀&#12288;
+                            <div class="layui-inline" style="width: 360px;">
+                                <input class="layui-input" type="text" name="ignoreSuffix" id="ignoreSuffix"
+                                       autocomplete="off">
+                            </div>
+                        </div>
                     </form>
                 </div>
                 <div class="layui-inline">
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                        <legend>数据信息</legend>
+                    </fieldset>
                     <form class="layui-form" lay-filter="tableFormFilter" id="tableForm" style="margin-top: 15px;">
                         <div class="layui-form-item">
                             <label class="layui-form-label">表名称</label>
@@ -83,7 +104,7 @@
                     </form>
                 </div>
                 <span class="layui-btn-container">
-                    <button class="layui-btn" data-type="search"><i class="layui-icon">&#xe615;</i>查询</button>
+                    <button class="layui-btn" data-type="search" style="margin-top: 48px;"><i class="layui-icon">&#xe615;</i>查询</button>
                 </span>
                 <table class="layui-hide" id="dt" lay-filter="dtFilter"></table>
             </div>
@@ -97,6 +118,10 @@
 <script src="../../common/opener.js"></script>
 <script src="../../common/tool.js"></script>
 <script src="../../common/web.js"></script>
+<script type="text/html" id="configToolbarOperation">
+    <a class="layui-btn layui-btn-sm" lay-event="add">新建</a>
+    <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="remove">删除</a>
+</script>
 <script type="text/html" id="toolbarOperation">
     <a class="layui-btn layui-btn-sm" lay-event="detail">明细</a>
 </script>
@@ -150,8 +175,12 @@
                         "port": project.dbVO.port,
                         "name": project.dbVO.name,
                         "user": project.dbVO.user,
-                        "pwd": project.dbVO.pwd
+                        "pwd": project.dbVO.pwd,
+                        "ignorePrefix": project.dbVO.ignorePrefix,
+                        "ignoreSuffix": project.dbVO.ignoreSuffix
                     });
+                    configTableOption["data"] = JSON.parse(JSON.stringify(project.configs));
+                    table.render(configTableOption);
                     return;
                 } else {
                     msg.error(projectResult.message);
@@ -164,11 +193,26 @@
                 "port": "3306",
                 "name": "",
                 "user": "",
-                "pwd": ""
+                "pwd": "",
+                "ignorePrefix": "",
+                "ignoreSuffix": ""
             });
+            table.render(configTableOption);
         });
 
         //表格属性
+        var configTableOption = {
+            elem: '#dtConfig',
+            cellMinWidth: 80,
+            even: true,
+            cols: [[
+                {type: 'numbers', title: '序号', width: 100},
+                {field: 'key', title: '配置属性', width: 200, edit: 'text'},
+                {field: 'value', title: '配置属性值', width: 250, edit: 'text'},
+                {field: 'right', title: '操作', width: 200, align: 'center', toolbar: '#configToolbarOperation'}
+            ]],
+            data: [{"key": "packageUrl", "value": ""}, {"key": "author", "value": ""}]
+        };
         var tableOption = {
             elem: '#dt',
             cellMinWidth: 80,
@@ -191,6 +235,7 @@
         };
 
         //表格渲染
+        table.render(configTableOption);
         table.render(tableOption);
 
         //查询表方法
@@ -211,7 +256,9 @@
                     port: dbVO.port,
                     name: dbVO.name,
                     user: dbVO.user,
-                    pwd: dbVO.pwd
+                    pwd: dbVO.pwd,
+                    ignorePrefix: dbVO.ignorePrefix,
+                    ignoreSuffix: dbVO.ignoreSuffix
                 }
             });
         }
@@ -226,59 +273,66 @@
         });
 
         //监听操作列工具条
+        table.on('tool(dtConfigFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === "add") {
+                rowAdd(data);
+            } else if (obj.event === 'remove') {
+                rowRemove(data);
+            }
+        });
         table.on('tool(dtFilter)', function (obj) {
             var data = obj.data;
             if (obj.event === 'detail') {
-                openDetailFrame(data);
+                openDetail(data);
             }
         });
 
-        function openDetailFrame(data) {
-            layer.open({
-                type: 2,
-                title: "表结构明细",
-                area: ['80%', '80%'],
-                skin: 'layui-layer-molv',
-                resize: false,
-                content: "generatorTableDetail.html" + '?tm=' + new Date().getTime(),
-                btn: ['生成', '取消'],
-                yes: function (index, layero) {
-                    var tableForm = layer.getChildFrame('body', index).find('form')[0];
-                    var tableInfo = formToObj($(tableForm));
-                    if (tableInfo["tableComment"] == null || tableInfo["tableComment"] === "") {
-                        layer.msg("表备注不能为空！", {icon: 5});
-                        return;
-                    }
-                    if (tableInfo["moduleName"] == null || tableInfo["moduleName"] === "") {
-                        layer.msg("模块名不能为空！", {icon: 5});
-                        return;
-                    }
-                    var columnsInfo = $(layero).find('iframe')[0].contentWindow.getColumnTableData();
-                    var configsInfo = $(layero).find('iframe')[0].contentWindow.getConfigTableData();
-                    for (var i = 0, row; i < configsInfo.length; i++) {
-                        row = configsInfo[i];
-                        if (row["value"] === "" || row["value"] == null) {
-                            layer.msg(row["key"] + "不能为空！", {icon: 5});
-                            return;
-                        }
-                    }
-                    var obj = {};
-                    obj["projectName"] = project.name;
-                    obj["table"] = tableInfo;
-
-                    obj["columns"] = columnsInfo;
-                    obj["configs"] = configsInfo;
-                    opener.exportByPost("/code/generator", obj);
-                    layer.close(index);
-                },
-                success: function (layero, index) {
-                    var obj = {};
-                    obj["dataSource"] = project.database;
-                    obj["tableInfo"] = data;
-                    obj["name"] = project.name;
-                    $(layero).find('iframe')[0].contentWindow.initForm(obj);
-                }
+        //新增行方法
+        function rowAdd(data) {
+            var oldData = table.cache["dtConfig"];
+            var newRow = {key: '', value: ''};
+            oldData.push(newRow);
+            table.reload('dtConfig', {
+                data: oldData
             });
+        }
+
+        //删除行方法
+        function rowRemove(data) {
+            var oldData = table.cache["dtConfig"];
+            for (var i = 0, row; i < oldData.length; i++) {
+                row = oldData[i];
+                if (row.key === data.key) {
+                    oldData.splice(i, 1);
+                    break;
+                }
+            }
+            table.reload('dtConfig', {
+                data: oldData
+            });
+        }
+
+        //明细方法
+        function openDetail(data) {
+            var obj = {};
+            obj["dataSource"] = formToObj($("#dbForm"));
+            obj["tableInfo"] = data;
+            opener.edit("结构明细", '80%', '80%', 'dataDetail.html', obj, 'exportByPost', '/cli/code/generator', null, getReqObj);
+        }
+
+        function getReqObj(layer, index, layero) {
+            var tableForm = layer.getChildFrame('body', index).find('form')[0];
+            var tableInfo = formToObj($(tableForm));
+
+            var columnsInfo = $(layero).find('iframe')[0].contentWindow.getTableData();
+
+            var reqObj = {};
+            reqObj["templateNames"] = checkToStrArr(formToObj($("#templateForm")));
+            reqObj["configs"] = table.cache["dtConfig"];
+            reqObj["table"] = tableInfo;
+            reqObj["columns"] = columnsInfo;
+            return reqObj;
         }
     });
 </script>

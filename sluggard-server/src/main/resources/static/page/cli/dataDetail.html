@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>数据管理</title>
+    <link rel="stylesheet" href="../../resource/layui/css/layui.css">
+</head>
+<body>
+<form class="layui-form" style="text-align:center;margin-right:20px;margin-top:10px;" lay-filter="tableFormFilter">
+    <div class="layui-form-item">
+        表名称&#12288;
+        <div class="layui-inline" style="width: 250px;">
+            <input class="layui-input" id="tableName" name="tableName" type="text" autocomplete="off" readonly>
+        </div>
+        表备注&#12288;
+        <div class="layui-inline" style="width: 250px;">
+            <input class="layui-input" id="tableComment" name="tableComment" type="text" autocomplete="off">
+        </div>
+        模块名&#12288;
+        <div class="layui-inline" style="width: 250px;">
+            <input class="layui-input" id="moduleName" name="moduleName" type="text" autocomplete="off">
+        </div>
+    </div>
+</form>
+<table class="layui-hide" id="dt" lay-filter="dtFilter"></table>
+
+<script src="../../resource/jquery/jquery-3.4.1.min.js"></script>
+<script src="../../resource/layui/layui.js"></script>
+<script src="../../common/msg.js"></script>
+<script src="../../common/tool.js"></script>
+<script src="../../common/web.js"></script>
+<script>
+    layui.use(['form', 'table'], function () {
+    });
+
+    //初始化（type：1为新建，2为编辑）
+    function initForm(obj, type) {
+        var form = layui.form;
+        form.val('tableFormFilter', {
+            "tableName": obj.tableInfo.tableName,
+            "tableComment": obj.tableInfo.tableComment,
+            "moduleName": obj.tableInfo.moduleName
+        });
+
+        var table = layui.table;
+        table.render({
+            elem: '#dt',
+            url: WEB_CONTEXT + '/server/db/getColumns?tableName=' + obj.tableInfo.tableName,
+            method: "post",
+            contentType: "application/json",
+            cellMinWidth: 80,
+            even: true,
+            cols: [[
+                {type: 'checkbox', width: 50},
+                {type: 'numbers', title: '序号', width: 50},
+                {field: 'columnName', title: '列名', width: 100},
+                {field: 'dataType', title: '数据类型', width: 100},
+                {field: 'columnDefault', title: '缺省', width: 75},
+                {field: 'isNullable', title: '空值', width: 75},
+                {field: 'columnLength', title: '长度', width: 75},
+                {field: 'columnKey', title: '主键', width: 75},
+                {field: 'columnComment', title: '备注', edit: 'text', width: 100},
+                {field: 'fieldName', title: '字段名', edit: 'text', width: 125},
+                {field: 'javaType', title: 'Java类型', edit: 'text', width: 125},
+                {field: 'jdbcType', title: 'Jdbc类型', edit: 'text', width: 100}
+            ]],
+            where: {
+                dbType: obj.dataSource.dbType,
+                ip: obj.dataSource.ip,
+                port: obj.dataSource.port,
+                name: obj.dataSource.name,
+                user: obj.dataSource.user,
+                pwd: obj.dataSource.pwd,
+                ignorePrefix: obj.dataSource.ignorePrefix,
+                ignoreSuffix: obj.dataSource.ignoreSuffix
+            },
+            response: {
+                statusCode: 200,
+                statusName: 'statusCode',
+                msgName: 'message',
+                countName: '',
+                dataName: 'data'
+            }
+        });
+    }
+
+    //校验表单
+    function validationForm() {
+        if ($("#tableName").val() === "") {
+            msg.warn("表名称不可为空！");
+            return false;
+        }
+        if ($("#tableComment").val() === "") {
+            msg.warn("表备注不可为空！");
+            return false;
+        }
+        if ($("#moduleName").val() === "") {
+            msg.warn("模块名不可为空！");
+            return false;
+        }
+        return true;
+    }
+
+    function getTableData() {
+        var table = layui.table;
+        return table.cache["dt"];
+    }
+</script>
+</body>
+</html>

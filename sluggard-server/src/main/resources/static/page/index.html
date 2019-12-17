@@ -35,7 +35,7 @@
 
     <div class="layui-body" style="bottom: 0">
         <div class="main_right">
-            <iframe frameborder="0" scrolling="yes" style="width: 100%" src="" id="aa">
+            <iframe frameborder="0" scrolling="auto" style="width: 100%;" src="" id="aa">
             </iframe>
         </div>
     </div>
@@ -50,7 +50,7 @@
             $("iframe").attr("src", $(this).attr("src"));
         });
 
-        $("#aa").css("height", $(window).height());
+        $("#aa").css("height", $(window).height() - 66);
     });
 </script>
 </body>

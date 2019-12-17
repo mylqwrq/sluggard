@@ -31,6 +31,9 @@ function getLayerOption(title, width, height, src, initObj, initType, reqMethod,
                     result = getRestResult(reqUrl, reqObj);
                 } else if (reqMethod === 'post') {
                     result = postRestResult(reqUrl, reqObj);
+                } else if (reqMethod === 'exportByPost') {
+                    exportByPost(reqUrl, reqObj);
+                    return;
                 } else {
                     return;
                 }

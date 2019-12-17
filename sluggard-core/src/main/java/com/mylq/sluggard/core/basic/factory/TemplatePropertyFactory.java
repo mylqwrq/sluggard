@@ -1,10 +1,17 @@
 package com.mylq.sluggard.core.basic.factory;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -28,6 +35,7 @@ import com.mylq.sluggard.core.common.util.StringUtil;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 /**
  * Template Properties工厂
@@ -102,22 +110,37 @@ public class TemplatePropertyFactory {
         return list;
     }
 
+    public static TemplateVO get(String key) {
+        String realKey = addKeyPrefix(key);
+        if (!PROP.containsKey(realKey)) {
+            throw new SluggardBusinessException("Template {0} does not exist.", key);
+        }
+        String[] values = PROP.getProperty(realKey).split(Constant.PROP_VALUE_SEPARATOR, -1);
+        if (values.length < 4) {
+            throw new SluggardBusinessException("Attributes of template {0} is illegal. Please check it.", key);
+        }
+        return TemplateVO.builder().name(key).fileType(FileTypeEnum.get(Integer.parseInt(values[0])))
+                .fileRelativePath(values[1]).fileNamePrefix(values[2]).fileNameSuffix(values[3]).build();
+    }
+
     public static void set(String key, String value, boolean isAbsent) {
-        if (isAbsent && Objects.nonNull(PROP.putIfAbsent(addKeyPrefix(key), value))) {
+        String realKey = addKeyPrefix(key);
+        if (isAbsent && Objects.nonNull(PROP.putIfAbsent(realKey, value))) {
             throw new SluggardBusinessException("Template {0} already exists.", key);
         }
-        if (PropertyFactory.getProperties().containsKey(addKeyPrefix(key))) {
+        if (PropertyFactory.getProperties().containsKey(realKey)) {
             throw new SluggardBusinessException("Default template is not allowed to operate: {0}.", key);
         }
-        PROP.setProperty(addKeyPrefix(key), value);
+        PROP.setProperty(realKey, value);
         saveProperties();
     }
 
     public static void remove(String key) {
-        if (PropertyFactory.getProperties().containsKey(addKeyPrefix(key))) {
+        String realKey = addKeyPrefix(key);
+        if (PropertyFactory.getProperties().containsKey(realKey)) {
             throw new SluggardBusinessException("Default template is not allowed to operate: {0}.", key);
         }
-        PROP.remove(addKeyPrefix(key));
+        PROP.remove(realKey);
         saveProperties();
         deleteTemplateFile(key);
     }
@@ -141,6 +164,42 @@ public class TemplatePropertyFactory {
             LOGGER.error("Failed to save template file: {}.", key, e);
             throw new SluggardBusinessException("Failed to save template file {0}.", key);
         }
+    }
+
+    /**
+     * 将指定内容替换进模板文件
+     *
+     * @param name 模板名称
+     * @param dataModel 模板中替换的数据模型
+     * @return 模板文件内容
+     * @throws IOException IO异常
+     * @throws TemplateException Template异常
+     */
+    public static String getTextByTemplate(String name, Map<String, Object> dataModel)
+            throws IOException, TemplateException {
+        Template template = TemplateConfiguration.getTemplate(name);
+        StringWriter out = new StringWriter();
+        template.process(dataModel, out);
+        return out.toString();
+    }
+
+    /**
+     * 将指定内容写入模板文件并保存
+     *
+     * @param fileName 文件路径
+     * @param name 模板名称
+     * @param dataModel 模板中替换的数据模型
+     * @throws IOException IO异常
+     * @throws TemplateException Template异常
+     */
+    public static void saveFileByTemplate(String fileName, String name, Map<String, Object> dataModel)
+            throws IOException, TemplateException {
+        Template template = TemplateConfiguration.getTemplate(name);
+        Writer out = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(FileUtil.getFileAndCreateParent(Constant.FILE_ROOT_PATH_TEMP + fileName)),
+                StandardCharsets.UTF_8));
+        template.process(dataModel, out);
+        out.close();
     }
 
     private static String addKeyPrefix(String key) {

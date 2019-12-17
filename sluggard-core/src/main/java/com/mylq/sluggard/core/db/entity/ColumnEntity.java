@@ -1,13 +1,14 @@
 package com.mylq.sluggard.core.db.entity;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.io.Serializable;
 
 /**
  * 列信息实体类
@@ -64,4 +65,11 @@ public class ColumnEntity implements Serializable {
      * Jdbc类型
      */
     private String jdbcType;
+
+    /**
+     * 获取列类型
+     */
+    public String getColumnType() {
+        return Objects.isNull(javaType) ? null : javaType.substring(javaType.lastIndexOf(".") + 1);
+    }
 }

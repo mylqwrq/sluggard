@@ -1,6 +1,8 @@
 package com.mylq.sluggard.core.basic.service;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import com.mylq.sluggard.core.basic.factory.TemplatePropertyFactory;
 import com.mylq.sluggard.core.basic.util.BasicUtil;
 import com.mylq.sluggard.core.basic.vo.TemplateVO;
 
+import freemarker.template.TemplateException;
 import lombok.NonNull;
 
 /**
@@ -31,6 +34,20 @@ public class TemplateService {
         BasicUtil.requireNotNullOrBlank("name", name);
         BasicUtil.requireNotNullOrBlank("context", context);
         TemplatePropertyFactory.setText(name, context);
+    }
+
+    public String getTextByTemplate(String name, Map<String, Object> dataModel)
+            throws IOException, TemplateException {
+        return TemplatePropertyFactory.getTextByTemplate(name, dataModel);
+    }
+
+    public void saveFileByTemplate(String fileName, String name, Map<String, Object> dataModel)
+            throws IOException, TemplateException {
+        TemplatePropertyFactory.saveFileByTemplate(fileName, name, dataModel);
+    }
+
+    public TemplateVO getByName(@NonNull String name) {
+        return TemplatePropertyFactory.get(name);
     }
 
     public List<TemplateVO> getList(String name) {

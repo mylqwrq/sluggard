@@ -41,7 +41,8 @@ public class DbService {
         List<TableEntity> list = dao.selectTableList(dbVO, tableName);
         // 遍历表获得对应的模块名称
         for (TableEntity tableEntity : list) {
-            tableEntity.setModuleName(StringUtil.underlineToHump(tableEntity.getTableName(), true));
+            tableEntity.setModuleName(StringUtil.underlineToHump(tableEntity.getTableName(), true,
+                    dbVO.getIgnorePrefix(), dbVO.getIgnoreSuffix()));
         }
         return list;
     }
@@ -58,9 +59,11 @@ public class DbService {
         List<ColumnEntity> list = dao.selectColumnList(dbVO, tableName);
         // 遍历列获得对应的列类型、Java类型和Jdbc类型
         for (ColumnEntity columnEntity : list) {
-            columnEntity.setFieldName(StringUtil.underlineToHump(columnEntity.getColumnName(), false));
-            columnEntity.setJavaType(mappingService.getJavaType(dbVO.getDbType().getName(), columnEntity.getDataType()));
-            columnEntity.setJdbcType(mappingService.getJdbcType(dbVO.getDbType().getName(), columnEntity.getDataType()));
+            columnEntity.setFieldName(StringUtil.underlineToHump(columnEntity.getColumnName(), false, "", ""));
+            columnEntity
+                    .setJavaType(mappingService.getJavaType(dbVO.getDbType().getName(), columnEntity.getDataType()));
+            columnEntity
+                    .setJdbcType(mappingService.getJdbcType(dbVO.getDbType().getName(), columnEntity.getDataType()));
         }
         return list;
     }

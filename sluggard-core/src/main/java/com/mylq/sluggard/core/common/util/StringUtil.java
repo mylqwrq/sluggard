@@ -1,4 +1,5 @@
 package com.mylq.sluggard.core.common.util;
+
 /**
  * 字符串工具类
  *
@@ -67,11 +68,22 @@ public class StringUtil {
      *
      * @param param 输入的下划线命名字符串
      * @param isFirstUpperCase 首字母是否大写
+     * @param ignorePrefix 忽略前缀
+     * @param ignoreSuffix 忽略后缀
      * @return 驼峰命名字符串
      */
-    public static String underlineToHump(String param, boolean isFirstUpperCase) {
+    public static String underlineToHump(String param, boolean isFirstUpperCase, String ignorePrefix,
+            String ignoreSuffix) {
+        //
+        String ignoredParam = param;
+        if (ignorePrefix != null && !ignorePrefix.isEmpty() && ignoredParam.startsWith(ignorePrefix)) {
+            ignoredParam = ignoredParam.substring(ignorePrefix.length());
+        }
+        if (ignoreSuffix != null && !ignoreSuffix.isEmpty() && ignoredParam.endsWith(ignoreSuffix)) {
+            ignoredParam = ignoredParam.substring(0, ignoredParam.length() - ignoreSuffix.length());
+        }
         // 以下划线分隔字符串
-        String[] params = param.split("_");
+        String[] params = ignoredParam.split("_");
         // 初始化返回对象
         StringBuilder result = new StringBuilder();
         // 遍历

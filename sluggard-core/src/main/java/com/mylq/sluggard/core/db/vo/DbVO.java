@@ -28,30 +28,21 @@ import lombok.ToString;
 @ToString
 public class DbVO implements Serializable {
 
-    /**
-     * 类型
-     */
     private DbTypeEnum dbType;
-    /**
-     * 地址
-     */
+
     private String ip;
-    /**
-     * 端口
-     */
+
     private String port;
-    /**
-     * 名称
-     */
+
     private String name;
-    /**
-     * 用户
-     */
+
     private String user;
-    /**
-     * 密码
-     */
+
     private String pwd;
+
+    private String ignorePrefix;
+
+    private String ignoreSuffix;
 
     public String getUrl() {
         if (Objects.isNull(dbType)) {

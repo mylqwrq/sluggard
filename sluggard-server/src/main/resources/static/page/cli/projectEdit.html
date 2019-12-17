@@ -83,10 +83,24 @@
                             </div>
                         </div>
                     </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">忽略前缀</label>
+                            <div class="layui-input-inline">
+                                <input class="layui-input" id="ignorePrefix" name="ignorePrefix" type="text" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">忽略后缀</label>
+                            <div class="layui-input-inline">
+                                <input class="layui-input" id="ignoreSuffix" name="ignoreSuffix" type="text" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
             <span class="layui-btn-container">
-                <button class="layui-btn" data-type="test" style="margin-top:105px;"><i class="layui-icon"></i>Test</button>
+                <button class="layui-btn" data-type="test" style="margin-top:165px;"><i class="layui-icon"></i>Test</button>
             </span>
         </div>
     </div>
@@ -108,8 +122,7 @@
     <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="remove">删除</a>
 </script>
 <script>
-    layui.use(['form', 'table'], function () {
-
+    layui.use(['element', 'form', 'table'], function () {
         var form = layui.form;
         var table = layui.table;
 
@@ -231,7 +244,9 @@
                 "port": "3306",
                 "name": "",
                 "user": "",
-                "pwd": ""
+                "pwd": "",
+                "ignorePrefix": "",
+                "ignoreSuffix": ""
             });
             document.getElementById("name").readOnly = false;
             table.render(tableOption);
@@ -246,7 +261,9 @@
                 "port": obj.dbVO.port,
                 "name": obj.dbVO.name,
                 "user": obj.dbVO.user,
-                "pwd": obj.dbVO.pwd
+                "pwd": obj.dbVO.pwd,
+                "ignorePrefix": obj.dbVO.ignorePrefix,
+                "ignoreSuffix": obj.dbVO.ignoreSuffix
             });
             document.getElementById("name").readOnly = true;
             tableOption["data"] = JSON.parse(JSON.stringify(obj.configs));

@@ -130,8 +130,6 @@
         }
 
         function getReqObj(layer, index, layero) {
-            var reqObj = {};
-
             var projectForm = layer.getChildFrame('body', index).find('form')[0];
             var projectInfo = formToObj($(projectForm));
 
@@ -143,6 +141,7 @@
 
             var configs = $(layero).find('iframe')[0].contentWindow.getTableData();
 
+            var reqObj = {};
             reqObj["name"] = projectInfo.name;
             reqObj["templateNames"] = checkToStrArr(templateNameInfo);
             reqObj["dbVO"] = dataSourceInfo;

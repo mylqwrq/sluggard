@@ -78,3 +78,27 @@ function getRestData(url, data, fun) {
     }
     return result;
 }
+
+function exportByPost(url, data) {
+    var form = $("<form>");
+    form.attr('style', 'display:none');
+    form.attr('target', '');
+    form.attr('method', 'post');
+    form.attr('action', getRestUrl(url));
+
+    for (var key in data) {
+        var input = $('<input>');
+        input.attr('type', 'hidden');
+        input.attr('name', key);
+        if (typeof (data[key]) == 'string') {
+            input.attr('value', data[key]);
+        } else {
+            input.attr('value', JSON.stringify(data[key]));
+        }
+        form.append(input);
+    }
+
+    $('body').append(form);
+    form.submit();
+    form.remove();
+}
