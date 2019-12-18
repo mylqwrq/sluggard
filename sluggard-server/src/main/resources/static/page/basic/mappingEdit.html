@@ -8,10 +8,11 @@
 </head>
 <body>
 <form class="layui-form" style="text-align: center;margin-right:30px;margin-top:30px;" lay-filter="init">
+    <input class="layui-input" id="dbType" name="dbType" type="hidden">
     <div class="layui-form-item">
-        <label class="layui-form-label">数据库名</label>
+        <label class="layui-form-label">数据库类型</label>
         <div class="layui-input-block">
-            <input class="layui-input" id="dbName" name="dbName" type="text" autocomplete="off" readonly>
+            <input class="layui-input" id="dbTypeName" name="dbTypeName" type="text" autocomplete="off" readonly>
         </div>
     </div>
     <div class="layui-form-item">
@@ -40,18 +41,6 @@
 <script src="../../common/tool.js"></script>
 <script>
     layui.use(['form', 'layer'], function () {
-
-        $("#dataType").blur(function () {
-            filter(this, '.');
-        });
-
-        $("#javaType").blur(function () {
-            filter(this, ',');
-        });
-
-        $("#jdbcType").blur(function () {
-            filter(this, ',');
-        });
     });
 
     //初始化（type：1为新建，2为编辑）
@@ -59,7 +48,8 @@
         var form = layui.form;
         if (type === 1) {
             form.val('init', {
-                "dbName": obj.dbName,
+                "dbType": obj.dbTypeId,
+                "dbTypeName": obj.dbTypeName,
                 "dataType": "",
                 "javaType": "",
                 "jdbcType": ""
@@ -67,7 +57,8 @@
             document.getElementById("dataType").readOnly = false;
         } else if (type === 2) {
             form.val('init', {
-                "dbName": obj.dbName,
+                "dbType": obj.dbType.id,
+                "dbTypeName": obj.dbType.name,
                 "dataType": obj.dataType,
                 "javaType": obj.javaType,
                 "jdbcType": obj.jdbcType
@@ -78,8 +69,8 @@
 
     //校验表单
     function validationForm() {
-        if ($("#dbName").val() === "") {
-            msg.warn("数据库名不可为空！");
+        if ($("#dbTypeId").val() === "") {
+            msg.warn("数据库类型不可为空！");
             return false;
         }
         if ($("#dataType").val() === "") {

@@ -44,30 +44,44 @@ public class ProjectPropertyFactory {
         }
     }
 
-    public static List<ProjectVO> getList() {
+    public static List<ProjectVO> getList(String name) {
         List<ProjectVO> list = Lists.newArrayList();
-        for (Object key : PROP.keySet()) {
-            String name = String.valueOf(key);
-            list.add(JsonUtil.parseObject(PROP.getProperty(name), ProjectVO.class));
+        for (Object obj : PROP.keySet()) {
+            String key = String.valueOf(obj);
+            if (key.contains(Strings.nullToEmpty(name))) {
+                list.add(JsonUtil.parseObject(PROP.getProperty(key), ProjectVO.class));
+            }
         }
         list.sort(Comparator.comparing(ProjectVO::getName));
         return list;
     }
 
-    public static ProjectVO get(String key) {
-        return JsonUtil.parseObject(PROP.getProperty(addKeyPrefix(key)), ProjectVO.class);
+    public static ProjectVO get(String name) {
+        String key = addKeyPrefix(name);
+        String value = PROP.getProperty(key);
+        if (Objects.isNull(value)) {
+            throw new SluggardBusinessException("Project {0} does not exist.", name);
+        }
+        return JsonUtil.parseObject(value, ProjectVO.class);
     }
 
-    public static void set(String key, String value, boolean isAbsent) {
-        if (isAbsent && Objects.nonNull(PROP.putIfAbsent(addKeyPrefix(key), value))) {
-            throw new SluggardBusinessException("Project {0} already exists.", key);
+    public static void set(ProjectVO projectVO, boolean isAbsent) {
+        String key = addKeyPrefix(projectVO.getName());
+        String value = JsonUtil.toJsonString(projectVO);
+        if (isAbsent) {
+            // 新建操作
+            if (Objects.nonNull(PROP.putIfAbsent(key, value))) {
+                throw new SluggardBusinessException("Project {0} already exists.", projectVO.getName());
+            }
+        } else {
+            // 编辑操作
+            PROP.setProperty(key, value);
         }
-        PROP.setProperty(addKeyPrefix(key), value);
         saveProperties();
     }
 
-    public static void remove(String key) {
-        PROP.remove(addKeyPrefix(key));
+    public static void remove(String name) {
+        PROP.remove(addKeyPrefix(name));
         saveProperties();
     }
 

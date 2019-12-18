@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mylq.sluggard.core.basic.service.MappingService;
+import com.mylq.sluggard.core.basic.vo.MappingVO;
 import com.mylq.sluggard.core.common.util.StringUtil;
 import com.mylq.sluggard.core.db.dao.DbDao;
 import com.mylq.sluggard.core.db.entity.ColumnEntity;
@@ -59,11 +60,10 @@ public class DbService {
         List<ColumnEntity> list = dao.selectColumnList(dbVO, tableName);
         // 遍历列获得对应的列类型、Java类型和Jdbc类型
         for (ColumnEntity columnEntity : list) {
+            MappingVO mappingVO = mappingService.get(dbVO.getDbType(), columnEntity.getDataType());
             columnEntity.setFieldName(StringUtil.underlineToHump(columnEntity.getColumnName(), false, "", ""));
-            columnEntity
-                    .setJavaType(mappingService.getJavaType(dbVO.getDbType().getName(), columnEntity.getDataType()));
-            columnEntity
-                    .setJdbcType(mappingService.getJdbcType(dbVO.getDbType().getName(), columnEntity.getDataType()));
+            columnEntity.setJavaType(mappingVO.getJavaType());
+            columnEntity.setJdbcType(mappingVO.getJdbcType());
         }
         return list;
     }

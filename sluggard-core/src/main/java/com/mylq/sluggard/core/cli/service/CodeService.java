@@ -102,7 +102,7 @@ public class CodeService {
 
         // 遍历模板
         for (String templateName : templateNames) {
-            TemplateVO template = templateService.getByName(templateName);
+            TemplateVO template = templateService.get(templateName);
             String fileName = template.getFileNamePrefix() + table.getModuleName() + template.getFileNameSuffix()
                     + template.getFileType().getName();
             // 文件父目录：如果是java文件则根据包路径生成目录

@@ -248,7 +248,7 @@
 
         //查询表方法
         function reload() {
-            if ($("#dbType").selected === "" || $("#ip").val() === "" || $("#port").val() === ""
+            if ($("#dbType").val() === "" || $("#ip").val() === "" || $("#port").val() === ""
                 || $("#dbName").val() === "" || $("#user").val() === "" || $("#pwd").val() === "") {
                 msg.warn("请先填写完整的数据源信息！");
                 return;
@@ -326,7 +326,7 @@
             var obj = {};
             obj["dataSource"] = formToObj($("#dbForm"));
             obj["tableInfo"] = data;
-            opener.edit("结构明细", '80%', '80%', 'dataDetail.html', obj, 'exportByPost', '/cli/code/generator', null, getReqObj);
+            opener.open("结构明细", '80%', '80%', 'dataDetail.html', obj, 2, 'exportByPost', '/cli/code/generator', null, getReqObj);
         }
 
         function getReqObj(layer, index, layero) {

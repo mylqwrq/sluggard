@@ -1,8 +1,7 @@
 package com.mylq.sluggard.controller.basic;
 
-import com.mylq.sluggard.core.basic.service.MappingService;
-import com.mylq.sluggard.core.basic.vo.MappingVO;
-import com.mylq.sluggard.core.common.base.result.JsonResult;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.mylq.sluggard.core.basic.service.MappingService;
+import com.mylq.sluggard.core.basic.vo.MappingVO;
+import com.mylq.sluggard.core.common.base.result.JsonResult;
+import com.mylq.sluggard.core.common.enums.DbTypeEnum;
 
 /**
  * Mapping控制层接口
@@ -28,10 +30,10 @@ public class MappingController {
     private MappingService mappingService;
 
     @GetMapping(value = "/getList")
-    public JsonResult<List> getList(@RequestParam String dbName) {
+    public JsonResult<List> getList(@RequestParam Integer dbTypeId) {
         JsonResult<List> jsonResult;
         try {
-            List<MappingVO> result = mappingService.getList(dbName);
+            List<MappingVO> result = mappingService.getList(DbTypeEnum.get(dbTypeId));
             jsonResult = JsonResult.success(result);
         } catch (Exception e) {
             jsonResult = JsonResult.error(e);
@@ -52,10 +54,10 @@ public class MappingController {
     }
 
     @GetMapping(value = "/del")
-    public JsonResult<Void> del(@RequestParam String dbName, @RequestParam String dataType) {
+    public JsonResult<Void> del(@RequestParam Integer dbTypeId, @RequestParam String dataType) {
         JsonResult<Void> jsonResult;
         try {
-            mappingService.delete(dbName, dataType);
+            mappingService.delete(DbTypeEnum.get(dbTypeId), dataType);
             jsonResult = JsonResult.success();
         } catch (Exception e) {
             jsonResult = JsonResult.error(e);

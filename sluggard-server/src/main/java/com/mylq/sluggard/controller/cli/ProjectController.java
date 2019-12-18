@@ -44,7 +44,7 @@ public class ProjectController {
     public JsonResult<ProjectVO> getByName(@RequestParam String name) {
         JsonResult<ProjectVO> jsonResult;
         try {
-            ProjectVO result = projectService.getByName(name);
+            ProjectVO result = projectService.get(name);
             jsonResult = JsonResult.success(result);
         } catch (Exception e) {
             jsonResult = JsonResult.error(e);

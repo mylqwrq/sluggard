@@ -2,7 +2,10 @@ function opener() {
 }
 
 function getLayerOption(title, width, height, src, initObj, initType, reqMethod, reqUrl, call, getReqObj) {
-    var length = arguments.length;
+    if (arguments.length !== 10) {
+        msg.error("非法入参");
+        return;
+    }
     return {
         type: 2,
         title: title,
@@ -16,10 +19,10 @@ function getLayerOption(title, width, height, src, initObj, initType, reqMethod,
             if (!validation) {
                 return;
             }
-            if (length >= 8) {
+            if (reqUrl !== null) {
                 var result = {};
                 var reqObj = {};
-                if (length >= 10) {
+                if (getReqObj !== null) {
                     reqObj = getReqObj(layer, index, layero);
                 } else {
                     if (layer.getChildFrame('body', index).find('form').length > 0) {
@@ -40,7 +43,7 @@ function getLayerOption(title, width, height, src, initObj, initType, reqMethod,
                 if (result.success === true) {
                     msg.info(result.message);
                     layer.close(index);
-                    if (length >= 9) {
+                    if (call !== null) {
                         call();
                     }
                 } else {
@@ -49,7 +52,7 @@ function getLayerOption(title, width, height, src, initObj, initType, reqMethod,
             }
         },
         success: function (layero, index) {
-            if (length >= 5) {
+            if (initObj !== null && initType !== null) {
                 $(layero).find('iframe')[0].contentWindow.initForm(initObj, initType);
             }
         }
@@ -57,25 +60,36 @@ function getLayerOption(title, width, height, src, initObj, initType, reqMethod,
 }
 
 opener.prototype = {
-    add: function (t, w, h, src, initObj, reqMethod, reqUrl, call, getReqObj) {
-        var length = arguments.length;
-        var title = length >= 1 ? t : "新建";
-        var width = length >= 2 ? w : '50%';
-        var height = length >= 3 ? h : '50%';
-        layer.open(getLayerOption(title, width, height, src, initObj, 1, reqMethod, reqUrl, call, getReqObj));
+    /**
+     * 打开新建/编辑子窗体
+     *
+     * @param title 标题
+     * @param width 宽度
+     * @param height 高度
+     * @param src 链接
+     * @param initObj 初始化对象
+     * @param initType 初始化类型：1（新增）、2（编辑）
+     * @param reqMethod 请求方式
+     * @param reqUrl 请求地址
+     * @param call 请求成功回调函数
+     * @param getReqObj 获取请求对象函数
+     */
+    open: function (title, width, height, src, initObj, initType, reqMethod, reqUrl, call, getReqObj) {
+        if (arguments.length !== 10) {
+            msg.error("非法入参");
+            return;
+        }
+        if (initType !== 1 && initType !== 2) {
+            msg.error("未知的初始化类型：" + initType);
+            return;
+        }
+        layer.open(getLayerOption(title, width, height, src, initObj, initType, reqMethod, reqUrl, call, getReqObj));
     },
-    edit: function (t, w, h, src, initObj, reqMethod, reqUrl, call, getReqObj) {
-        var length = arguments.length;
-        var title = length >= 1 ? t : "编辑";
-        var width = length >= 2 ? w : '50%';
-        var height = length >= 3 ? h : '50%';
-        layer.open(getLayerOption(title, width, height, src, initObj, 2, reqMethod, reqUrl, call, getReqObj));
-    },
-    scan: function (t, w, h, src, initObj) {
-        var length = arguments.length;
-        var title = length >= 1 ? t : "浏览";
-        var width = length >= 2 ? w : '50%';
-        var height = length >= 3 ? h : '50%';
+    scan: function (title, width, height, src, initObj) {
+        if (arguments.length !== 5) {
+            msg.error("非法入参");
+            return;
+        }
         layer.open({
             type: 2,
             title: title,
@@ -85,7 +99,7 @@ opener.prototype = {
             content: src + "?tm=" + new Date().getTime(),
             btn: ['取消'],
             success: function (layero, index) {
-                if (length >= 5) {
+                if (initObj !== null) {
                     $(layero).find('iframe')[0].contentWindow.initForm(initObj, 2);
                 }
             }

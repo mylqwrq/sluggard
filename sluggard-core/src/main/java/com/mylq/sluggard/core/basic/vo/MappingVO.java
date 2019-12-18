@@ -1,13 +1,15 @@
 package com.mylq.sluggard.core.basic.vo;
 
+import java.io.Serializable;
+
+import com.mylq.sluggard.core.common.enums.DbTypeEnum;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.io.Serializable;
 
 /**
  * Mapping视图对象
@@ -24,7 +26,7 @@ import java.io.Serializable;
 @ToString
 public class MappingVO implements Serializable {
 
-    private String dbName;
+    private DbTypeEnum dbType;
 
     private String dataType;
 

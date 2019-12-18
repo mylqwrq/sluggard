@@ -31,6 +31,7 @@ import com.mylq.sluggard.core.common.base.exception.SluggardCoreException;
 import com.mylq.sluggard.core.common.enums.FileTypeEnum;
 import com.mylq.sluggard.core.common.factory.PropertyFactory;
 import com.mylq.sluggard.core.common.util.FileUtil;
+import com.mylq.sluggard.core.common.util.JsonUtil;
 import com.mylq.sluggard.core.common.util.StringUtil;
 
 import freemarker.template.Configuration;
@@ -51,7 +52,9 @@ public class TemplatePropertyFactory {
     private static final String PROP_NAME = "template.properties";
     private static final String PROP_PATH = Constant.FILE_ROOT_PATH_PROP + PROP_NAME;
     private static final String PROP_COMMENT = "Sluggard persistence file: template";
-    private static final String PROP_KEY_PREFIX = "template.";
+    private static final String PROP_KEY_SEPARATOR = ".";
+    private static final String PROP_VALUE_SEPARATOR = ",";
+    private static final String PROP_KEY_PREFIX = "template" + PROP_KEY_SEPARATOR;
 
     static {
         try {
@@ -60,10 +63,15 @@ public class TemplatePropertyFactory {
         } catch (IOException e) {
             LOGGER.warn("Load Properties Error: {}.", PROP_NAME, e);
             Properties properties = PropertyFactory.getProperties();
-            for (Object key : properties.keySet()) {
-                String name = String.valueOf(key);
-                if (name.startsWith(PROP_KEY_PREFIX)) {
-                    PROP.setProperty(name, properties.getProperty(name));
+            for (Object obj : properties.keySet()) {
+                String key = String.valueOf(obj);
+                if (key.startsWith(PROP_KEY_PREFIX)) {
+                    String[] keys = key.split("\\" + PROP_KEY_SEPARATOR);
+                    String[] values = properties.getProperty(key).split(PROP_VALUE_SEPARATOR);
+                    TemplateVO value = TemplateVO.builder().name(keys[1]).fileType(FileTypeEnum.get(values[0]))
+                            .fileRelativePath(values[1]).fileNamePrefix(values[2]).fileNameSuffix(values[3])
+                            .disabled(true).build();
+                    PROP.setProperty(key, JsonUtil.toJsonString(value));
                 }
             }
             LOGGER.info("Load default template.");
@@ -92,77 +100,74 @@ public class TemplatePropertyFactory {
         }
     }
 
-    public static List<TemplateVO> getList() {
+    public static List<TemplateVO> getList(String name) {
         List<TemplateVO> list = Lists.newArrayList();
-        for (Object key : PROP.keySet()) {
-            String name = String.valueOf(key);
-            String[] keys = name.split("\\" + Constant.PROP_KEY_SEPARATOR);
-            String[] values = PROP.getProperty(name).split(Constant.PROP_VALUE_SEPARATOR, -1);
-            if (keys.length != 2 || values.length != 4) {
-                LOGGER.warn("Illegal mapping data: key={}.", name);
-                continue;
+        for (Object obj : PROP.keySet()) {
+            String key = String.valueOf(obj);
+            if (key.contains(Strings.nullToEmpty(name))) {
+                list.add(JsonUtil.parseObject(PROP.getProperty(key), TemplateVO.class));
             }
-            list.add(TemplateVO.builder().name(keys[1]).fileType(FileTypeEnum.get(Integer.parseInt(values[0])))
-                    .fileRelativePath(values[1]).fileNamePrefix(values[2]).fileNameSuffix(values[3])
-                    .disabled(PropertyFactory.getProperties().containsKey(name)).build());
         }
         list.sort(Comparator.comparing(TemplateVO::getName));
         return list;
     }
 
-    public static TemplateVO get(String key) {
-        String realKey = addKeyPrefix(key);
-        if (!PROP.containsKey(realKey)) {
-            throw new SluggardBusinessException("Template {0} does not exist.", key);
+    public static TemplateVO get(String name) {
+        String key = addKeyPrefix(name);
+        String value = PROP.getProperty(key);
+        if (Objects.isNull(value)) {
+            throw new SluggardBusinessException("Template {0} does not exist.", name);
         }
-        String[] values = PROP.getProperty(realKey).split(Constant.PROP_VALUE_SEPARATOR, -1);
-        if (values.length < 4) {
-            throw new SluggardBusinessException("Attributes of template {0} is illegal. Please check it.", key);
-        }
-        return TemplateVO.builder().name(key).fileType(FileTypeEnum.get(Integer.parseInt(values[0])))
-                .fileRelativePath(values[1]).fileNamePrefix(values[2]).fileNameSuffix(values[3]).build();
+        return JsonUtil.parseObject(value, TemplateVO.class);
     }
 
-    public static void set(String key, String value, boolean isAbsent) {
-        String realKey = addKeyPrefix(key);
-        if (isAbsent && Objects.nonNull(PROP.putIfAbsent(realKey, value))) {
-            throw new SluggardBusinessException("Template {0} already exists.", key);
+    public static void set(TemplateVO templateVO, boolean isAbsent) {
+        String key = addKeyPrefix(templateVO.getName());
+        String value = JsonUtil.toJsonString(templateVO);
+        if (isAbsent) {
+            // 新建操作
+            if (Objects.nonNull(PROP.putIfAbsent(key, value))) {
+                throw new SluggardBusinessException("Template {0} already exists.", templateVO.getName());
+            }
+        } else {
+            // 编辑操作
+            if (PropertyFactory.getProperties().containsKey(key)) {
+                throw new SluggardBusinessException("Default template is not allowed to operate: {0}.", templateVO.getName());
+            }
+            PROP.setProperty(key, value);
         }
-        if (PropertyFactory.getProperties().containsKey(realKey)) {
-            throw new SluggardBusinessException("Default template is not allowed to operate: {0}.", key);
-        }
-        PROP.setProperty(realKey, value);
         saveProperties();
     }
 
-    public static void remove(String key) {
-        String realKey = addKeyPrefix(key);
-        if (PropertyFactory.getProperties().containsKey(realKey)) {
-            throw new SluggardBusinessException("Default template is not allowed to operate: {0}.", key);
+    public static void remove(String name) {
+        String key = addKeyPrefix(name);
+        if (PropertyFactory.getProperties().containsKey(key)) {
+            throw new SluggardBusinessException("Default template is not allowed to operate: {0}.", name);
         }
-        PROP.remove(realKey);
+        PROP.remove(key);
         saveProperties();
-        deleteTemplateFile(key);
+        deleteTemplateFile(name);
     }
 
-    public static String getText(String key) {
+    public static String getText(String name) {
         try {
-            return readTemplateFile(key);
+            return readTemplateFile(name);
         } catch (IOException e) {
-            LOGGER.warn("Failed to read context from template: {}.", key, e);
+            LOGGER.warn("Failed to read context from template: {}.", name, e);
             return "";
         }
     }
 
-    public static void setText(String key, String context) {
-        if (PropertyFactory.getProperties().containsKey(addKeyPrefix(key))) {
-            throw new SluggardBusinessException("Default template is not allowed to operate: {0}.", key);
+    public static void setText(String name, String context) {
+        String key = addKeyPrefix(name);
+        if (PropertyFactory.getProperties().containsKey(key)) {
+            throw new SluggardBusinessException("Default template is not allowed to operate: {0}.", name);
         }
         try {
-            saveTemplateFile(key, context);
+            saveTemplateFile(name, context);
         } catch (IOException e) {
-            LOGGER.error("Failed to save template file: {}.", key, e);
-            throw new SluggardBusinessException("Failed to save template file {0}.", key);
+            LOGGER.error("Failed to save template file: {}.", name, e);
+            throw new SluggardBusinessException("Failed to save template file {0}.", name);
         }
     }
 
@@ -202,8 +207,8 @@ public class TemplatePropertyFactory {
         out.close();
     }
 
-    private static String addKeyPrefix(String key) {
-        return PROP_KEY_PREFIX + Strings.nullToEmpty(key);
+    private static String addKeyPrefix(String name) {
+        return PROP_KEY_PREFIX + Strings.nullToEmpty(name);
     }
 
     private static void saveProperties() {

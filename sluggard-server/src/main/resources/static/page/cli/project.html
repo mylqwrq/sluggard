@@ -121,12 +121,12 @@
 
         //新建方法
         function modelAdd() {
-            opener.add("新建项目", '60%', '80%', 'projectEdit.html', {}, 'post', '/cli/project/save', reload, getReqObj);
+            opener.open("新建项目", '60%', '80%', 'projectEdit.html', {}, 1, 'post', '/cli/project/save', reload, getReqObj);
         }
 
         //编辑方法
         function modelEdit(data) {
-            opener.edit("编辑项目", '60%', '80%', 'projectEdit.html', data, 'post', '/cli/project/edit', reload, getReqObj);
+            opener.open("编辑项目", '60%', '80%', 'projectEdit.html', data, 2, 'post', '/cli/project/edit', reload, getReqObj);
         }
 
         function getReqObj(layer, index, layero) {

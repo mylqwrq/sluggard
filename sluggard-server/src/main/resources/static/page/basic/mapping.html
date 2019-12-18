@@ -14,7 +14,7 @@
                 <div class="layui-inline">
                     <form class="layui-form" style="padding-top: 15px;">
                         <div class="layui-form-item">
-                            <label class="layui-form-label">选择数据库</label>
+                            <label class="layui-form-label">数据库类型</label>
                             <div class="layui-inline" style="width: 200px;">
                                 <select id="dbTypeSelect" name="dbType" lay-filter="dbTypeFilter">
                                 </select>
@@ -75,7 +75,7 @@
             even: true,
             cols: [[
                 {type: 'numbers', title: '序号', width: 100},
-                {field: 'dbName', title: '数据库名', width: 200},
+                {field: 'dbType', title: '数据库类型', width: 200, hide: true},
                 {field: 'dataType', title: '数据类型', width: 200},
                 {field: 'javaType', title: 'Java类型', width: 200},
                 {field: 'jdbcType', title: 'Jdbc类型', width: 200},
@@ -99,7 +99,7 @@
             table.reload('dt', {
                 url: WEB_CONTEXT + '/basic/mapping/getList',
                 where: {
-                    dbName: $("#dbTypeSelect").find("option:selected").text()
+                    dbTypeId: $("#dbTypeSelect").val()
                 }
             });
         }
@@ -118,21 +118,22 @@
             var data = obj.data;
             if (obj.event === "edit") {
                 modelEdit(data);
-            } else if (obj.event === 'remove') {
-                modelRemove(data)
+            } else if (obj.event === "remove") {
+                modelRemove(data);
             }
         });
 
         //新建方法
         function modelAdd() {
             var obj = {};
-            obj["dbName"] = $("#dbTypeSelect").find("option:selected").text();
-            opener.add("新建映射", '50%', '50%', 'mappingEdit.html', obj, 'post', '/basic/mapping/save', reload);
+            obj["dbTypeId"] = $("#dbTypeSelect").val();
+            obj["dbTypeName"] = $("#dbTypeSelect").find("option:selected").text();
+            opener.open("新建映射", '50%', '50%', 'mappingEdit.html', obj, 1, 'post', '/basic/mapping/save', reload, null);
         }
 
         //编辑方法
         function modelEdit(data) {
-            opener.edit("编辑映射", '50%', '50%', 'mappingEdit.html', data, 'post', '/basic/mapping/save', reload);
+            opener.open("编辑映射", '50%', '50%', 'mappingEdit.html', data, 2, 'post', '/basic/mapping/save', reload, null);
         }
 
         //删除方法
@@ -142,7 +143,7 @@
 
         function remove(data) {
             var obj = {};
-            obj["dbName"] = data.dbName;
+            obj["dbTypeId"] = data.dbType.id;
             obj["dataType"] = data.dataType;
             return getRestData("/basic/mapping/del", obj, reload);
         }

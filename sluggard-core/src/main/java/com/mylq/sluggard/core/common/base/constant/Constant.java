@@ -10,14 +10,6 @@ package com.mylq.sluggard.core.common.base.constant;
 public class Constant {
 
     /**
-     * Properties文件Key分隔符
-     */
-    public static final String PROP_KEY_SEPARATOR = ".";
-    /**
-     * Properties文件Value分隔符
-     */
-    public static final String PROP_VALUE_SEPARATOR = ",";
-    /**
      * Properties文件根目录
      */
     public static final String FILE_ROOT_PATH_PROP = System.getProperty("user.dir") + "/files/properties/";

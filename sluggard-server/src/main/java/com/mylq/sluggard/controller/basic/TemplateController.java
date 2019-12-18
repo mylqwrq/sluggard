@@ -28,30 +28,6 @@ public class TemplateController {
     @Autowired
     private TemplateService templateService;
 
-    @GetMapping(value = "/getText")
-    public JsonResult<String> getText(@RequestParam String name) {
-        JsonResult<String> jsonResult;
-        try {
-            String result = templateService.getText(name);
-            jsonResult = JsonResult.success(result);
-        } catch (Exception e) {
-            jsonResult = JsonResult.error(e);
-        }
-        return jsonResult;
-    }
-
-    @PostMapping(value = "/saveText")
-    public JsonResult<Void> saveText(@RequestBody TemplateVO templateVO) {
-        JsonResult<Void> jsonResult;
-        try {
-            templateService.setText(templateVO.getName(), templateVO.getContext());
-            jsonResult = JsonResult.success();
-        } catch (Exception e) {
-            jsonResult = JsonResult.error(e);
-        }
-        return jsonResult;
-    }
-
     @GetMapping(value = "/getList")
     public JsonResult<List> getList(@RequestParam String name) {
         JsonResult<List> jsonResult;
@@ -93,6 +69,30 @@ public class TemplateController {
         JsonResult<Void> jsonResult;
         try {
             templateService.delete(name);
+            jsonResult = JsonResult.success();
+        } catch (Exception e) {
+            jsonResult = JsonResult.error(e);
+        }
+        return jsonResult;
+    }
+
+    @GetMapping(value = "/getText")
+    public JsonResult<String> getText(@RequestParam String name) {
+        JsonResult<String> jsonResult;
+        try {
+            String result = templateService.getText(name);
+            jsonResult = JsonResult.success(result);
+        } catch (Exception e) {
+            jsonResult = JsonResult.error(e);
+        }
+        return jsonResult;
+    }
+
+    @PostMapping(value = "/saveText")
+    public JsonResult<Void> saveText(@RequestBody TemplateVO templateVO) {
+        JsonResult<Void> jsonResult;
+        try {
+            templateService.setText(templateVO.getName(), templateVO.getContext());
             jsonResult = JsonResult.success();
         } catch (Exception e) {
             jsonResult = JsonResult.error(e);

@@ -47,10 +47,10 @@ public enum DbTypeEnum implements BaseEnum<Integer> {
         throw new SluggardCoreException("Unsupported dbType: {0}.", id);
     }
 
-    public static void check(String name) {
+    public static DbTypeEnum get(String name) {
         for (DbTypeEnum item : values()) {
             if (item.getName().equals(name)) {
-                return;
+                return item;
             }
         }
         throw new SluggardCoreException("Unsupported dbType: {0}.", name);

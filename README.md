@@ -1,10 +1,10 @@
 # Sluggard
 
-Sluggard代码生成器
+一款方便快捷的Java Web项目及代码生成服务
 
 ## 描述
 
-基于SpringBoot、lombok和Freemarker模板引擎开发，提供项目和代码生成服务。
+基于SpringBoot、Lombok、Freemarker + Layui开发，提供项目和代码生成服务。
 
 持久化采用自定义文件的方式实现，不依赖任何其他第三方组件，项目启动时会自动加载文件。
 
@@ -36,8 +36,10 @@ mvn clean package -DskipTests
 
 ## 启动
 
-### sluggard-server
-
 将sluggard-server-xxx.jar与sluggard\deploy\目录下的SluggardServer.sh脚本置于相同的服务器目录下，并执行命令：
 
 sh SluggardServer.sh start
+
+## 注意
+
+由于Oracle授权问题，无法从Maven中央仓库下载驱动包，如有需要请从官方下载手动安装到本地然后引入依赖即可。

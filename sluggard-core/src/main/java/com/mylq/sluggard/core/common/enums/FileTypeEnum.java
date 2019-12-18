@@ -27,31 +27,30 @@ public enum FileTypeEnum implements BaseEnum<Integer> {
     /**
      * FTL
      */
-    FTL(0, ".ftl", "Ftl"),
+    FTL(0, ".ftl"),
     /**
      * JAVA
      */
-    JAVA(1, ".java", "Java"),
+    JAVA(1, ".java"),
     /**
      * XML
      */
-    XML(2, ".xml", "Xml"),
+    XML(2, ".xml"),
     /**
      * YML
      */
-    YML(3, ".yml", "Yml"),
+    YML(3, ".yml"),
     /**
      * HTML
      */
-    HTML(4, ".html", "Html"),
+    HTML(4, ".html"),
     /**
      * JS
      */
-    JS(5, ".js", "Js");
+    JS(5, ".js");
 
     private Integer id;
     private String name;
-    private String option;
 
     @JsonCreator
     public static FileTypeEnum get(Integer id) {
@@ -61,5 +60,14 @@ public enum FileTypeEnum implements BaseEnum<Integer> {
             }
         }
         throw new SluggardCoreException("Unsupported fileType: {0}.", id);
+    }
+
+    public static FileTypeEnum get(String name) {
+        for (FileTypeEnum item : values()) {
+            if (item.getName().equals(name)) {
+                return item;
+            }
+        }
+        throw new SluggardCoreException("Unsupported fileType: {0}.", name);
     }
 }

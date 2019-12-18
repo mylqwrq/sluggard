@@ -48,23 +48,6 @@
 <script src="../../common/web.js"></script>
 <script>
     layui.use(['form', 'layer'], function () {
-        var form = layui.form;
-
-        $("#name").blur(function () {
-            filter(this, '.');
-        });
-
-        $("#fileRelativePath").blur(function () {
-            filter(this, ',');
-        });
-
-        $("#fileNamePrefix").blur(function () {
-            filter(this, ',');
-        });
-
-        $("#fileNameSuffix").blur(function () {
-            filter(this, ',');
-        });
     });
 
     //初始化（type：1为新建，2为编辑）
@@ -75,7 +58,7 @@
         var fileTypeResult = getRestResult("/server/enums/getFileTypes");
         if (fileTypeResult.success && fileTypeResult.data != null) {
             $.each(fileTypeResult.data, function (index, item) {
-                $("#fileTypeSelect").append("<option value=" + item.id + ">" + item.option + "</option>");
+                $("#fileTypeSelect").append("<option value=" + item.id + ">" + item.name + "</option>");
             });
         }
         form.render("select");
@@ -107,7 +90,7 @@
             msg.warn("模板名称不可为空！");
             return false;
         }
-        if ($("#fileType").selected === "") {
+        if ($("#fileType").val() === "") {
             msg.warn("目标文件类型不可为空！");
             return false;
         }

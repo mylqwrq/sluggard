@@ -145,7 +145,7 @@
 
         //测试连接方法
         function testConnection() {
-            if ($("#dbType").selected === "" || $("#ip").val() === "" || $("#port").val() === ""
+            if ($("#dbType").val() === "" || $("#ip").val() === "" || $("#port").val() === ""
                 || $("#dbName").val() === "" || $("#user").val() === "" || $("#pwd").val() === "") {
                 msg.warn("请先填写完整的数据源信息！");
                 return;
@@ -192,10 +192,6 @@
                 data: oldData
             });
         }
-
-        $("#name").blur(function () {
-            filter(this, '.');
-        });
     });
 
     //初始化（type：1为新建，2为编辑）
@@ -277,7 +273,7 @@
             msg.warn("项目名称不可为空！");
             return false;
         }
-        if ($("#dbType").selected === "") {
+        if ($("#dbType").val() === "") {
             msg.warn("数据库类型不可为空！");
             return false;
         }
