@@ -1,4 +1,4 @@
-package ${packageUrl}.common.entity;
+package ${basePackage}.common.entity;
 
 import com.gw.cloud.common.core.base.entity.AbstractBaseUpdateEntity;
 import io.swagger.annotations.ApiModel;

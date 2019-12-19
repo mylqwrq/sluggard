@@ -34,9 +34,13 @@
     layui.use(['form', 'table'], function () {
     });
 
+    var templateNames,configs;
+
     //初始化（type：1为新建，2为编辑）
     function initForm(obj, type) {
         var form = layui.form;
+        templateNames = obj.templateNames;
+        configs = obj.configs;
         form.val('tableFormFilter', {
             "tableName": obj.tableInfo.tableName,
             "tableComment": obj.tableInfo.tableComment,
@@ -87,6 +91,23 @@
 
     //校验表单
     function validationForm() {
+        if (templateNames.length === 0) {
+            msg.warn("请选择至少一个模板！");
+            return false;
+        }
+        var keyArray = [];
+        for (var i = 0, row; i < configs.length; i++) {
+            row = configs[i];
+            if (row.key === "" || row.value === "") {
+                msg.warn("配置属性键和值均不可为空！");
+                return false;
+            }
+            if (keyArray.indexOf(row.key) > -1) {
+                msg.warn("配置属性不可重复：" + row.key + "！");
+                return false;
+            }
+            keyArray.push(row.key);
+        }
         if ($("#tableName").val() === "") {
             msg.warn("表名称不可为空！");
             return false;

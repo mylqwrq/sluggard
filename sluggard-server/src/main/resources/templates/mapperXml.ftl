@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"[]>
-<mapper namespace="${packageUrl}.mapper.${moduleName}Mapper">
- <resultMap id="BaseResultMap" type="${packageUrl}.common.entity.${moduleName}Entity">
+<mapper namespace="${basePackage}.mapper.${moduleName}Mapper">
+ <resultMap id="BaseResultMap" type="${basePackage}.common.entity.${moduleName}Entity">
   <id column="${primary["columnName"]}" jdbcType="${primary["jdbcType"]}" property="${primary["fieldName"]}" />
 <#if columns??>
  <#list columns as column>
@@ -39,12 +39,12 @@
   </if>
  </sql>
 
- <select id="selectCount" resultType="java.lang.Long" parameterType="${packageUrl}.common.vo.${moduleName}QueryVO">
+ <select id="selectCount" resultType="java.lang.Long" parameterType="${basePackage}.common.vo.${moduleName}QueryVO">
   select count(*) from ${tableName}
   <include refid="Base_Where_Clause" />
  </select>
 
- <select id="select" resultMap="BaseResultMap" parameterType="${packageUrl}.common.vo.${moduleName}QueryVO">
+ <select id="select" resultMap="BaseResultMap" parameterType="${basePackage}.common.vo.${moduleName}QueryVO">
   select
   <include refid="Select_Field" />
   from ${tableName}
@@ -63,7 +63,7 @@
   where ${tableName}.${primary["columnName"]} =${r'#'}{${primary["columnName"]}}
  </delete>
 
- <update id="updateById" parameterType="${packageUrl}.common.vo.${moduleName}UpdateVO">
+ <update id="updateById" parameterType="${basePackage}.common.vo.${moduleName}UpdateVO">
   update ${tableName}
   <set>
  <#if columns??>
@@ -77,7 +77,7 @@
   </where>
  </update>
 
- <insert id="insert" parameterType="${packageUrl}.common.vo.${moduleName}UpdateVO">
+ <insert id="insert" parameterType="${basePackage}.common.vo.${moduleName}UpdateVO">
   insert into ${tableName}
   <trim prefix="(" suffix=")" suffixOverrides=",">
  <#if columns??>

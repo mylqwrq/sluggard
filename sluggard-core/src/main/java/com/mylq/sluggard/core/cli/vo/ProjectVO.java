@@ -29,9 +29,19 @@ public class ProjectVO implements Serializable {
 
     private String name;
 
-    private List<String> templateNames;
+    private String description;
+
+    private String groupId;
+
+    private String artifactId;
+
+    private String version;
+
+    private String packaging;
 
     private DbVO dbVO;
+
+    private List<String> templateNames;
 
     private List<ConfigVO> configs;
 }

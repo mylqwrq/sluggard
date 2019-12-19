@@ -1,9 +1,9 @@
-package ${packageUrl}.service.api;
+package ${basePackage}.service.api;
 
 import com.gw.cloud.common.core.base.service.BaseService;
-import ${packageUrl}.common.entity.${moduleName}Entity;
-import ${packageUrl}.common.vo.${moduleName}QueryVO;
-import ${packageUrl}.common.vo.${moduleName}UpdateVO;
+import ${basePackage}.common.entity.${moduleName}Entity;
+import ${basePackage}.common.vo.${moduleName}QueryVO;
+import ${basePackage}.common.vo.${moduleName}UpdateVO;
 
 /**
  * ${tableComment}Service接口

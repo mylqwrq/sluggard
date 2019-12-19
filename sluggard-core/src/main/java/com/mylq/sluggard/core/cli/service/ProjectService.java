@@ -30,8 +30,13 @@ public class ProjectService {
 
     public void save(@NonNull ProjectVO projectVO, boolean isAbsent) {
         BasicUtil.requireNotNullOrBlank("name", projectVO.getName());
-        BasicUtil.requireNotNull("templateNames", projectVO.getTemplateNames());
+        BasicUtil.requireNotNullOrBlank("description", projectVO.getDescription());
+        BasicUtil.requireNotNullOrBlank("groupId", projectVO.getGroupId());
+        BasicUtil.requireNotNullOrBlank("artifactId", projectVO.getArtifactId());
+        BasicUtil.requireNotNullOrBlank("version", projectVO.getVersion());
+        BasicUtil.requireNotNullOrBlank("packaging", projectVO.getPackaging());
         BasicUtil.requireNotNull("dbVO", projectVO.getDbVO());
+        BasicUtil.requireNotNull("templateNames", projectVO.getTemplateNames());
         BasicUtil.requireNotNull("configs", projectVO.getConfigs());
         ProjectPropertyFactory.set(projectVO, isAbsent);
     }

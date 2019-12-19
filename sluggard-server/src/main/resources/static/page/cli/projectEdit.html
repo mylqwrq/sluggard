@@ -13,22 +13,45 @@
         <div class="layui-colla-content layui-show">
             <form class="layui-form" style="margin-right:20px;margin-top:10px;" lay-filter="projectFormFilter">
                 <div class="layui-form-item">
-                    <label class="layui-form-label">项目名称</label>
-                    <div class="layui-input-block">
-                        <input class="layui-input" id="name" name="name" type="text" autocomplete="off">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">项目名称</label>
+                        <div class="layui-input-inline">
+                            <input class="layui-input" id="name" name="name" type="text" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">项目描述</label>
+                        <div class="layui-input-inline">
+                            <input class="layui-input" id="description" name="description" type="text" autocomplete="off">
+                        </div>
                     </div>
                 </div>
-            </form>
-        </div>
-    </div>
-    <div class="layui-colla-item">
-        <h2 class="layui-colla-title">模板信息</h2>
-        <div class="layui-colla-content layui-show">
-            <form class="layui-form" style="margin-right:20px;margin-top:10px;" lay-filter="templateFormFilter"
-                  id="templateForm">
                 <div class="layui-form-item">
-                    <label class="layui-form-label">使用模板</label>
-                    <div class="layui-input-block" id="templateCheck">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">Group</label>
+                        <div class="layui-input-inline">
+                            <input class="layui-input" id="groupId" name="groupId" type="text" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">Artifact</label>
+                        <div class="layui-input-inline">
+                            <input class="layui-input" id="artifactId" name="artifactId" type="text" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">Version</label>
+                        <div class="layui-input-inline">
+                            <input class="layui-input" id="version" name="version" type="text" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">Packaging</label>
+                        <div class="layui-input-inline">
+                            <input class="layui-input" id="packaging" name="packaging" type="text" autocomplete="off">
+                        </div>
                     </div>
                 </div>
             </form>
@@ -102,6 +125,19 @@
             <span class="layui-btn-container">
                 <button class="layui-btn" data-type="test" style="margin-top:165px;"><i class="layui-icon"></i>Test</button>
             </span>
+        </div>
+    </div>
+    <div class="layui-colla-item">
+        <h2 class="layui-colla-title">模板信息</h2>
+        <div class="layui-colla-content layui-show">
+            <form class="layui-form" style="margin-right:20px;margin-top:10px;" lay-filter="templateFormFilter"
+                  id="templateForm">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">使用模板</label>
+                    <div class="layui-input-block" id="templateCheck">
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
     <div class="layui-colla-item">
@@ -208,17 +244,8 @@
                 {field: 'value', title: '配置属性值', width: 250, edit: 'text'},
                 {field: 'right', title: '操作', width: 200, align: 'center', toolbar: '#toolbarOperation'}
             ]],
-            data: [{"key": "packageUrl", "value": ""}, {"key": "author", "value": ""}]
+            data: [{"key": "basePackage", "value": ""}, {"key": "author", "value": ""}]
         };
-
-        //加载复选框选项
-        var templateResult = getRestResult("/basic/template/getList?name=");
-        if (templateResult.success && templateResult.data != null) {
-            $.each(templateResult.data, function (index, item) {
-                $("#templateCheck").append("<input type=\"checkbox\" name=\"t-" + item.name + "\" title=\"" + item.name + "\">");
-            });
-        }
-        form.render("checkbox");
 
         //加载下拉框选项
         var dbTypeResult = getRestResult("/server/enums/getDbTypes");
@@ -229,11 +256,25 @@
         }
         form.render("select");
 
-        if (type === 1) {
-            form.val('projectFormFilter', {
-                "name": ""
+        //加载复选框选项
+        var templateResult = getRestResult("/basic/template/getList?name=");
+        if (templateResult.success && templateResult.data != null) {
+            $.each(templateResult.data, function (index, item) {
+                $("#templateCheck").append("<input type=\"checkbox\" name=\"t-" + item.name + "\" title=\"" + item.name + "\">");
             });
-            form.val('templateFormFilter', strArrToCheckBoxByForm("templateForm", []));
+        }
+        form.render("checkbox");
+
+        if (type === 1) {
+            document.getElementById("name").readOnly = false;
+            form.val('projectFormFilter', {
+                "name": "",
+                "description": "",
+                "groupId": "",
+                "artifactId": "",
+                "version": "0.0.1-SNAPSHOT",
+                "packaging": "jar"
+            });
             form.val('dbFormFilter', {
                 "dbType": "0",
                 "ip": "",
@@ -244,13 +285,18 @@
                 "ignorePrefix": "",
                 "ignoreSuffix": ""
             });
-            document.getElementById("name").readOnly = false;
+            form.val('templateFormFilter', strArrToCheckBoxByForm("templateForm", []));
             table.render(tableOption);
         } else if (type === 2) {
+            document.getElementById("name").readOnly = true;
             form.val('projectFormFilter', {
-                "name": obj.name
+                "name": obj.name,
+                "description": obj.description,
+                "groupId": obj.groupId,
+                "artifactId": obj.artifactId,
+                "version": obj.version,
+                "packaging": obj.packaging
             });
-            form.val('templateFormFilter', strArrToCheckBoxByForm("templateForm", obj.templateNames));
             form.val('dbFormFilter', {
                 "dbType": obj.dbVO.dbType.id,
                 "ip": obj.dbVO.ip,
@@ -261,7 +307,7 @@
                 "ignorePrefix": obj.dbVO.ignorePrefix,
                 "ignoreSuffix": obj.dbVO.ignoreSuffix
             });
-            document.getElementById("name").readOnly = true;
+            form.val('templateFormFilter', strArrToCheckBoxByForm("templateForm", obj.templateNames));
             tableOption["data"] = JSON.parse(JSON.stringify(obj.configs));
             table.render(tableOption);
         }
@@ -271,6 +317,26 @@
     function validationForm() {
         if ($("#name").val() === "") {
             msg.warn("项目名称不可为空！");
+            return false;
+        }
+        if ($("#description").val() === "") {
+            msg.warn("项目描述不可为空！");
+            return false;
+        }
+        if ($("#groupId").val() === "") {
+            msg.warn("Group不可为空！");
+            return false;
+        }
+        if ($("#artifactId").val() === "") {
+            msg.warn("ArtifactId不可为空！");
+            return false;
+        }
+        if ($("#version").val() === "") {
+            msg.warn("Version不可为空！");
+            return false;
+        }
+        if ($("#packaging").val() === "") {
+            msg.warn("Packaging不可为空！");
             return false;
         }
         if ($("#dbType").val() === "") {
@@ -297,8 +363,7 @@
             msg.warn("数据库密码不能为空！");
             return false;
         }
-        var table = layui.table;
-        var data = table.cache["dt"];
+        var data = getTableData();
         var keyArray = [];
         for (var i = 0, row; i < data.length; i++) {
             row = data[i];

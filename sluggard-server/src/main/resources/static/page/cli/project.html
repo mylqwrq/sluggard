@@ -45,9 +45,9 @@
 </script>
 <script type="text/html" id="configsTpl">
     {{#  if(d.configs.length > 0){ }}
-    <span style="color: #25f505;">已配置</span>
+    <span style="color: #25f505;">有</span>
     {{#  } else { }}
-    <span style="color: #f50b1b;">未配置</span>
+    <span style="color: #f50b1b;">无</span>
     {{#  } }}
 </script>
 <script>
@@ -68,11 +68,16 @@
             cellMinWidth: 80,
             even: true,
             cols: [[
-                {type: 'numbers', title: '序号', width: 100},
-                {field: 'name', title: '项目名称', width: 200},
-                {field: 'templateNames', title: '使用模板', width: 400},
-                {field: 'dbVO', title: '数据源', width: 200, templet: '#dbVOTpl'},
-                {field: 'configs', title: '全局配置', width: 200, templet: '#configsTpl'},
+                {type: 'numbers', title: '序号', width: 50},
+                {field: 'name', title: '项目名称', width: 105},
+                {field: 'description', title: '项目描述', width: 105},
+                {field: 'groupId', title: 'Group', width: 105},
+                {field: 'artifactId', title: 'Artifact', width: 105},
+                {field: 'version', title: 'Version', width: 150},
+                {field: 'packaging', title: 'Packaging', width: 100},
+                {field: 'dbVO', title: '数据源', width: 150, templet: '#dbVOTpl'},
+                {field: 'templateNames', title: '使用模板', width: 150},
+                {field: 'configs', title: '全局配置', width: 100, templet: '#configsTpl'},
                 {field: 'right', title: '操作', width: 200, align: 'center', toolbar: '#toolbarOperation'}
             ]],
             where: {
@@ -133,18 +138,17 @@
             var projectForm = layer.getChildFrame('body', index).find('form')[0];
             var projectInfo = formToObj($(projectForm));
 
-            var templateForm = layer.getChildFrame('body', index).find('form')[1];
-            var templateNameInfo = formToObj($(templateForm));
-
-            var dataSourceForm = layer.getChildFrame('body', index).find('form')[2];
+            var dataSourceForm = layer.getChildFrame('body', index).find('form')[1];
             var dataSourceInfo = formToObj($(dataSourceForm));
+
+            var templateForm = layer.getChildFrame('body', index).find('form')[2];
+            var templateNameInfo = formToObj($(templateForm));
 
             var configs = $(layero).find('iframe')[0].contentWindow.getTableData();
 
-            var reqObj = {};
-            reqObj["name"] = projectInfo.name;
-            reqObj["templateNames"] = checkToStrArr(templateNameInfo);
+            var reqObj = projectInfo;
             reqObj["dbVO"] = dataSourceInfo;
+            reqObj["templateNames"] = checkToStrArr(templateNameInfo);
             reqObj["configs"] = configs;
             return reqObj;
         }

@@ -17,11 +17,45 @@
                     </fieldset>
                     <form class="layui-form" lay-filter="projectFormFilter" id="projectForm">
                         <div class="layui-form-item">
-                            <label class="layui-form-label">选择项目</label>
-                            <div class="layui-inline" style="width: 200px;">
-                                <select id="projectSelect" name="name" lay-filter="projectFilter">
-                                    <option value="">请选择</option>
-                                </select>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">选择项目</label>
+                                <div class="layui-input-inline">
+                                    <select id="projectSelect" name="name" lay-filter="projectFilter">
+                                        <option value="">请选择</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">项目描述</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" id="description" name="description" type="text" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">Group</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" id="groupId" name="groupId" type="text" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">Artifact</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" id="artifactId" name="artifactId" type="text" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">Version</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" id="version" name="version" type="text" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">Packaging</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" id="packaging" name="packaging" type="text" autocomplete="off">
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -168,6 +202,13 @@
                 var projectResult = getRestResult("/cli/project/getByName?name=" + data.value);
                 if (projectResult.success === true) {
                     var project = projectResult.data;
+                    form.val('projectFormFilter', {
+                        "description": project.description,
+                        "groupId": project.groupId,
+                        "artifactId": project.artifactId,
+                        "version": project.version,
+                        "packaging": project.packaging
+                    });
                     form.val('templateFormFilter', strArrToCheckBoxByForm("templateForm", project.templateNames));
                     form.val('dbFormFilter', {
                         "dbType": project.dbVO.dbType.id,
@@ -186,6 +227,13 @@
                     msg.error(projectResult.message);
                 }
             }
+            form.val('projectFormFilter', {
+                "description": "",
+                "groupId": "",
+                "artifactId": "",
+                "version": "0.0.1-SNAPSHOT",
+                "packaging": "jar"
+            });
             form.val('templateFormFilter', strArrToCheckBoxByForm("templateForm", []));
             form.val('dbFormFilter', {
                 "dbType": "0",
@@ -219,7 +267,7 @@
                 {field: 'value', title: '配置属性值', width: 250, edit: 'text'},
                 {field: 'right', title: '操作', width: 200, align: 'center', toolbar: '#configToolbarOperation'}
             ]],
-            data: [{"key": "packageUrl", "value": ""}, {"key": "author", "value": ""}]
+            data: [{"key": "basePackage", "value": ""}, {"key": "author", "value": ""}]
         };
         var tableOption = {
             elem: '#dt',
@@ -324,6 +372,8 @@
         //明细方法
         function openDetail(data) {
             var obj = {};
+            obj["templateNames"] = checkToStrArr(formToObj($("#templateForm")));
+            obj["configs"] = table.cache["dtConfig"];
             obj["dataSource"] = formToObj($("#dbForm"));
             obj["tableInfo"] = data;
             opener.open("结构明细", '80%', '80%', 'dataDetail.html', obj, 2, 'exportByPost', '/cli/code/generator', null, getReqObj);

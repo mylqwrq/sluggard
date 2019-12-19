@@ -1,11 +1,11 @@
-package ${packageUrl}.controller;
+package ${basePackage}.controller;
 
 import com.gw.cloud.common.core.base.controller.AbstractBaseController;
-import ${packageUrl}.common.entity.${moduleName}Entity;
-import ${packageUrl}.common.vo.${moduleName}QueryVO;
-import ${packageUrl}.common.vo.${moduleName}UpdateVO;
-import ${packageUrl}.mapper.${moduleName}Mapper;
-import ${packageUrl}.service.api.${moduleName}Service;
+import ${basePackage}.common.entity.${moduleName}Entity;
+import ${basePackage}.common.vo.${moduleName}QueryVO;
+import ${basePackage}.common.vo.${moduleName}UpdateVO;
+import ${basePackage}.mapper.${moduleName}Mapper;
+import ${basePackage}.service.api.${moduleName}Service;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

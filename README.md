@@ -14,19 +14,59 @@
 
 2、提供模板管理功能，用户可根据实际的项目技术栈定制模板；
 
-3、提供项目管理功能，代码生成时可选择项目自动获取相关信息；
+3、提供项目管理功能，用户可根据实际需要保留常用项目信息；
 
-4、支持项目自定义全局配置；
+4、支持自定义模板配置；
 
-5、支持项目生成和单表生成；
+5、支持MySQL和Oracle两种数据库；
 
-6、内置了一些全局配置项：date（当前日期，格式为：yyyy/M/d）、tableName（表名称）、tableComment（表注释）、moduleName（首字母大写的模块名）、lowerModuleName（首字母小写的模块名）、
-primary（主键列信息）、javaTypes（表字段映射的Java类型集合）、columns（所有列信息集合）、columnName（列名称）、columnComment（列注释）、fieldName（字段名）、
-columnType（列映射的Java类型）、javaType（列映射的Java类型全路径）、jdbcType（列映射的Jdbc类型）
+6、支持项目一键生成和单表代码生成；
 
 ## 配置
 
-默认配置在sluggard\sluggard-server\src\main\resources\sluggard.properties中。
+下面是内置的一些模板配置：
+
+name：项目名称
+
+description：项目描述
+
+groupId：Maven项目的groupId
+
+artifactId：Maven项目的artifactId
+
+version：Maven项目的version
+
+packaging：Maven项目的打包方式
+
+date：当前日期（注释用，yyyy/M/d格式）
+
+author：作者（注释用，默认为Sluggard）
+
+tableName：表名称
+
+tableComment：表注释
+
+moduleName：首字母大写的模块名
+
+lowerModuleName：首字母小写的模块名
+
+primary：主键列信息
+
+javaTypes：表字段映射的Java类型集合
+
+columns：所有列信息集合
+
+columnName：列名称
+
+columnComment：列注释
+
+fieldName：字段名
+
+columnType：列映射的Java类型
+
+javaType：列映射的Java类型（带包名）
+
+jdbcType：列映射的Jdbc类型
 
 ## 打包
 

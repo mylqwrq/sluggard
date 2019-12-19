@@ -1,9 +1,9 @@
-package ${packageUrl}.mapper;
+package ${basePackage}.mapper;
 
 import com.gw.cloud.common.core.base.dao.BaseMapper;
-import ${packageUrl}.common.entity.${moduleName}Entity;
-import ${packageUrl}.common.vo.${moduleName}QueryVO;
-import ${packageUrl}.common.vo.${moduleName}UpdateVO;
+import ${basePackage}.common.entity.${moduleName}Entity;
+import ${basePackage}.common.vo.${moduleName}QueryVO;
+import ${basePackage}.common.vo.${moduleName}UpdateVO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

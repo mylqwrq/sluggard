@@ -1,11 +1,11 @@
-package ${packageUrl}.service.impl;
+package ${basePackage}.service.impl;
 
 import com.gw.cloud.common.core.base.service.AbstractBaseService;
-import ${packageUrl}.common.entity.${moduleName}Entity;
-import ${packageUrl}.common.vo.${moduleName}QueryVO;
-import ${packageUrl}.common.vo.${moduleName}UpdateVO;
-import ${packageUrl}.mapper.${moduleName}Mapper;
-import ${packageUrl}.service.api.${moduleName}Service;
+import ${basePackage}.common.entity.${moduleName}Entity;
+import ${basePackage}.common.vo.${moduleName}QueryVO;
+import ${basePackage}.common.vo.${moduleName}UpdateVO;
+import ${basePackage}.mapper.${moduleName}Mapper;
+import ${basePackage}.service.api.${moduleName}Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

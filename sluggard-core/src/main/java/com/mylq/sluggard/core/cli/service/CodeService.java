@@ -77,17 +77,18 @@ public class CodeService {
             throw new IllegalArgumentException("Columns info must not be null or empty.");
         }
 
+        // 构建模板中替换的数据模型
+        Map<String, Object> dataModel = Maps.newHashMap();
+        for (ConfigVO config : configs) {
+            dataModel.put(config.getKey(), Strings.isNullOrEmpty(config.getValue()) ? "Sluggard" : config.getValue());
+        }
+
         // 获取全部参数
         Set<String> javaTypes = columns.stream().map(ColumnEntity::getJavaType).collect(Collectors.toSet());
         List<ColumnEntity> primaryList = columns.stream().filter(c -> (c.getColumnKey().contains("P")))
                 .collect(Collectors.toList());
         ColumnEntity primary = primaryList.isEmpty() ? columns.get(0) : primaryList.get(0);
 
-        // 构建模板中替换的数据模型
-        Map<String, Object> dataModel = Maps.newHashMap();
-        for (ConfigVO config : configs) {
-            dataModel.put(config.getKey(), Strings.isNullOrEmpty(config.getValue()) ? "Sluggard" : config.getValue());
-        }
         dataModel.put("tableName", table.getTableName());
         dataModel.put("tableComment", table.getTableComment());
         dataModel.put("moduleName", table.getModuleName());
@@ -96,6 +97,7 @@ public class CodeService {
         dataModel.put("primary", primary);
         dataModel.put("columns", columns);
         dataModel.put("date", DateUtil.getNowDateStr());
+        dataModel.putIfAbsent("author", "Sluggard");
 
         // 得到UUID作为文件的父目录
         String strUid = UUID.randomUUID().toString().replaceAll("-", "");
