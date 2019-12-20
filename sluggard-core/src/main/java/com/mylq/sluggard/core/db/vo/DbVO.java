@@ -6,12 +6,7 @@ import java.util.Objects;
 
 import com.mylq.sluggard.core.common.enums.DbTypeEnum;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 /**
  * DB视图对象
@@ -20,12 +15,7 @@ import lombok.ToString;
  * @date 2019/11/29
  * @since 1.0.0
  */
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@Getter
-@Setter
-@ToString
+@Data
 public class DbVO implements Serializable {
 
     private DbTypeEnum dbType;

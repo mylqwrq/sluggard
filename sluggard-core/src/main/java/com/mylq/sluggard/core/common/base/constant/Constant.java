@@ -8,7 +8,10 @@ package com.mylq.sluggard.core.common.base.constant;
  * @since 1.0.0
  */
 public class Constant {
-
+    /**
+     * 临时文件根目录
+     */
+    public static final String FILE_ROOT_PATH_TEMP = System.getProperty("java.io.tmpdir") + "/sluggard/";
     /**
      * Properties文件根目录
      */
@@ -17,8 +20,4 @@ public class Constant {
      * 模板文件根目录
      */
     public static final String FILE_ROOT_PATH_TEMPLATE = System.getProperty("user.dir") + "/files/templates/";
-    /**
-     * 临时文件根目录
-     */
-    public static final String FILE_ROOT_PATH_TEMP = System.getProperty("java.io.tmpdir") + "/sluggard/";
 }

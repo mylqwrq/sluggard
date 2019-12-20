@@ -1,13 +1,8 @@
 package com.mylq.sluggard.core.db.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
 import java.io.Serializable;
+
+import lombok.Data;
 
 /**
  * 表信息实体类
@@ -16,12 +11,7 @@ import java.io.Serializable;
  * @date 2019/11/29
  * @since 1.0.0
  */
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@Getter
-@Setter
-@ToString
+@Data
 public class TableEntity implements Serializable {
 
     /**

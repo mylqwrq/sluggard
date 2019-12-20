@@ -24,49 +24,60 @@
 
 ## 配置
 
-下面是内置的一些模板配置：
+### 内置对象
 
-name：项目名称
+对象|描述
+---|---
+project|项目信息
+datasource|数据源信息
+table|表信息
+primary|主键列信息
+columns|列信息集合
 
-description：项目描述
+### 内置对象属性
 
-groupId：Maven项目的groupId
+属性|描述
+---|---
+project.name|项目名称
+project.description|项目描述
+project.basePackage|项目基本包路径
+project.groupId|项目GroupId
+project.artifactId|项目ArtifactId
+project.version|项目版本
+project.packaging|项目打包方式
+project.serverPort|项目服务端口
+project.serverPath|项目服务基本路径
+datasource.url|数据库链接
+datasource.dbType.id|数据库类型索引
+datasource.dbType.name|数据库类型名称
+datasource.ip|数据库地址
+datasource.port|数据库端口
+datasource.name|数据库地址
+datasource.user|数据库用户
+datasource.pwd|数据库密码
+datasource.ignorePrefix|数据库忽略前缀
+datasource.ignoreSuffix|数据库忽略后缀
+table.tableName|表名称
+table.tableComment|表注释
+table.moduleName|表映射的模块名
+column.columnName|列名称
+column.dataType|列类型
+column.columnDefault|列默认值
+column.isNullable|列是否允许为空
+column.columnLength|列长度
+column.columnKey|列主键
+column.columnComment|列注释
+column.fieldName|列映射的字段名
+column.javaType|列映射的Java类型（含包路径）
+column.jdbcType|列映射的Jdbc类型
+column.columnType|列映射的Java类型（不含包路径）
 
-artifactId：Maven项目的artifactId
+### 内置变量
 
-version：Maven项目的version
-
-packaging：Maven项目的打包方式
-
-date：当前日期（注释用，yyyy/M/d格式）
-
-author：作者（注释用，默认为Sluggard）
-
-tableName：表名称
-
-tableComment：表注释
-
-moduleName：首字母大写的模块名
-
-lowerModuleName：首字母小写的模块名
-
-primary：主键列信息
-
-javaTypes：表字段映射的Java类型集合
-
-columns：所有列信息集合
-
-columnName：列名称
-
-columnComment：列注释
-
-fieldName：字段名
-
-columnType：列映射的Java类型
-
-javaType：列映射的Java类型（带包名）
-
-jdbcType：列映射的Jdbc类型
+属性|描述
+---|---
+javaTypeImports|POJO类应引入的数据类型包集合（java.lang包无须引入）
+date|当前日期（yyyy/M/d）
 
 ## 打包
 
@@ -82,4 +93,8 @@ sh SluggardServer.sh start
 
 ## 注意
 
-由于Oracle授权问题，无法从Maven中央仓库下载驱动包，如有需要请从官方下载手动安装到本地然后引入依赖即可。
+1、由于Oracle授权问题，无法从Maven中央仓库下载驱动包，如有需要请从官方下载手动安装到本地然后引入依赖即可。
+
+2、配置自定义模板变量时不可与上述对象和变量重名，否则自定义模板变量不会生效。
+
+3、使用Sluggard应遵循一定的开发规范。例如数据库设计表时应只有一个主键。

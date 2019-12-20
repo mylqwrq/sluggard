@@ -25,36 +25,64 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="layui-inline">
-                                <label class="layui-form-label">项目描述</label>
-                                <div class="layui-input-inline">
-                                    <input class="layui-input" id="description" name="description" type="text" autocomplete="off">
-                                </div>
-                            </div>
                         </div>
                         <div class="layui-form-item">
                             <div class="layui-inline">
-                                <label class="layui-form-label">Group</label>
+                                <label class="layui-form-label">GroupId</label>
                                 <div class="layui-input-inline">
-                                    <input class="layui-input" id="groupId" name="groupId" type="text" autocomplete="off">
+                                    <input class="layui-input" id="groupId" name="groupId" type="text"
+                                           autocomplete="off">
                                 </div>
                             </div>
                             <div class="layui-inline">
-                                <label class="layui-form-label">Artifact</label>
+                                <label class="layui-form-label">ArtifactId</label>
                                 <div class="layui-input-inline">
-                                    <input class="layui-input" id="artifactId" name="artifactId" type="text" autocomplete="off">
+                                    <input class="layui-input" id="artifactId" name="artifactId" type="text"
+                                           autocomplete="off">
                                 </div>
                             </div>
                             <div class="layui-inline">
                                 <label class="layui-form-label">Version</label>
                                 <div class="layui-input-inline">
-                                    <input class="layui-input" id="version" name="version" type="text" autocomplete="off">
+                                    <input class="layui-input" id="version" name="version" type="text"
+                                           autocomplete="off">
                                 </div>
                             </div>
                             <div class="layui-inline">
                                 <label class="layui-form-label">Packaging</label>
                                 <div class="layui-input-inline">
-                                    <input class="layui-input" id="packaging" name="packaging" type="text" autocomplete="off">
+                                    <input class="layui-input" id="packaging" name="packaging" type="text"
+                                           autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">项目描述</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" id="description" name="description" type="text"
+                                           autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">基本包路径</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" id="basePackage" name="basePackage" type="text"
+                                           autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">服务端口</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" id="serverPort" name="serverPort" type="text"
+                                           autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">服务路径</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" id="serverPath" name="serverPath" type="text"
+                                           autocomplete="off">
                                 </div>
                             </div>
                         </div>
@@ -95,7 +123,8 @@
                             </div>
                             端口&#12288;
                             <div class="layui-inline" style="width: 100px;">
-                                <input class="layui-input" type="text" name="port" id="port" autocomplete="off" value="3306">
+                                <input class="layui-input" type="text" name="port" id="port" autocomplete="off"
+                                       value="3306">
                             </div>
                             名称&#12288;
                             <div class="layui-inline" style="width: 200px;">
@@ -164,6 +193,12 @@
         var form = layui.form;
         var table = layui.table;
 
+        $("#serverPath").blur(function () {
+            if (this.val().indexOf("/") !== 0) {
+                this.val("/" + this.val());
+            }
+        });
+
         //加载项目下拉框选项列表
         $.get(WEB_CONTEXT + '/cli/project/getList?name=', {}, function (result) {
             if (result.success && result.data != null) {
@@ -203,11 +238,14 @@
                 if (projectResult.success === true) {
                     var project = projectResult.data;
                     form.val('projectFormFilter', {
-                        "description": project.description,
                         "groupId": project.groupId,
                         "artifactId": project.artifactId,
                         "version": project.version,
-                        "packaging": project.packaging
+                        "packaging": project.packaging,
+                        "description": project.description,
+                        "basePackage": project.basePackage,
+                        "serverPort": project.serverPort,
+                        "serverPath": project.serverPath
                     });
                     form.val('templateFormFilter', strArrToCheckBoxByForm("templateForm", project.templateNames));
                     form.val('dbFormFilter', {
@@ -220,7 +258,7 @@
                         "ignorePrefix": project.dbVO.ignorePrefix,
                         "ignoreSuffix": project.dbVO.ignoreSuffix
                     });
-                    configTableOption["data"] = JSON.parse(JSON.stringify(project.configs));
+                    configTableOption["data"] = JSON.parse(JSON.stringify(project.templateConfigs));
                     table.render(configTableOption);
                     return;
                 } else {
@@ -228,11 +266,14 @@
                 }
             }
             form.val('projectFormFilter', {
-                "description": "",
                 "groupId": "",
                 "artifactId": "",
                 "version": "0.0.1-SNAPSHOT",
-                "packaging": "jar"
+                "packaging": "jar",
+                "description": "",
+                "basePackage": "",
+                "serverPort": "",
+                "serverPath": ""
             });
             form.val('templateFormFilter', strArrToCheckBoxByForm("templateForm", []));
             form.val('dbFormFilter', {
@@ -267,7 +308,7 @@
                 {field: 'value', title: '配置属性值', width: 250, edit: 'text'},
                 {field: 'right', title: '操作', width: 200, align: 'center', toolbar: '#configToolbarOperation'}
             ]],
-            data: [{"key": "basePackage", "value": ""}, {"key": "author", "value": ""}]
+            data: [{"key": "author", "value": "auto"}]
         };
         var tableOption = {
             elem: '#dt',
@@ -277,7 +318,7 @@
                 {type: 'numbers', title: '序号', width: 100},
                 {field: 'tableName', title: '表名称', sort: true, width: 300},
                 {field: 'tableComment', title: '表备注', width: 300},
-                {field: 'moduleName', title: '模块名称', width: 300},
+                {field: 'moduleName', title: '模块名', width: 300},
                 {fixed: 'right', title: '操作', width: 300, align: 'center', toolbar: '#toolbarOperation'}
             ]],
             data: [],
@@ -373,21 +414,24 @@
         function openDetail(data) {
             var obj = {};
             obj["templateNames"] = checkToStrArr(formToObj($("#templateForm")));
-            obj["configs"] = table.cache["dtConfig"];
+            obj["templateConfigs"] = table.cache["dtConfig"];
+            obj["project"] = formToObj($("#projectForm"));
             obj["dataSource"] = formToObj($("#dbForm"));
             obj["tableInfo"] = data;
             opener.open("结构明细", '80%', '80%', 'dataDetail.html', obj, 2, 'exportByPost', '/cli/code/generator', null, getReqObj);
         }
 
         function getReqObj(layer, index, layero) {
+
             var tableForm = layer.getChildFrame('body', index).find('form')[0];
             var tableInfo = formToObj($(tableForm));
-
             var columnsInfo = $(layero).find('iframe')[0].contentWindow.getTableData();
 
             var reqObj = {};
             reqObj["templateNames"] = checkToStrArr(formToObj($("#templateForm")));
-            reqObj["configs"] = table.cache["dtConfig"];
+            reqObj["templateConfigs"] = table.cache["dtConfig"];
+            reqObj["project"] = formToObj($("#projectForm"));
+            reqObj["dataSource"] = formToObj($("#dbForm"));
             reqObj["table"] = tableInfo;
             reqObj["columns"] = columnsInfo;
             return reqObj;

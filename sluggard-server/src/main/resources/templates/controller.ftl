@@ -1,34 +1,29 @@
-package ${basePackage}.controller;
+package ${project.basePackage}.controller;
 
-import com.gw.cloud.common.core.base.controller.AbstractBaseController;
-import ${basePackage}.common.entity.${moduleName}Entity;
-import ${basePackage}.common.vo.${moduleName}QueryVO;
-import ${basePackage}.common.vo.${moduleName}UpdateVO;
-import ${basePackage}.mapper.${moduleName}Mapper;
-import ${basePackage}.service.api.${moduleName}Service;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ${project.basePackage}.entity.${table.moduleName}Entity;
+import ${project.basePackage}.service.${table.moduleName}Service;
+import ${project.basePackage}.vo.${table.moduleName}QueryVO;
+import ${project.basePackage}.vo.${table.moduleName}UpdateVO;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 /**
- * ${tableComment}Controller接口
+ * ${table.tableComment}Controller接口
  *
  * @author ${author}
  * @date ${date}
  * @since 1.0.0
  */
 @RestController
-@RequestMapping(value = "/${lowerModuleName}")
-@Api(value = "/${lowerModuleName}", description = "${tableComment}Controller接口")
-public interface ${moduleName}Controller extends AbstractBaseController<${primary["columnType"]}, ${moduleName}Entity, ${moduleName}UpdateVO, ${moduleName}QueryVO> {
+@RequestMapping(value = "/${table.moduleName ? uncap_first}")
+@Api(value = "/${table.moduleName ? uncap_first}", description = "${table.tableComment}Controller接口")
+public class ${table.moduleName}Controller {
 
     @Autowired
-    private ${moduleName}Service ${lowerModuleName}Service;
-
-    @Override
-    public ${moduleName}Service getService() {
-        return this.${lowerModuleName}Service;
-    }
+    private ${table.moduleName}Service ${table.moduleName ? uncap_first}Service;
 }

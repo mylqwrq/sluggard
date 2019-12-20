@@ -1,29 +1,24 @@
-package ${basePackage}.service.impl;
+package ${project.basePackage}.service.impl;
 
-import com.gw.cloud.common.core.base.service.AbstractBaseService;
-import ${basePackage}.common.entity.${moduleName}Entity;
-import ${basePackage}.common.vo.${moduleName}QueryVO;
-import ${basePackage}.common.vo.${moduleName}UpdateVO;
-import ${basePackage}.mapper.${moduleName}Mapper;
-import ${basePackage}.service.api.${moduleName}Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ${project.basePackage}.dao.${table.moduleName}Mapper;
+import ${project.basePackage}.entity.${table.moduleName}Entity;
+import ${project.basePackage}.service.${table.moduleName}Service;
+import ${project.basePackage}.vo.${table.moduleName}QueryVO;
+import ${project.basePackage}.vo.${table.moduleName}UpdateVO;
+
 /**
- * ${tableComment}Service实现
+ * ${table.tableComment}Service实现
  *
  * @author ${author}
  * @date ${date}
  * @since 1.0.0
  */
 @Service
-public interface ${moduleName}ServiceImpl extends AbstractBaseService<${primary["columnType"]}, ${moduleName}Entity, ${moduleName}UpdateVO, ${moduleName}QueryVO> implements ${moduleName}Service {
+public class ${table.moduleName}ServiceImpl implements ${table.moduleName}Service {
 
     @Autowired
-    private ${moduleName}Mapper ${lowerModuleName}Mapper;
-
-    @Override
-    public ${moduleName}Mapper getMapper() {
-        return this.${lowerModuleName}Mapper;
-    }
+    private ${table.moduleName}Mapper ${table.moduleName ? uncap_first}Mapper;
 }

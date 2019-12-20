@@ -43,8 +43,8 @@
 <script type="text/html" id="dbVOTpl">
     <span>{{d.dbVO.name}}</span>
 </script>
-<script type="text/html" id="configsTpl">
-    {{#  if(d.configs.length > 0){ }}
+<script type="text/html" id="templateConfigsTpl">
+    {{#  if(d.templateConfigs.length > 0){ }}
     <span style="color: #25f505;">有</span>
     {{#  } else { }}
     <span style="color: #f50b1b;">无</span>
@@ -69,16 +69,19 @@
             even: true,
             cols: [[
                 {type: 'numbers', title: '序号', width: 50},
-                {field: 'name', title: '项目名称', width: 105},
-                {field: 'description', title: '项目描述', width: 105},
-                {field: 'groupId', title: 'Group', width: 105},
-                {field: 'artifactId', title: 'Artifact', width: 105},
-                {field: 'version', title: 'Version', width: 150},
-                {field: 'packaging', title: 'Packaging', width: 100},
+                {field: 'name', title: '项目名称', width: 100},
+                {field: 'groupId', title: 'GroupId', width: 100},
+                {field: 'artifactId', title: 'ArtifactId', width: 100},
+                {field: 'version', title: '版本', width: 150},
+                {field: 'packaging', title: '打包方式', width: 100},
+                {field: 'description', title: '项目描述', width: 150},
+                {field: 'basePackage', title: '基本包路径', width: 150},
+                {field: 'serverPort', title: '服务端口', width: 100},
+                {field: 'serverPath', title: '服务路径', width: 100},
                 {field: 'dbVO', title: '数据源', width: 150, templet: '#dbVOTpl'},
-                {field: 'templateNames', title: '使用模板', width: 150},
-                {field: 'configs', title: '全局配置', width: 100, templet: '#configsTpl'},
-                {field: 'right', title: '操作', width: 200, align: 'center', toolbar: '#toolbarOperation'}
+                {field: 'templateNames', title: '使用模板', width: 200},
+                {field: 'templateConfigs', title: '模板配置', width: 100, templet: '#templateConfigsTpl'},
+                {fixed: 'right', title: '操作', width: 200, align: 'center', toolbar: '#toolbarOperation'}
             ]],
             where: {
                 name: $("#name").val()
@@ -144,12 +147,12 @@
             var templateForm = layer.getChildFrame('body', index).find('form')[2];
             var templateNameInfo = formToObj($(templateForm));
 
-            var configs = $(layero).find('iframe')[0].contentWindow.getTableData();
+            var templateConfigs = $(layero).find('iframe')[0].contentWindow.getTableData();
 
             var reqObj = projectInfo;
             reqObj["dbVO"] = dataSourceInfo;
             reqObj["templateNames"] = checkToStrArr(templateNameInfo);
-            reqObj["configs"] = configs;
+            reqObj["templateConfigs"] = templateConfigs;
             return reqObj;
         }
 

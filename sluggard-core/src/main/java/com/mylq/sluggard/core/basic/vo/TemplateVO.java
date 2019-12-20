@@ -6,10 +6,7 @@ import com.mylq.sluggard.core.common.enums.FileTypeEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 /**
  * Template视图对象
@@ -19,11 +16,8 @@ import lombok.ToString;
  * @since 1.0.0
  */
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
-@Getter
-@Setter
-@ToString
+@Data
 public class TemplateVO implements Serializable {
 
     private String name;

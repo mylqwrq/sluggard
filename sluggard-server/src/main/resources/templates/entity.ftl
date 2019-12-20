@@ -1,34 +1,41 @@
-package ${basePackage}.common.entity;
+package ${project.basePackage}.entity;
 
-import com.gw.cloud.common.core.base.entity.AbstractBaseUpdateEntity;
+import java.io.Serializable;
+<#if javaTypeImports??>
+    <#list javaTypeImports as javaTypeImport>
+        <#if !(javaTypeImport ? starts_with("java.lang."))>
+            import ${javaTypeImport};
+        </#if>
+    </#list>
+</#if>
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-<#if javaTypes??>
-<#list javaTypes as javaType>
-<#if !(javaType ? starts_with("java.lang."))>
-import ${javaType};
-</#if>
-</#list>
-</#if>
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * ${tableComment}实体类
+ * ${table.tableComment}实体类
  *
  * @author ${author}
  * @date ${date}
  * @since 1.0.0
  */
-@ApiModel(value = "${moduleName}Entity", description = "${tableComment}实体类")
-public class ${moduleName}Entity extends AbstractBaseUpdateEntity<${primary["columnType"]}> {
+@AllArgsConstructor
+@Builder
+@Data
+@ApiModel(value = "${table.moduleName}Entity", description = "${table.tableComment}实体类")
+public class ${table.moduleName}Entity implements Serializable {
 
 <#if columns??>
 <#list columns as column>
     /**
-     * ${column["columnComment"]}
+     * ${column.columnComment}
      */
-    @ApiModelProperty(value = "${column["columnComment"]}", name = "${column["fieldName"]}")
-    private ${column["columnType"]} ${column["fieldName"]};
+    @ApiModelProperty(value = "${column.columnComment}", name = "${column.fieldName}")
+    private ${column.columnType} ${column.fieldName};
 </#list>
 </#if>
-
 }

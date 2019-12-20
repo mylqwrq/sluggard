@@ -3,12 +3,7 @@ package com.mylq.sluggard.core.db.entity;
 import java.io.Serializable;
 import java.util.Objects;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 /**
  * 列信息实体类
@@ -17,12 +12,7 @@ import lombok.ToString;
  * @date 2019/11/29
  * @since 1.0.0
  */
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@Getter
-@Setter
-@ToString
+@Data
 public class ColumnEntity implements Serializable {
 
     /**

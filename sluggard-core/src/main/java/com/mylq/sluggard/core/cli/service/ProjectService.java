@@ -30,14 +30,20 @@ public class ProjectService {
 
     public void save(@NonNull ProjectVO projectVO, boolean isAbsent) {
         BasicUtil.requireNotNullOrBlank("name", projectVO.getName());
-        BasicUtil.requireNotNullOrBlank("description", projectVO.getDescription());
         BasicUtil.requireNotNullOrBlank("groupId", projectVO.getGroupId());
         BasicUtil.requireNotNullOrBlank("artifactId", projectVO.getArtifactId());
         BasicUtil.requireNotNullOrBlank("version", projectVO.getVersion());
         BasicUtil.requireNotNullOrBlank("packaging", projectVO.getPackaging());
-        BasicUtil.requireNotNull("dbVO", projectVO.getDbVO());
-        BasicUtil.requireNotNull("templateNames", projectVO.getTemplateNames());
-        BasicUtil.requireNotNull("configs", projectVO.getConfigs());
+        BasicUtil.requireNotNullOrBlank("description", projectVO.getDescription());
+        BasicUtil.requireNotNullOrBlank("basePackage", projectVO.getBasePackage());
+        BasicUtil.requireNotNullOrBlank("serverPort", projectVO.getServerPort());
+        BasicUtil.requireNotNullOrBlank("serverPath", projectVO.getServerPath());
+        BasicUtil.requireNotNull("db type", projectVO.getDbVO().getDbType());
+        BasicUtil.requireNotNullOrBlank("db ip", projectVO.getDbVO().getIp());
+        BasicUtil.requireNotNullOrBlank("db port", projectVO.getDbVO().getPort());
+        BasicUtil.requireNotNullOrBlank("db name", projectVO.getDbVO().getName());
+        BasicUtil.requireNotNullOrBlank("db user", projectVO.getDbVO().getUser());
+        BasicUtil.requireNotNullOrBlank("db pwd", projectVO.getDbVO().getPwd());
         ProjectPropertyFactory.set(projectVO, isAbsent);
     }
 

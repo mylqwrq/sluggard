@@ -19,22 +19,16 @@
                             <input class="layui-input" id="name" name="name" type="text" autocomplete="off">
                         </div>
                     </div>
-                    <div class="layui-inline">
-                        <label class="layui-form-label">项目描述</label>
-                        <div class="layui-input-inline">
-                            <input class="layui-input" id="description" name="description" type="text" autocomplete="off">
-                        </div>
-                    </div>
                 </div>
                 <div class="layui-form-item">
                     <div class="layui-inline">
-                        <label class="layui-form-label">Group</label>
+                        <label class="layui-form-label">GroupId</label>
                         <div class="layui-input-inline">
                             <input class="layui-input" id="groupId" name="groupId" type="text" autocomplete="off">
                         </div>
                     </div>
                     <div class="layui-inline">
-                        <label class="layui-form-label">Artifact</label>
+                        <label class="layui-form-label">ArtifactId</label>
                         <div class="layui-input-inline">
                             <input class="layui-input" id="artifactId" name="artifactId" type="text" autocomplete="off">
                         </div>
@@ -54,11 +48,39 @@
                         </div>
                     </div>
                 </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">项目描述</label>
+                        <div class="layui-input-inline">
+                            <input class="layui-input" id="description" name="description" type="text" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">基本包路径</label>
+                        <div class="layui-input-inline">
+                            <input class="layui-input" id="basePackage" name="basePackage" type="text" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">服务端口</label>
+                        <div class="layui-input-inline">
+                            <input class="layui-input" id="serverPort" name="serverPort" type="text" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">服务路径</label>
+                        <div class="layui-input-inline">
+                            <input class="layui-input" id="serverPath" name="serverPath" type="text" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
     <div class="layui-colla-item">
-        <h2 class="layui-colla-title">数据源信息</h2>
+        <h2 class="layui-colla-title">数&ensp;据&ensp;源</h2>
         <div class="layui-colla-content layui-show">
             <div class="layui-inline">
                 <form class="layui-form" style="margin-right:20px;margin-top:10px;" lay-filter="dbFormFilter"
@@ -141,7 +163,7 @@
         </div>
     </div>
     <div class="layui-colla-item">
-        <h2 class="layui-colla-title">配置信息</h2>
+        <h2 class="layui-colla-title">模板配置</h2>
         <div class="layui-colla-content layui-show">
             <table class="layui-hide" id="dt" lay-filter="dtFilter"></table>
         </div>
@@ -161,6 +183,12 @@
     layui.use(['element', 'form', 'table'], function () {
         var form = layui.form;
         var table = layui.table;
+
+        $("#serverPath").blur(function () {
+            if ($(this).val().indexOf("/") !== 0) {
+                $(this).val("/" + $(this).val());
+            }
+        });
 
         form.on('select(dbTypeFilter)', function (data) {
             if (data.value === "0") {
@@ -244,7 +272,7 @@
                 {field: 'value', title: '配置属性值', width: 250, edit: 'text'},
                 {field: 'right', title: '操作', width: 200, align: 'center', toolbar: '#toolbarOperation'}
             ]],
-            data: [{"key": "basePackage", "value": ""}, {"key": "author", "value": ""}]
+            data: [{"key": "author", "value": "auto"}]
         };
 
         //加载下拉框选项
@@ -269,11 +297,14 @@
             document.getElementById("name").readOnly = false;
             form.val('projectFormFilter', {
                 "name": "",
-                "description": "",
                 "groupId": "",
                 "artifactId": "",
                 "version": "0.0.1-SNAPSHOT",
-                "packaging": "jar"
+                "packaging": "jar",
+                "description": "",
+                "basePackage": "",
+                "serverPort": "",
+                "serverPath": ""
             });
             form.val('dbFormFilter', {
                 "dbType": "0",
@@ -291,11 +322,14 @@
             document.getElementById("name").readOnly = true;
             form.val('projectFormFilter', {
                 "name": obj.name,
-                "description": obj.description,
                 "groupId": obj.groupId,
                 "artifactId": obj.artifactId,
                 "version": obj.version,
-                "packaging": obj.packaging
+                "packaging": obj.packaging,
+                "description": obj.description,
+                "basePackage": obj.basePackage,
+                "serverPort": obj.serverPort,
+                "serverPath": obj.serverPath
             });
             form.val('dbFormFilter', {
                 "dbType": obj.dbVO.dbType.id,
@@ -308,7 +342,7 @@
                 "ignoreSuffix": obj.dbVO.ignoreSuffix
             });
             form.val('templateFormFilter', strArrToCheckBoxByForm("templateForm", obj.templateNames));
-            tableOption["data"] = JSON.parse(JSON.stringify(obj.configs));
+            tableOption["data"] = JSON.parse(JSON.stringify(obj.templateConfigs));
             table.render(tableOption);
         }
     }
@@ -319,12 +353,8 @@
             msg.warn("项目名称不可为空！");
             return false;
         }
-        if ($("#description").val() === "") {
-            msg.warn("项目描述不可为空！");
-            return false;
-        }
         if ($("#groupId").val() === "") {
-            msg.warn("Group不可为空！");
+            msg.warn("GroupId不可为空！");
             return false;
         }
         if ($("#artifactId").val() === "") {
@@ -337,6 +367,22 @@
         }
         if ($("#packaging").val() === "") {
             msg.warn("Packaging不可为空！");
+            return false;
+        }
+        if ($("#description").val() === "") {
+            msg.warn("项目描述不可为空！");
+            return false;
+        }
+        if ($("#basePackage").val() === "") {
+            msg.warn("基本包路径不可为空！");
+            return false;
+        }
+        if ($("#serverPort").val() === "") {
+            msg.warn("服务端口不可为空！");
+            return false;
+        }
+        if ($("#serverPath").val() === "") {
+            msg.warn("服务路径不可为空！");
             return false;
         }
         if ($("#dbType").val() === "") {

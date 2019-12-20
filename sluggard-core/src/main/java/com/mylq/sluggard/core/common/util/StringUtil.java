@@ -33,37 +33,6 @@ public class StringUtil {
     }
 
     /**
-     * 获取去掉扩展名后的文件名称
-     *
-     * @param fileFullName 文件全名
-     * @param extension 扩展名
-     * @return 去掉扩展名后的名称
-     */
-    public static String getFileName(String fileFullName, String extension) {
-        return fileFullName.substring(0, fileFullName.lastIndexOf(extension));
-    }
-
-    /**
-     * 字符串首字符大写
-     *
-     * @param str 输入字符串
-     * @return 首字符大写字符串
-     */
-    public static String firstLetterToUpperCase(String str) {
-        return str.substring(0, 1).toUpperCase() + str.substring(1);
-    }
-
-    /**
-     * 字符串首字符小写
-     *
-     * @param str 输入字符串
-     * @return 首字符大写字符串
-     */
-    public static String firstLetterToLowerCase(String str) {
-        return str.substring(0, 1).toLowerCase() + str.substring(1);
-    }
-
-    /**
      * 下划线命名转换为驼峰命名
      *
      * @param param 输入的下划线命名字符串

@@ -39,6 +39,7 @@
             <input class="layui-input" id="fileNameSuffix" name="fileNameSuffix" type="text" autocomplete="off">
         </div>
     </div>
+    <input class="layui-input" id="disabled" name="disabled" type="hidden">
 </form>
 
 <script src="../../resource/jquery/jquery-3.4.1.min.js"></script>
@@ -69,7 +70,8 @@
                 "fileType": 1,
                 "fileRelativePath": "",
                 "fileNamePrefix": "",
-                "fileNameSuffix": ""
+                "fileNameSuffix": "",
+                "disabled": false
             });
             document.getElementById("name").readOnly = false;
         } else if (type === 2) {
@@ -78,7 +80,8 @@
                 "fileType": obj.fileType.id,
                 "fileRelativePath": obj.fileRelativePath,
                 "fileNamePrefix": obj.fileNamePrefix,
-                "fileNameSuffix": obj.fileNameSuffix
+                "fileNameSuffix": obj.fileNameSuffix,
+                "disabled": obj.disabled
             });
             document.getElementById("name").readOnly = true;
         }

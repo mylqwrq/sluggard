@@ -41,11 +41,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
-                <version>2.7</version>
-                <configuration>
-                    <!-- 是否生成备份Pom，用于版本回滚 -->
-                    <generateBackupPoms>false</generateBackupPoms>
-                </configuration>
             </plugin>
             <!-- 解决SpringBoot引用font awesome不显示的问题 -->
             <plugin>
