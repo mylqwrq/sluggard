@@ -9,13 +9,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 /**
  * 文件工具类
@@ -138,18 +135,6 @@ public class FileUtil {
     }
 
     /**
-     * 复制文件
-     *
-     * @param sourcePath 源文件
-     * @param targetPath 目标文件
-     * @throws IOException IO异常
-     */
-    public static void copyFile(String sourcePath, String targetPath) throws IOException {
-        String text = readFile(sourcePath);
-        saveFile(targetPath, text);
-    }
-
-    /**
      * 递归删除文件
      *
      * @param filePath 文件路径
@@ -183,67 +168,6 @@ public class FileUtil {
                 }
             }
             file.delete();
-        }
-    }
-
-    /**
-     * 将文件压缩成ZIP格式
-     *
-     * @param out 输出流
-     * @param filePath 文件路径
-     * @param isContainRootPath 是否包含根目录
-     * @throws IOException IO异常
-     */
-    public static void compressFileToZip(OutputStream out, String filePath, boolean isContainRootPath) throws IOException {
-        try (ZipOutputStream zos = new ZipOutputStream(out)) {
-            File sourceFile = new File(filePath);
-            if (isContainRootPath) {
-                compress(zos, sourceFile, sourceFile.getName());
-            } else {
-                File[] files = sourceFile.listFiles();
-                if (Objects.nonNull(files)) {
-                    for (File file : files) {
-                        compress(zos, file, file.getName());
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * 压缩方法
-     *
-     * @param zos Zip输出流
-     * @param sourceFile 源文件对象
-     * @param sourceFilePath 源文件绝对路径
-     * @throws IOException IO异常
-     */
-    private static void compress(ZipOutputStream zos, File sourceFile, String sourceFilePath) throws IOException {
-        byte[] buf = new byte[1024];
-        if (sourceFile.isFile()) {
-            // 向zip输出流中添加一个zip实体，name为zip实体的文件的名字
-            zos.putNextEntry(new ZipEntry(sourceFilePath));
-            // copy文件到zip输出流中
-            FileInputStream in = new FileInputStream(sourceFile);
-            int len;
-            while ((len = in.read(buf)) != -1) {
-                zos.write(buf, 0, len);
-            }
-            zos.closeEntry();
-            in.close();
-        } else {
-            File[] listFiles = sourceFile.listFiles();
-            if (listFiles == null || listFiles.length == 0) {
-                // 空文件夹的处理
-                zos.putNextEntry(new ZipEntry(sourceFilePath + "/"));
-                zos.closeEntry();
-            } else {
-                for (File file : listFiles) {
-                    // 注意：file.getName()前面需要带上父文件夹的名字加一斜杠,
-                    // 不然最后压缩包中就不能保留原来的文件结构,即：所有文件都跑到压缩包根目录下了
-                    compress(zos, file, sourceFilePath + "/" + file.getName());
-                }
-            }
         }
     }
 }

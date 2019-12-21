@@ -18,6 +18,7 @@ import com.mylq.sluggard.core.common.base.constant.Constant;
 import com.mylq.sluggard.core.common.base.exception.SluggardBusinessException;
 import com.mylq.sluggard.core.common.util.FileUtil;
 import com.mylq.sluggard.core.common.util.JsonUtil;
+import com.mylq.sluggard.core.common.util.ZipUtil;
 import com.mylq.sluggard.core.db.entity.ColumnEntity;
 import com.mylq.sluggard.core.db.entity.TableEntity;
 import com.mylq.sluggard.core.db.vo.DbVO;
@@ -51,7 +52,7 @@ public class CodeController {
             // 压缩文件
             response.setContentType("application/zip");
             response.setHeader("Content-Disposition", "attachment; filename = " + table.getTableName() + ".zip");
-            FileUtil.compressFileToZip(response.getOutputStream(), folderPath, false);
+            ZipUtil.compressToZip(response.getOutputStream(), folderPath);
             // 删除文件
             FileUtil.deleteFile(folderPath);
         } catch (Exception e) {

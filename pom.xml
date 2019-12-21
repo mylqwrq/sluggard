@@ -26,6 +26,7 @@
         <fastjson.version>1.2.62</fastjson.version>
         <guava.version>28.1-jre</guava.version>
         <apache-commons-dbutils.vesion>1.7</apache-commons-dbutils.vesion>
+        <apache-commons-compress.vesion>1.19</apache-commons-compress.vesion>
     </properties>
 
     <dependencyManagement>
@@ -65,6 +66,13 @@
                 <groupId>commons-dbutils</groupId>
                 <artifactId>commons-dbutils</artifactId>
                 <version>${apache-commons-dbutils.vesion}</version>
+            </dependency>
+
+            <!-- Apache Commons Compress-->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>${apache-commons-compress.vesion}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
