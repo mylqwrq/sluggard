@@ -9,8 +9,8 @@ import java.io.Serializable;
     </#list>
 </#if>
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import com.mylq.core.base.entity.BaseEntity;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,15 +26,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Data
-@ApiModel(value = "${table.moduleName}Entity", description = "${table.tableComment}实体类")
-public class ${table.moduleName}Entity implements Serializable {
+public class ${table.moduleName}Entity extends BaseEntity {
 
 <#if columns??>
 <#list columns as column>
     /**
      * ${column.columnComment}
      */
-    @ApiModelProperty(value = "${column.columnComment}", name = "${column.fieldName}")
     private ${column.columnType} ${column.fieldName};
 </#list>
 </#if>

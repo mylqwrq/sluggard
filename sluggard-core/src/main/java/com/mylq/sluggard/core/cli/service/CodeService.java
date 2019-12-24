@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,8 @@ import lombok.NonNull;
 @Service
 public class CodeService {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     private TemplateService templateService;
 
@@ -47,12 +51,10 @@ public class CodeService {
      * @param table 表信息
      * @param columns 列信息集合
      * @return 生成代码的根目录
-     * @throws IOException IO异常
-     * @throws TemplateException Template异常
      */
     public String generator(@NonNull List<String> templateNames, @NonNull List<TemplateConfigVO> templateConfigs,
             @NonNull ProjectBasicVO project, @NonNull DbVO dataSource, @NonNull TableEntity table,
-            @NonNull List<ColumnEntity> columns) throws IOException, TemplateException {
+            @NonNull List<ColumnEntity> columns) {
 
         if (templateNames.isEmpty()) {
             throw new IllegalArgumentException("Templates must not be empty.");
@@ -85,20 +87,24 @@ public class CodeService {
 
         // 遍历模板
         for (String templateName : templateNames) {
-            TemplateVO template = templateService.get(templateName);
-            String fileName = template.getFileNamePrefix() + table.getModuleName() + template.getFileNameSuffix()
-                    + template.getFileType().getName();
-            // 文件父目录：如果是java文件则根据包路径生成目录
-            String parentPath = template.getFileRelativePath();
-            if (FileTypeEnum.JAVA.equals(template.getFileType())) {
-                String sourceCode = templateService.getTextByTemplate(template.getName(), dataModel);
-                String packagePath = sourceCode.split(";")[0].replaceFirst("package ", "");
-                parentPath += StringUtil.getFilePathByPackage(packagePath);
+            try {
+                TemplateVO template = templateService.get(templateName);
+                String fileName = template.getFileNamePrefix() + table.getModuleName() + template.getFileNameSuffix()
+                        + template.getFileType().getName();
+                // 文件父目录：如果是java文件则根据包路径生成目录
+                String parentPath = template.getFileRelativePath();
+                if (FileTypeEnum.JAVA.equals(template.getFileType())) {
+                    String sourceCode = templateService.getTextByTemplate(template.getName(), dataModel);
+                    String packagePath = sourceCode.split(";")[0].replaceFirst("package ", "");
+                    parentPath += StringUtil.getFilePathByPackage(packagePath);
+                }
+                // 文件路径
+                String filePath = strUid + StringUtil.STR_FILE_SEPARATOR + parentPath + fileName;
+                // 根据模板生成文件
+                templateService.saveFileByTemplate(filePath, template.getName(), dataModel);
+            } catch (IOException | TemplateException e) {
+                logger.error("Failed to generator code file.", e);
             }
-            // 文件路径
-            String filePath = strUid + StringUtil.STR_FILE_SEPARATOR + parentPath + fileName;
-            // 根据模板生成文件
-            templateService.saveFileByTemplate(filePath, template.getName(), dataModel);
         }
 
         return strUid;

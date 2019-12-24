@@ -39,12 +39,12 @@
   </if>
  </sql>
 
- <select id="selectCount" resultType="java.lang.Long" parameterType="${project.basePackage}.vo.${table.moduleName}QueryVO">
+ <select id="selectCount" resultType="java.lang.Long" parameterType="${project.basePackage}.entity.${table.moduleName}Entity">
   select count(*) from ${table.tableName}
   <include refid="Base_Where_Clause" />
  </select>
 
- <select id="select" resultMap="BaseResultMap" parameterType="${project.basePackage}.vo.${table.moduleName}QueryVO">
+ <select id="selectList" resultMap="BaseResultMap" parameterType="${project.basePackage}.entity.${table.moduleName}Entity">
   select
   <include refid="Select_Field" />
   from ${table.tableName}
@@ -63,7 +63,7 @@
   where ${table.tableName}.${primary.columnName} =${r'#'}{${primary.fieldName}}
  </delete>
 
- <update id="updateById" parameterType="${project.basePackage}.vo.${table.moduleName}UpdateVO">
+ <update id="updateById" parameterType="${project.basePackage}.entity.${table.moduleName}Entity">
   update ${table.tableName}
   <set>
  <#if columns??>
@@ -77,7 +77,7 @@
   </where>
  </update>
 
- <insert id="insert" parameterType="${project.basePackage}.vo.${table.moduleName}UpdateVO">
+ <insert id="insert" parameterType="${project.basePackage}.entity.${table.moduleName}Entity">
   insert into ${table.tableName}
   <trim prefix="(" suffix=")" suffixOverrides=",">
  <#if columns??>

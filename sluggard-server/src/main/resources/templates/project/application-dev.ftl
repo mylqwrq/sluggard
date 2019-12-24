@@ -35,14 +35,15 @@ spring:
 
 mybatis:
   configuration:
+    default-enum-type-handler: com.mylq.core.base.handler.BaseEnumTypeHandler
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
   mapper-locations: classpath:/mapper/*Mapper.xml
 
 pagehelper:
-  helperDialect:  ${datasource.dbType.name}
+  helperDialect: ${datasource.dbType.name}
   reasonable: false
-  supportMethodsArguments:  true
+  supportMethodsArguments: true
   params: count=countSql
 
 swagger:

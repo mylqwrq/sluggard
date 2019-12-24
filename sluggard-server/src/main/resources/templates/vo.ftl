@@ -9,6 +9,8 @@ import java.io.Serializable;
     </#list>
 </#if>
 
+import com.mylq.core.base.vo.BaseVO;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -17,7 +19,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * ${table.tableComment}查询视图对象
+ * ${table.tableComment}视图对象
  *
  * @author ${author}
  * @date ${date}
@@ -26,8 +28,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Data
-@ApiModel(value = "${table.moduleName}QueryVO", description = "${table.tableComment}查询视图对象")
-public class ${table.moduleName}QueryVO implements Serializable {
+@ApiModel(value = "${table.moduleName}VO", description = "${table.tableComment}视图对象")
+public class ${table.moduleName}VO extends BaseVO {
 
 <#if columns??>
 <#list columns as column>
