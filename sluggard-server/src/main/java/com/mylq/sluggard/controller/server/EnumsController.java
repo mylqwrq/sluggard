@@ -23,7 +23,7 @@ import com.mylq.sluggard.core.common.enums.FileTypeEnum;
 @RequestMapping("/server/enums")
 public class EnumsController {
 
-    @GetMapping(value = "/getDbTypes")
+    @GetMapping("/getDbTypes")
     public JsonResult<List> getDbTypes() {
         JsonResult<List> jsonResult;
         try {
@@ -35,7 +35,7 @@ public class EnumsController {
         return jsonResult;
     }
 
-    @GetMapping(value = "/getFileTypes")
+    @GetMapping("/getFileTypes")
     public JsonResult<List> getFileTypes() {
         JsonResult<List> jsonResult;
         try {

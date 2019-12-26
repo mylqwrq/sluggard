@@ -1,12 +1,17 @@
 package com.mylq.sluggard.core.cli.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import com.mylq.sluggard.core.basic.util.BasicUtil;
 import com.mylq.sluggard.core.cli.factory.ProjectPropertyFactory;
+import com.mylq.sluggard.core.cli.vo.ProjectBasicVO;
 import com.mylq.sluggard.core.cli.vo.ProjectVO;
+import com.mylq.sluggard.core.cli.vo.TemplateConfigVO;
+import com.mylq.sluggard.core.db.entity.TableEntity;
+import com.mylq.sluggard.core.db.vo.DbVO;
 
 import lombok.NonNull;
 
@@ -49,5 +54,13 @@ public class ProjectService {
 
     public void delete(String name) {
         ProjectPropertyFactory.remove(name);
+    }
+
+    public String generator(@NonNull List<String> templateNames, @NonNull List<TemplateConfigVO> templateConfigs,
+            @NonNull ProjectBasicVO project, @NonNull DbVO dataSource, @NonNull List<TableEntity> tables) {
+
+        String folderDir = UUID.randomUUID().toString().replaceAll("-", "");
+
+        return folderDir;
     }
 }

@@ -29,7 +29,7 @@ public class DbController {
     @Autowired
     private DbService dbService;
 
-    @PostMapping(value = "/getTables")
+    @PostMapping("/getTables")
     public JsonResult<List> getTables(@RequestBody DbVO dbVO, @RequestParam String tableName) {
         JsonResult<List> jsonResult;
         try {
@@ -41,7 +41,7 @@ public class DbController {
         return jsonResult;
     }
 
-    @PostMapping(value = "/getColumns")
+    @PostMapping("/getColumns")
     public JsonResult<List> getColumns(@RequestBody DbVO dbVO, @RequestParam String tableName) {
         JsonResult<List> jsonResult;
         try {
@@ -53,7 +53,7 @@ public class DbController {
         return jsonResult;
     }
 
-    @PostMapping(value = "/test")
+    @PostMapping("/test")
     public JsonResult<Boolean> test(@RequestBody DbVO dbVO) {
         JsonResult<Boolean> jsonResult;
         try {

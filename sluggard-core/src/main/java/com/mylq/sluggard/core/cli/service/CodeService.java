@@ -3,7 +3,6 @@ package com.mylq.sluggard.core.cli.service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -43,7 +42,8 @@ public class CodeService {
 
     /**
      * 单表代码生成
-     * 
+     *
+     * @param folderDir 文件生成目录
      * @param templateNames 模板名称列表
      * @param templateConfigs 模板配置列表
      * @param project 项目信息
@@ -52,7 +52,7 @@ public class CodeService {
      * @param columns 列信息集合
      * @return 生成代码的根目录
      */
-    public String generator(@NonNull List<String> templateNames, @NonNull List<TemplateConfigVO> templateConfigs,
+    public void generator(final String folderDir, @NonNull List<String> templateNames, @NonNull List<TemplateConfigVO> templateConfigs,
             @NonNull ProjectBasicVO project, @NonNull DbVO dataSource, @NonNull TableEntity table,
             @NonNull List<ColumnEntity> columns) {
 
@@ -82,9 +82,6 @@ public class CodeService {
         dataModel.put("javaTypeImports", columns.stream().map(ColumnEntity::getJavaType).collect(Collectors.toSet()));
         dataModel.put("date", DateUtil.getNowDateStr());
 
-        // 得到UUID作为文件的父目录
-        String strUid = UUID.randomUUID().toString().replaceAll("-", "");
-
         // 遍历模板
         for (String templateName : templateNames) {
             try {
@@ -99,14 +96,12 @@ public class CodeService {
                     parentPath += StringUtil.getFilePathByPackage(packagePath);
                 }
                 // 文件路径
-                String filePath = strUid + StringUtil.STR_FILE_SEPARATOR + parentPath + fileName;
+                String filePath = folderDir + StringUtil.STR_FILE_SEPARATOR + parentPath + fileName;
                 // 根据模板生成文件
                 templateService.saveFileByTemplate(filePath, template.getName(), dataModel);
             } catch (IOException | TemplateException e) {
                 logger.error("Failed to generator code file.", e);
             }
         }
-
-        return strUid;
     }
 }

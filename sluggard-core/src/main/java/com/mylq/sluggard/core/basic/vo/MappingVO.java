@@ -7,6 +7,7 @@ import com.mylq.sluggard.core.common.enums.DbTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Mapping视图对象
@@ -16,6 +17,7 @@ import lombok.Data;
  * @since 1.0.0
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Data
 public class MappingVO implements Serializable {

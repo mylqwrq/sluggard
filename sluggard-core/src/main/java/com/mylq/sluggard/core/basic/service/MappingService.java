@@ -29,12 +29,12 @@ public class MappingService {
         return MappingPropertyFactory.get(dbType, dataType);
     }
 
-    public void save(@NonNull MappingVO mappingVO) {
+    public void save(@NonNull MappingVO mappingVO, boolean isAbsent) {
         BasicUtil.requireNotNull("dbType", mappingVO.getDbType());
         BasicUtil.requireNotNullOrBlank("dataType", mappingVO.getDataType());
         BasicUtil.requireNotNullOrBlank("javaType", mappingVO.getJavaType());
         BasicUtil.requireNotNullOrBlank("jdbcType", mappingVO.getJdbcType());
-        MappingPropertyFactory.set(mappingVO);
+        MappingPropertyFactory.set(mappingVO, isAbsent);
     }
 
     public void delete(@NonNull DbTypeEnum dbType, String dataType) {

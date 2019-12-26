@@ -1,15 +1,12 @@
 package com.mylq.sluggard.core.common.base.result;
 
-import com.mylq.sluggard.core.common.base.enums.HttpStatusEnum;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
 import java.io.Serializable;
 import java.util.Objects;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 返回给客户端的Json结果类
@@ -23,9 +20,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Getter
-@Setter
-@ToString
+@Data
 public class JsonResult<T> implements Serializable {
 
     /**
@@ -58,7 +53,7 @@ public class JsonResult<T> implements Serializable {
     }
 
     public static <T> JsonResult<T> error(Throwable e) {
-        return newErrorJsonResult(Objects.isNull(e) ? HttpStatusEnum.FAILURE.getMsg() : e.getMessage());
+        return newErrorJsonResult(Objects.isNull(e) ? "操作失败！" : e.getMessage());
     }
 
     public static <T> JsonResult<T> error(String message) {
@@ -66,11 +61,11 @@ public class JsonResult<T> implements Serializable {
     }
 
     private static <T> JsonResult<T> newSuccessJsonResult(T data) {
-        return newJsonResult(true, HttpStatusEnum.SUCCESS.getMsg(), HttpStatusEnum.SUCCESS.getCode(), data);
+        return newJsonResult(true, "操作成功！", 200, data);
     }
 
     private static <T> JsonResult<T> newErrorJsonResult(String message) {
-        return newJsonResult(false, message, HttpStatusEnum.FAILURE.getCode(), null);
+        return newJsonResult(false, message, 500, null);
     }
 
     private static <T> JsonResult<T> newJsonResult(boolean success, String message, int statusCode, T data) {

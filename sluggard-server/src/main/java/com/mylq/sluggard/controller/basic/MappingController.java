@@ -29,7 +29,7 @@ public class MappingController {
     @Autowired
     private MappingService mappingService;
 
-    @GetMapping(value = "/getList")
+    @GetMapping("/getList")
     public JsonResult<List> getList(@RequestParam Integer dbTypeId) {
         JsonResult<List> jsonResult;
         try {
@@ -41,11 +41,11 @@ public class MappingController {
         return jsonResult;
     }
 
-    @PostMapping(value = "/save")
+    @PostMapping("/save")
     public JsonResult<Void> save(@RequestBody MappingVO mappingVO) {
         JsonResult<Void> jsonResult;
         try {
-            mappingService.save(mappingVO);
+            mappingService.save(mappingVO, true);
             jsonResult = JsonResult.success();
         } catch (Exception e) {
             jsonResult = JsonResult.error(e);
@@ -53,7 +53,19 @@ public class MappingController {
         return jsonResult;
     }
 
-    @GetMapping(value = "/del")
+    @PostMapping("/edit")
+    public JsonResult<Void> edit(@RequestBody MappingVO mappingVO) {
+        JsonResult<Void> jsonResult;
+        try {
+            mappingService.save(mappingVO, false);
+            jsonResult = JsonResult.success();
+        } catch (Exception e) {
+            jsonResult = JsonResult.error(e);
+        }
+        return jsonResult;
+    }
+
+    @GetMapping("/del")
     public JsonResult<Void> del(@RequestParam Integer dbTypeId, @RequestParam String dataType) {
         JsonResult<Void> jsonResult;
         try {

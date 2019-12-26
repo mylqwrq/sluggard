@@ -24,7 +24,7 @@ import io.swagger.annotations.ApiOperation;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping(value = "/${table.moduleName ? uncap_first}")
+@RequestMapping("/${table.moduleName ? uncap_first}")
 @Api(value = "/${table.moduleName ? uncap_first}", description = "${table.tableComment}控制层接口")
 public class ${table.moduleName}Controller implements BaseController<${table.moduleName}VO, ${table.moduleName}DTO> {
 

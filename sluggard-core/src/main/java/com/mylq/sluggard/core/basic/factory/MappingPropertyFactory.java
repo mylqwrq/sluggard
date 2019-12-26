@@ -15,6 +15,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.mylq.sluggard.core.basic.vo.MappingVO;
 import com.mylq.sluggard.core.common.base.constant.Constant;
+import com.mylq.sluggard.core.common.base.exception.SluggardBusinessException;
 import com.mylq.sluggard.core.common.enums.DbTypeEnum;
 import com.mylq.sluggard.core.common.factory.PropertyFactory;
 import com.mylq.sluggard.core.common.util.FileUtil;
@@ -83,9 +84,18 @@ public class MappingPropertyFactory {
         }
     }
 
-    public static void set(MappingVO mappingVO) {
+    public static void set(MappingVO mappingVO, boolean isAbsent) {
         String key = addKeyPrefix(mappingVO.getDbType(), mappingVO.getDataType());
-        PROP.setProperty(key, JsonUtil.toJsonString(mappingVO));
+        String value = JsonUtil.toJsonString(mappingVO);
+        if (isAbsent) {
+            // 新建操作
+            if (Objects.nonNull(PROP.putIfAbsent(key, value))) {
+                throw new SluggardBusinessException("Mapping {0} {1} already exists.", mappingVO.getDbType().getName(), mappingVO.getDataType());
+            }
+        } else {
+            // 编辑操作
+            PROP.setProperty(key, value);
+        }
         saveProperties();
     }
 

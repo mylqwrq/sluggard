@@ -28,7 +28,7 @@ public class TemplateController {
     @Autowired
     private TemplateService templateService;
 
-    @GetMapping(value = "/getList")
+    @GetMapping("/getList")
     public JsonResult<List> getList(@RequestParam String name) {
         JsonResult<List> jsonResult;
         try {
@@ -40,7 +40,7 @@ public class TemplateController {
         return jsonResult;
     }
 
-    @PostMapping(value = "/save")
+    @PostMapping("/save")
     public JsonResult<Void> save(@RequestBody TemplateVO templateVO) {
         JsonResult<Void> jsonResult;
         try {
@@ -52,7 +52,7 @@ public class TemplateController {
         return jsonResult;
     }
 
-    @PostMapping(value = "/edit")
+    @PostMapping("/edit")
     public JsonResult<Void> edit(@RequestBody TemplateVO templateVO) {
         JsonResult<Void> jsonResult;
         try {
@@ -64,7 +64,7 @@ public class TemplateController {
         return jsonResult;
     }
 
-    @GetMapping(value = "/del")
+    @GetMapping("/del")
     public JsonResult<Void> del(@RequestParam String name) {
         JsonResult<Void> jsonResult;
         try {
@@ -76,7 +76,7 @@ public class TemplateController {
         return jsonResult;
     }
 
-    @GetMapping(value = "/getText")
+    @GetMapping("/getText")
     public JsonResult<String> getText(@RequestParam String name) {
         JsonResult<String> jsonResult;
         try {
@@ -88,7 +88,7 @@ public class TemplateController {
         return jsonResult;
     }
 
-    @PostMapping(value = "/saveText")
+    @PostMapping("/saveText")
     public JsonResult<Void> saveText(@RequestBody TemplateVO templateVO) {
         JsonResult<Void> jsonResult;
         try {
