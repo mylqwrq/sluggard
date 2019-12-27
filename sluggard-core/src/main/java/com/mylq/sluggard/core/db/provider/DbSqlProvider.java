@@ -29,7 +29,7 @@ public class DbSqlProvider {
                     + "WHERE TABLE_TYPE = 'TABLE' " + "AND TABLE_NAME LIKE CONCAT('%', CONCAT(?, '%')) "
                     + "ORDER BY TABLE_NAME";
         } else {
-            throw new SluggardCoreException("Unsupported dbType: {0}.", dbType);
+            throw new SluggardCoreException("Unsupported db type: {0}.", dbType);
         }
     }
 
@@ -58,7 +58,7 @@ public class DbSqlProvider {
                     + ") T5 ON T1.COLUMN_NAME = T5.COLUMN_NAME " + "AND T1.TABLE_NAME = T5.TABLE_NAME "
                     + "WHERE T1.TABLE_NAME = ? " + "ORDER BY T1.COLUMN_ID";
         } else {
-            throw new SluggardCoreException("Unsupported dbType: {0}.", dbType);
+            throw new SluggardCoreException("Unsupported db type: {0}.", dbType);
         }
     }
 }

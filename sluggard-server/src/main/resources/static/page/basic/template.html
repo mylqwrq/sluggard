@@ -14,9 +14,10 @@
                 <div class="layui-inline">
                     <form class="layui-form" style="padding-top: 15px;">
                         <div class="layui-form-item">
-                            <label class="layui-form-label">模板名称</label>
+                            <label class="layui-form-label">模板类型</label>
                             <div class="layui-inline" style="width: 200px;">
-                                <input class="layui-input" id="name" name="name" type="text">
+                                <select id="templateTypeSelect" name="templateType" lay-filter="templateTypeFilter">
+                                </select>
                             </div>
                         </div>
                     </form>
@@ -41,10 +42,8 @@
 </script>
 <script type="text/html" id="toolbarOperation">
     <a class="layui-btn layui-btn-sm" lay-event="editFile">内容</a>
-    {{#  if(d.disabled == false){ }}
     <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="remove">删除</a>
-    {{# } }}
 </script>
 <script>
     layui.use(['form', 'table'], function () {
@@ -52,30 +51,43 @@
         var form = layui.form;
         var table = layui.table;
 
-        //监听表名称输入框值变更事件
-        $("#name").bind('input propertychange', function () {
+        //加载下拉框选项
+        $.get(WEB_CONTEXT + '/server/enums/getTemplateTypes', {}, function (result) {
+            if (result.success && result.data != null) {
+                $.each(result.data, function (index, item) {
+                    $("#templateTypeSelect").append("<option value=" + item.id + ">" + item.name + "</option>");
+                });
+            }
+            form.render("select");
             reload();
+        });
+
+        //监听下拉框选择事件
+        form.on('select(templateTypeFilter)', function (data) {
+            if (data.value) {
+                reload();
+            } else {
+                table.render(tableOption);
+            }
+            form.render("select");
         });
 
         //表格属性
         var tableOption = {
             elem: '#dt',
-            url: WEB_CONTEXT + '/basic/template/getList',
             cellMinWidth: 80,
             even: true,
             cols: [[
                 {type: 'numbers', title: '序号', width: 100},
+                {field: 'templateType', hide: true},
                 {field: 'name', title: '模板名称', width: 200},
                 {field: 'fileType', title: '目标文件类型', width: 200, templet: '#fileTypeTpl'},
                 {field: 'fileRelativePath', title: '目标文件相对路径', width: 200},
                 {field: 'fileNamePrefix', title: '目标文件名前缀', width: 200},
                 {field: 'fileNameSuffix', title: '目标文件名后缀', width: 200},
-                {field: 'disabled', hide: true},
                 {field: 'right', title: '操作', width: 200, align: 'center', toolbar: '#toolbarOperation'}
             ]],
-            where: {
-                name: $("#name").val()
-            },
+            data: [],
             response: {
                 statusCode: 200,
                 statusName: 'statusCode',
@@ -93,7 +105,7 @@
             table.reload('dt', {
                 url: WEB_CONTEXT + '/basic/template/getList',
                 where: {
-                    name: $("#name").val()
+                    templateTypeId: $("#templateTypeSelect").val()
                 }
             });
         }
@@ -121,7 +133,10 @@
 
         //新建方法
         function modelAdd() {
-            opener.open("新建模板", '50%', '60%', 'templateEdit.html', {}, 1, 'post', '/basic/template/save', reload, null);
+            var obj = {};
+            obj["templateTypeId"] = $("#templateTypeSelect").val();
+            obj["templateTypeName"] = $("#templateTypeSelect").find("option:selected").text();
+            opener.open("新建模板", '50%', '60%', 'templateEdit.html', obj, 1, 'post', '/basic/template/save', reload, null);
         }
 
         //编辑方法
@@ -136,17 +151,14 @@
 
         function remove(data) {
             var obj = {};
+            obj["templateTypeId"] = data.templateType.id;
             obj["name"] = data.name;
             return getRestData("/basic/template/del", obj, reload);
         }
 
         //编辑文件方法
         function fileEdit(data) {
-            if (data.disabled) {
-                opener.scan("查看模板内容", '50%', '80%', 'templateFileEdit.html', data);
-            } else {
-                opener.open("编辑模板内容", '50%', '80%', 'templateFileEdit.html', data, 2, 'post', '/basic/template/saveText', reload, null);
-            }
+            opener.open("编辑模板内容", '50%', '80%', 'templateFileEdit.html', data, 2, 'post', '/basic/template/saveText', reload, null);
         }
     });
 </script>

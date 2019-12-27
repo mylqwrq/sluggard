@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mylq.sluggard.core.basic.service.TemplateService;
 import com.mylq.sluggard.core.basic.vo.TemplateVO;
 import com.mylq.sluggard.core.common.base.result.JsonResult;
+import com.mylq.sluggard.core.common.enums.TemplateTypeEnum;
 
 /**
  * Template控制层接口
@@ -29,10 +30,10 @@ public class TemplateController {
     private TemplateService templateService;
 
     @GetMapping("/getList")
-    public JsonResult<List> getList(@RequestParam String name) {
+    public JsonResult<List> getList(@RequestParam Integer templateTypeId) {
         JsonResult<List> jsonResult;
         try {
-            List<TemplateVO> result = templateService.getList(name);
+            List<TemplateVO> result = templateService.getList(TemplateTypeEnum.get(templateTypeId));
             jsonResult = JsonResult.success(result);
         } catch (Exception e) {
             jsonResult = JsonResult.error(e);
@@ -65,10 +66,10 @@ public class TemplateController {
     }
 
     @GetMapping("/del")
-    public JsonResult<Void> del(@RequestParam String name) {
+    public JsonResult<Void> del(@RequestParam Integer templateTypeId, @RequestParam String name) {
         JsonResult<Void> jsonResult;
         try {
-            templateService.delete(name);
+            templateService.delete(TemplateTypeEnum.get(templateTypeId), name);
             jsonResult = JsonResult.success();
         } catch (Exception e) {
             jsonResult = JsonResult.error(e);
@@ -77,10 +78,10 @@ public class TemplateController {
     }
 
     @GetMapping("/getText")
-    public JsonResult<String> getText(@RequestParam String name) {
+    public JsonResult<String> getText(@RequestParam Integer templateTypeId, @RequestParam String name) {
         JsonResult<String> jsonResult;
         try {
-            String result = templateService.getText(name);
+            String result = templateService.getText(TemplateTypeEnum.get(templateTypeId), name);
             jsonResult = JsonResult.success(result);
         } catch (Exception e) {
             jsonResult = JsonResult.error(e);
@@ -92,7 +93,7 @@ public class TemplateController {
     public JsonResult<Void> saveText(@RequestBody TemplateVO templateVO) {
         JsonResult<Void> jsonResult;
         try {
-            templateService.setText(templateVO.getName(), templateVO.getContext());
+            templateService.setText(templateVO.getTemplateType(), templateVO.getName(), templateVO.getContext());
             jsonResult = JsonResult.success();
         } catch (Exception e) {
             jsonResult = JsonResult.error(e);

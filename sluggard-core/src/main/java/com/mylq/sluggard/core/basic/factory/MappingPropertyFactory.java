@@ -50,7 +50,7 @@ public class MappingPropertyFactory {
                 String key = String.valueOf(obj);
                 if (key.startsWith(PROP_KEY_PREFIX)) {
                     String[] keys = key.split("\\" + PROP_KEY_SEPARATOR);
-                    String[] values = properties.getProperty(key).split(PROP_VALUE_SEPARATOR);
+                    String[] values = properties.getProperty(key).split(PROP_VALUE_SEPARATOR, -1);
                     MappingVO value = MappingVO.builder().dbType(DbTypeEnum.get(keys[1])).dataType(keys[2])
                             .javaType(values[0]).jdbcType(values[1]).build();
                     PROP.setProperty(key, JsonUtil.toJsonString(value));
@@ -79,9 +79,8 @@ public class MappingPropertyFactory {
         if (Objects.isNull(value)) {
             return MappingVO.builder().dbType(dbType).dataType(dataType).javaType("java.lang.String")
                     .jdbcType("VARCHAR").build();
-        } else {
-            return JsonUtil.parseObject(value, MappingVO.class);
         }
+        return JsonUtil.parseObject(value, MappingVO.class);
     }
 
     public static void set(MappingVO mappingVO, boolean isAbsent) {

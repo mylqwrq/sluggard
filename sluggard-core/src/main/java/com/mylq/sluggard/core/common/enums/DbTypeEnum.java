@@ -44,7 +44,7 @@ public enum DbTypeEnum implements BaseEnum<Integer> {
                 return item;
             }
         }
-        throw new SluggardCoreException("Unsupported dbType: {0}.", id);
+        throw new SluggardCoreException("Unsupported db type: {0}.", id);
     }
 
     public static DbTypeEnum get(String name) {
@@ -53,6 +53,6 @@ public enum DbTypeEnum implements BaseEnum<Integer> {
                 return item;
             }
         }
-        throw new SluggardCoreException("Unsupported dbType: {0}.", name);
+        throw new SluggardCoreException("Unsupported db type: {0}.", name);
     }
 }

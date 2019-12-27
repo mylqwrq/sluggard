@@ -8,6 +8,13 @@
 </head>
 <body>
 <form class="layui-form" style="text-align: center;margin-right:30px;margin-top:30px;" lay-filter="init">
+    <input class="layui-input" id="templateType" name="templateType" type="hidden">
+    <div class="layui-form-item">
+        <label class="layui-form-label">模板类型</label>
+        <div class="layui-input-block">
+            <input class="layui-input" id="templateTypeName" name="templateTypeName" type="text" autocomplete="off" readonly>
+        </div>
+    </div>
     <div class="layui-form-item">
         <label class="layui-form-label">模板名称</label>
         <div class="layui-input-block">
@@ -39,7 +46,6 @@
             <input class="layui-input" id="fileNameSuffix" name="fileNameSuffix" type="text" autocomplete="off">
         </div>
     </div>
-    <input class="layui-input" id="disabled" name="disabled" type="hidden">
 </form>
 
 <script src="../../resource/jquery/jquery-3.4.1.min.js"></script>
@@ -66,16 +72,19 @@
 
         if (type === 1) {
             form.val('init', {
+                "templateType": obj.templateTypeId,
+                "templateTypeName": obj.templateTypeName,
                 "name": "",
                 "fileType": 1,
                 "fileRelativePath": "",
                 "fileNamePrefix": "",
-                "fileNameSuffix": "",
-                "disabled": false
+                "fileNameSuffix": ""
             });
             document.getElementById("name").readOnly = false;
         } else if (type === 2) {
             form.val('init', {
+                "templateType": obj.templateType.id,
+                "templateTypeName": obj.templateType.name,
                 "name": obj.name,
                 "fileType": obj.fileType.id,
                 "fileRelativePath": obj.fileRelativePath,
@@ -89,6 +98,10 @@
 
     //校验表单
     function validationForm() {
+        if ($("#templateType").val() === "") {
+            msg.warn("模板类型不可为空！");
+            return false;
+        }
         if ($("#name").val() === "") {
             msg.warn("模板名称不可为空！");
             return false;

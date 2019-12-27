@@ -11,6 +11,7 @@ import com.mylq.sluggard.core.common.base.enums.BaseEnum;
 import com.mylq.sluggard.core.common.base.result.JsonResult;
 import com.mylq.sluggard.core.common.enums.DbTypeEnum;
 import com.mylq.sluggard.core.common.enums.FileTypeEnum;
+import com.mylq.sluggard.core.common.enums.TemplateTypeEnum;
 
 /**
  * 枚举控制层接口
@@ -28,6 +29,18 @@ public class EnumsController {
         JsonResult<List> jsonResult;
         try {
             List<BaseEnum> result = Arrays.asList(DbTypeEnum.values());
+            jsonResult = JsonResult.success(result);
+        } catch (Exception e) {
+            jsonResult = JsonResult.error(e);
+        }
+        return jsonResult;
+    }
+
+    @GetMapping("/getTemplateTypes")
+    public JsonResult<List> getTemplateTypes() {
+        JsonResult<List> jsonResult;
+        try {
+            List<BaseEnum> result = Arrays.asList(TemplateTypeEnum.values());
             jsonResult = JsonResult.success(result);
         } catch (Exception e) {
             jsonResult = JsonResult.error(e);

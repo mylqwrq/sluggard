@@ -3,6 +3,7 @@ package com.mylq.sluggard.core.basic.vo;
 import java.io.Serializable;
 
 import com.mylq.sluggard.core.common.enums.FileTypeEnum;
+import com.mylq.sluggard.core.common.enums.TemplateTypeEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class TemplateVO implements Serializable {
 
+    private TemplateTypeEnum templateType;
+
     private String name;
 
     private FileTypeEnum fileType;
@@ -33,6 +36,4 @@ public class TemplateVO implements Serializable {
     private String fileNameSuffix;
 
     private String context;
-
-    private Boolean disabled;
 }

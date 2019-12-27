@@ -12,62 +12,46 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * 文件类型枚举类
+ * 模板类型枚举类
  *
  * @author WangRunQian
- * @date 2019/12/5
+ * @date 2019/12/27
  * @since 1.0.0
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @ToString
 @JsonSerialize(using = BaseEnumSerializer.class)
-public enum FileTypeEnum implements BaseEnum<Integer> {
+public enum TemplateTypeEnum implements BaseEnum<Integer> {
 
     /**
-     * FTL
+     * 代码
      */
-    FTL(0, ".ftl"),
+    CODE(0, "code"),
     /**
-     * JAVA
+     * 项目
      */
-    JAVA(1, ".java"),
-    /**
-     * XML
-     */
-    XML(2, ".xml"),
-    /**
-     * YML
-     */
-    YML(3, ".yml"),
-    /**
-     * HTML
-     */
-    HTML(4, ".html"),
-    /**
-     * JS
-     */
-    JS(5, ".js");
+    PROJECT(1, "project");
 
     private Integer id;
     private String name;
 
     @JsonCreator
-    public static FileTypeEnum get(Integer id) {
-        for (FileTypeEnum item : values()) {
+    public static TemplateTypeEnum get(Integer id) {
+        for (TemplateTypeEnum item : values()) {
             if (item.getId().equals(id)) {
                 return item;
             }
         }
-        throw new SluggardCoreException("Unsupported file type: {0}.", id);
+        throw new SluggardCoreException("Unsupported template type: {0}.", id);
     }
 
-    public static FileTypeEnum get(String name) {
-        for (FileTypeEnum item : values()) {
+    public static TemplateTypeEnum get(String name) {
+        for (TemplateTypeEnum item : values()) {
             if (item.getName().equals(name)) {
                 return item;
             }
         }
-        throw new SluggardCoreException("Unsupported file type: {0}.", name);
+        throw new SluggardCoreException("Unsupported template type: {0}.", name);
     }
 }

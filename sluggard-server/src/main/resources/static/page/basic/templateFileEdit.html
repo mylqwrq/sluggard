@@ -8,6 +8,7 @@
 </head>
 <body>
 <form class="layui-form" style="text-align: center;margin-right:30px;margin-top:30px;">
+    <input class="layui-input" id="templateType" name="templateType" type="hidden">
     <input class="layui-input" id="name" name="name" type="hidden">
     <div style="position: absolute;width: 98%;height: 88%;margin-left: 10px;margin-right: 10px;">
         <textarea class="layui-textarea" style="background-color:#13151A;color:#999;width:100%;height:100%;resize:none;"
@@ -26,10 +27,13 @@
 
     //初始化（type：1为新建，2为编辑）
     function initForm(obj, type) {
-        var form = layui.form;
         if (type === 2) {
+            $("#templateType").val(obj.templateType.id);
             $("#name").val(obj.name);
-            var result = getRestResult("/basic/template/getText?name=" + obj.name);
+            var param = {};
+            param["templateTypeId"] = obj.templateType.id;
+            param["name"] = obj.name;
+            var result = getRestResult("/basic/template/getText", param);
             if (result.success) {
                 $("#context").text(result.data);
             }
@@ -38,6 +42,14 @@
 
     //校验表单
     function validationForm() {
+        if ($("#templateType").val() === "") {
+            msg.warn("模板类型不可为空！");
+            return false;
+        }
+        if ($("#name").val() === "") {
+            msg.warn("模板名称不可为空！");
+            return false;
+        }
         if ($("#context").val() === "") {
             msg.warn("模板文件内容不可为空！");
             return false;

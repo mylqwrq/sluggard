@@ -16,6 +16,7 @@ import com.mylq.sluggard.core.basic.vo.TemplateVO;
 import com.mylq.sluggard.core.cli.vo.ProjectBasicVO;
 import com.mylq.sluggard.core.cli.vo.TemplateConfigVO;
 import com.mylq.sluggard.core.common.enums.FileTypeEnum;
+import com.mylq.sluggard.core.common.enums.TemplateTypeEnum;
 import com.mylq.sluggard.core.common.util.DateUtil;
 import com.mylq.sluggard.core.common.util.StringUtil;
 import com.mylq.sluggard.core.db.entity.ColumnEntity;
@@ -85,20 +86,20 @@ public class CodeService {
         // 遍历模板
         for (String templateName : templateNames) {
             try {
-                TemplateVO template = templateService.get(templateName);
+                TemplateVO template = templateService.get(TemplateTypeEnum.CODE, templateName);
                 String fileName = template.getFileNamePrefix() + table.getModuleName() + template.getFileNameSuffix()
                         + template.getFileType().getName();
                 // 文件父目录：如果是java文件则根据包路径生成目录
                 String parentPath = template.getFileRelativePath();
                 if (FileTypeEnum.JAVA.equals(template.getFileType())) {
-                    String sourceCode = templateService.getTextByTemplate(template.getName(), dataModel);
+                    String sourceCode = templateService.getTextByTemplate(template.getTemplateType(), template.getName(), dataModel);
                     String packagePath = sourceCode.split(";")[0].replaceFirst("package ", "");
                     parentPath += StringUtil.getFilePathByPackage(packagePath);
                 }
                 // 文件路径
                 String filePath = folderDir + StringUtil.STR_FILE_SEPARATOR + parentPath + fileName;
                 // 根据模板生成文件
-                templateService.saveFileByTemplate(filePath, template.getName(), dataModel);
+                templateService.saveFileByTemplate(template.getTemplateType(), filePath, template.getName(), dataModel);
             } catch (IOException | TemplateException e) {
                 logger.error("Failed to generator code file.", e);
             }
