@@ -35,8 +35,8 @@ function checkToStrArr(obj) {
         return strArr;
     }
     for (var field in obj) {
-        if (field.indexOf("t-") === 0 && obj[field] === "on") {
-            strArr.push(field.substring(2));
+        if (field.indexOf("chk-") === 0 && obj[field] === "on") {
+            strArr.push(field.substring(4));
         }
     }
     return strArr;
@@ -49,7 +49,7 @@ function strArrToCheckBoxByForm(formId, strArr) {
     for (var index in form.elements) {
         var element = form.elements[index];
         if (element.type === 'checkbox') {
-            obj[element.name] = strArr.indexOf(element.name.substring(2)) > -1;
+            obj[element.name] = strArr.indexOf(element.name.substring(4)) > -1;
         }
     }
     return obj;

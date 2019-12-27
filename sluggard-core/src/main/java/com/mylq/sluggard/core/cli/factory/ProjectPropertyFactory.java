@@ -1,8 +1,10 @@
 package com.mylq.sluggard.core.cli.factory;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -37,7 +39,7 @@ public class ProjectPropertyFactory {
 
     static {
         try {
-            PROP.load((new FileInputStream(new File(PROP_PATH))));
+            PROP.load(new BufferedReader(new InputStreamReader(new FileInputStream(new File(PROP_PATH)))));
             LOGGER.info("Load Properties: {}.", PROP_NAME);
         } catch (IOException e) {
             LOGGER.warn("Load Properties Error: {}.", PROP_NAME, e);

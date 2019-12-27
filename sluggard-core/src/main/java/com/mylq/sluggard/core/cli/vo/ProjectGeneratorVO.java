@@ -14,7 +14,9 @@ import lombok.Data;
 @Data
 public class ProjectGeneratorVO implements Serializable {
 
-    private String templateNames;
+    private String projectTemplateNames;
+
+    private String codeTemplateNames;
 
     private String templateConfigs;
 
@@ -23,8 +25,4 @@ public class ProjectGeneratorVO implements Serializable {
     private String dataSource;
 
     private String tables;
-
-    private Boolean lombokFlag;
-
-    private Boolean swaggerFlag;
 }

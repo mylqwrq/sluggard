@@ -69,17 +69,18 @@
             even: true,
             cols: [[
                 {type: 'numbers', title: '序号', width: 50},
-                {field: 'name', title: '项目名称', width: 100},
+                {field: 'name', title: '项目名称', width: 125},
                 {field: 'groupId', title: 'GroupId', width: 100},
-                {field: 'artifactId', title: 'ArtifactId', width: 100},
-                {field: 'version', title: '版本', width: 150},
+                {field: 'artifactId', title: 'ArtifactId', width: 125},
+                {field: 'version', title: '版本', width: 100},
                 {field: 'packaging', title: '打包方式', width: 100},
-                {field: 'description', title: '项目描述', width: 150},
-                {field: 'basePackage', title: '基本包路径', width: 150},
+                {field: 'description', title: '项目描述', width: 125},
+                {field: 'basePackage', title: '基本包路径', width: 125},
                 {field: 'serverPort', title: '服务端口', width: 100},
                 {field: 'serverPath', title: '服务路径', width: 100},
                 {field: 'dbVO', title: '数据源', width: 150, templet: '#dbVOTpl'},
-                {field: 'templateNames', title: '使用模板', width: 200},
+                {field: 'projectTemplateNames', title: '项目模板', width: 300},
+                {field: 'codeTemplateNames', title: '代码模板', width: 300},
                 {field: 'templateConfigs', title: '模板配置', width: 100, templet: '#templateConfigsTpl'},
                 {fixed: 'right', title: '操作', width: 200, align: 'center', toolbar: '#toolbarOperation'}
             ]],
@@ -144,14 +145,18 @@
             var dataSourceForm = layer.getChildFrame('body', index).find('form')[1];
             var dataSourceInfo = formToObj($(dataSourceForm));
 
-            var templateForm = layer.getChildFrame('body', index).find('form')[2];
-            var templateNameInfo = formToObj($(templateForm));
+            var projectTemplateForm = layer.getChildFrame('body', index).find('form')[2];
+            var projectTemplateNameInfo = formToObj($(projectTemplateForm));
+
+            var codeTemplateForm = layer.getChildFrame('body', index).find('form')[3];
+            var codeTemplateNameInfo = formToObj($(codeTemplateForm));
 
             var templateConfigs = $(layero).find('iframe')[0].contentWindow.getTableData();
 
             var reqObj = projectInfo;
             reqObj["dbVO"] = dataSourceInfo;
-            reqObj["templateNames"] = checkToStrArr(templateNameInfo);
+            reqObj["projectTemplateNames"] = checkToStrArr(projectTemplateNameInfo);
+            reqObj["codeTemplateNames"] = checkToStrArr(codeTemplateNameInfo);
             reqObj["templateConfigs"] = templateConfigs;
             return reqObj;
         }

@@ -20,7 +20,9 @@ public class ProjectVO extends ProjectBasicVO {
 
     private DbVO dbVO;
 
-    private List<String> templateNames;
+    private List<String> projectTemplateNames;
+
+    private List<String> codeTemplateNames;
 
     private List<TemplateConfigVO> templateConfigs;
 }

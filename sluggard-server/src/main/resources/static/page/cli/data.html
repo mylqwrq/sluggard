@@ -92,10 +92,17 @@
                     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 5px;">
                         <legend>模板信息</legend>
                     </fieldset>
-                    <form class="layui-form" lay-filter="templateFormFilter" id="templateForm">
+                    <form class="layui-form" lay-filter="projectTemplateFormFilter" id="projectTemplateForm">
                         <div class="layui-form-item">
-                            <label class="layui-form-label">使用模板</label>
-                            <div class="layui-input-block" id="templateCheck">
+                            <label class="layui-form-label">项目模板</label>
+                            <div class="layui-input-block" id="projectTemplateCheck">
+                            </div>
+                        </div>
+                    </form>
+                    <form class="layui-form" lay-filter="codeTemplateFormFilter" id="codeTemplateForm">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">代码模板</label>
+                            <div class="layui-input-block" id="codeTemplateCheck">
                             </div>
                         </div>
                     </form>
@@ -168,6 +175,7 @@
                 </div>
                 <span class="layui-btn-container">
                     <button class="layui-btn" data-type="search" style="margin-top: 48px;"><i class="layui-icon">&#xe615;</i>查询</button>
+                    <button class="layui-btn" data-type="create" style="margin-top: 48px;"><i class="layui-icon">&#xe601;</i>项目生成</button>
                 </span>
                 <table class="layui-hide" id="dt" lay-filter="dtFilter"></table>
             </div>
@@ -210,10 +218,18 @@
         });
 
         //加载模板复选框选项
-        $.get(WEB_CONTEXT + '/basic/template/getList?name=', {}, function (result) {
+        $.get(WEB_CONTEXT + '/basic/template/getList?templateTypeId=1', {}, function (result) {
             if (result.success && result.data != null) {
                 $.each(result.data, function (index, item) {
-                    $("#templateCheck").append("<input type=\"checkbox\" name=\"t-" + item.name + "\" title=\"" + item.name + "\">");
+                    $("#projectTemplateCheck").append("<input type=\"checkbox\" name=\"chk-" + item.name + "\" title=\"" + item.name + "\">");
+                });
+            }
+            form.render("checkbox");
+        });
+        $.get(WEB_CONTEXT + '/basic/template/getList?templateTypeId=0', {}, function (result) {
+            if (result.success && result.data != null) {
+                $.each(result.data, function (index, item) {
+                    $("#codeTemplateCheck").append("<input type=\"checkbox\" name=\"chk-" + item.name + "\" title=\"" + item.name + "\">");
                 });
             }
             form.render("checkbox");
@@ -247,7 +263,8 @@
                         "serverPort": project.serverPort,
                         "serverPath": project.serverPath
                     });
-                    form.val('templateFormFilter', strArrToCheckBoxByForm("templateForm", project.templateNames));
+                    form.val('projectTemplateFormFilter', strArrToCheckBoxByForm("projectTemplateForm", project.projectTemplateNames));
+                    form.val('codeTemplateFormFilter', strArrToCheckBoxByForm("codeTemplateForm", project.codeTemplateNames));
                     form.val('dbFormFilter', {
                         "dbType": project.dbVO.dbType.id,
                         "ip": project.dbVO.ip,
@@ -275,7 +292,8 @@
                 "serverPort": "",
                 "serverPath": ""
             });
-            form.val('templateFormFilter', strArrToCheckBoxByForm("templateForm", []));
+            form.val('projectTemplateFormFilter', strArrToCheckBoxByForm("projectTemplateForm", []));
+            form.val('codeTemplateFormFilter', strArrToCheckBoxByForm("codeTemplateForm", []));
             form.val('dbFormFilter', {
                 "dbType": "0",
                 "ip": "",
@@ -315,7 +333,8 @@
             cellMinWidth: 80,
             even: true,
             cols: [[
-                {type: 'numbers', title: '序号', width: 100},
+                {type: 'checkbox', fixed: 'left', width: 50},
+                {type: 'numbers', title: '序号', width: 50},
                 {field: 'tableName', title: '表名称', sort: true, width: 300},
                 {field: 'tableComment', title: '表备注', width: 300},
                 {field: 'moduleName', title: '模块名', width: 300},
@@ -337,7 +356,7 @@
 
         //查询表方法
         function reload() {
-            if ($("#dbType").val() === "" || $("#ip").val() === "" || $("#port").val() === ""
+            if ($("#dbTypeSelect").val() === "" || $("#ip").val() === "" || $("#port").val() === ""
                 || $("#dbName").val() === "" || $("#user").val() === "" || $("#pwd").val() === "") {
                 msg.warn("请先填写完整的数据源信息！");
                 return;
@@ -362,12 +381,65 @@
 
         //按钮事件
         var active = {
-            search: reload
+            search: reload,
+            create: projectGenerator
         };
         $('.layui-btn-container .layui-btn').on('click', function () {
             var type = $(this).data('type');
             active[type] ? active[type].call(this) : '';
         });
+
+        //项目生成方法
+        function projectGenerator() {
+            if ($("#groupId").val() === "" || $("#artifactId").val() === "" || $("#version").val() === ""
+                || $("#packaging").val() === "" || $("#description").val() === "" || $("#basePackage").val() === ""
+                || $("#serverPort").val() === "" || $("#serverPath").val() === "") {
+                msg.warn("请先填写完整的项目信息！");
+                return;
+            }
+            var projectTemplateNames = checkToStrArr(formToObj($("#projectTemplateForm")));
+            if (projectTemplateNames.length === 0) {
+                msg.warn("请选择至少一个项目模板！");
+                return;
+            }
+            var codeTemplateNames = checkToStrArr(formToObj($("#codeTemplateForm")));
+            if (codeTemplateNames.length === 0) {
+                msg.warn("请选择至少一个代码模板！");
+                return;
+            }
+            var templateConfigs = table.cache["dtConfig"];
+            var keyArray = [];
+            for (var i = 0, row; i < templateConfigs.length; i++) {
+                row = templateConfigs[i];
+                if (row.key === "" || row.value === "") {
+                    msg.warn("配置属性键和值均不可为空！");
+                    return;
+                }
+                if (keyArray.indexOf(row.key) > -1) {
+                    msg.warn("配置属性不可重复：" + row.key + "！");
+                    return;
+                }
+                keyArray.push(row.key);
+            }
+            if ($("#dbTypeSelect").val() === "" || $("#ip").val() === "" || $("#port").val() === ""
+                || $("#dbName").val() === "" || $("#user").val() === "" || $("#pwd").val() === "") {
+                msg.warn("请先填写完整的数据源信息！");
+                return;
+            }
+            var tables = table.checkStatus("dt").data;
+            if (tables.length === 0) {
+                msg.warn("请选择要生成的表！");
+                return;
+            }
+            var obj = {};
+            obj["projectTemplateNames"] = projectTemplateNames;
+            obj["codeTemplateNames"] = codeTemplateNames;
+            obj["templateConfigs"] = templateConfigs;
+            obj["project"] = formToObj($("#projectForm"));
+            obj["dataSource"] = formToObj($("#dbForm"));
+            obj["tables"] = tables;
+            exportByPost('/cli/data/projectGenerator', obj);
+        }
 
         //监听操作列工具条
         table.on('tool(dtConfigFilter)', function (obj) {
@@ -413,12 +485,13 @@
         //明细方法
         function openDetail(data) {
             var obj = {};
-            obj["templateNames"] = checkToStrArr(formToObj($("#templateForm")));
+            obj["projectTemplateNames"] = checkToStrArr(formToObj($("#projectTemplateForm")));
+            obj["codeTemplateNames"] = checkToStrArr(formToObj($("#codeTemplateForm")));
             obj["templateConfigs"] = table.cache["dtConfig"];
             obj["project"] = formToObj($("#projectForm"));
             obj["dataSource"] = formToObj($("#dbForm"));
             obj["tableInfo"] = data;
-            opener.open("结构明细", '80%', '80%', 'dataDetail.html', obj, 2, 'exportByPost', '/cli/code/generator', null, getReqObj);
+            opener.open("结构明细", '80%', '80%', 'dataDetail.html', obj, 2, 'exportByPost', '/cli/data/codeGenerator', null, getReqObj);
         }
 
         function getReqObj(layer, index, layero) {
@@ -428,7 +501,8 @@
             var columnsInfo = $(layero).find('iframe')[0].contentWindow.getTableData();
 
             var reqObj = {};
-            reqObj["templateNames"] = checkToStrArr(formToObj($("#templateForm")));
+            reqObj["projectTemplateNames"] = checkToStrArr(formToObj($("#projectTemplateForm")));
+            reqObj["codeTemplateNames"] = checkToStrArr(formToObj($("#codeTemplateForm")));
             reqObj["templateConfigs"] = table.cache["dtConfig"];
             reqObj["project"] = formToObj($("#projectForm"));
             reqObj["dataSource"] = formToObj($("#dbForm"));

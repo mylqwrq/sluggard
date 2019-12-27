@@ -18,6 +18,7 @@ public class JsonUtil {
     }
 
     public static <T> List<T> parseArray(String jsonString, Class<T> clazz) {
+
         return JSONArray.parseArray(jsonString, clazz);
     }
 

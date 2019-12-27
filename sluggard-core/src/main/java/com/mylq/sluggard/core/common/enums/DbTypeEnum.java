@@ -1,5 +1,6 @@
 package com.mylq.sluggard.core.common.enums;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.mylq.sluggard.core.common.base.enums.BaseEnum;
@@ -37,6 +38,7 @@ public enum DbTypeEnum implements BaseEnum<Integer> {
     private String driver;
     private String url;
 
+    @JSONField
     @JsonCreator
     public static DbTypeEnum get(Integer id) {
         for (DbTypeEnum item : values()) {

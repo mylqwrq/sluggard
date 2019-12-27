@@ -52,13 +52,15 @@
                     <div class="layui-inline">
                         <label class="layui-form-label">项目描述</label>
                         <div class="layui-input-inline">
-                            <input class="layui-input" id="description" name="description" type="text" autocomplete="off">
+                            <input class="layui-input" id="description" name="description" type="text"
+                                   autocomplete="off">
                         </div>
                     </div>
                     <div class="layui-inline">
                         <label class="layui-form-label">基本包路径</label>
                         <div class="layui-input-inline">
-                            <input class="layui-input" id="basePackage" name="basePackage" type="text" autocomplete="off">
+                            <input class="layui-input" id="basePackage" name="basePackage" type="text"
+                                   autocomplete="off">
                         </div>
                     </div>
                 </div>
@@ -132,31 +134,42 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">忽略前缀</label>
                             <div class="layui-input-inline">
-                                <input class="layui-input" id="ignorePrefix" name="ignorePrefix" type="text" autocomplete="off">
+                                <input class="layui-input" id="ignorePrefix" name="ignorePrefix" type="text"
+                                       autocomplete="off">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">忽略后缀</label>
                             <div class="layui-input-inline">
-                                <input class="layui-input" id="ignoreSuffix" name="ignoreSuffix" type="text" autocomplete="off">
+                                <input class="layui-input" id="ignoreSuffix" name="ignoreSuffix" type="text"
+                                       autocomplete="off">
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
             <span class="layui-btn-container">
-                <button class="layui-btn" data-type="test" style="margin-top:165px;"><i class="layui-icon"></i>Test</button>
+                <button class="layui-btn" data-type="test" style="margin-top:165px;"><i
+                        class="layui-icon"></i>Test</button>
             </span>
         </div>
     </div>
     <div class="layui-colla-item">
         <h2 class="layui-colla-title">模板信息</h2>
         <div class="layui-colla-content layui-show">
-            <form class="layui-form" style="margin-right:20px;margin-top:10px;" lay-filter="templateFormFilter"
-                  id="templateForm">
+            <form class="layui-form" style="margin-right:20px;margin-top:10px;" lay-filter="projectTemplateFormFilter"
+                  id="projectTemplateForm">
                 <div class="layui-form-item">
-                    <label class="layui-form-label">使用模板</label>
-                    <div class="layui-input-block" id="templateCheck">
+                    <label class="layui-form-label">项目模板</label>
+                    <div class="layui-input-block" id="projectTemplateCheck">
+                    </div>
+                </div>
+            </form>
+            <form class="layui-form" style="margin-right:20px;margin-top:10px;" lay-filter="codeTemplateFormFilter"
+                  id="codeTemplateForm">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">代码模板</label>
+                    <div class="layui-input-block" id="codeTemplateCheck">
                     </div>
                 </div>
             </form>
@@ -209,7 +222,7 @@
 
         //测试连接方法
         function testConnection() {
-            if ($("#dbType").val() === "" || $("#ip").val() === "" || $("#port").val() === ""
+            if ($("#dbTypeSelect").val() === "" || $("#ip").val() === "" || $("#port").val() === ""
                 || $("#dbName").val() === "" || $("#user").val() === "" || $("#pwd").val() === "") {
                 msg.warn("请先填写完整的数据源信息！");
                 return;
@@ -285,10 +298,16 @@
         form.render("select");
 
         //加载复选框选项
-        var templateResult = getRestResult("/basic/template/getList?name=");
-        if (templateResult.success && templateResult.data != null) {
-            $.each(templateResult.data, function (index, item) {
-                $("#templateCheck").append("<input type=\"checkbox\" name=\"t-" + item.name + "\" title=\"" + item.name + "\">");
+        var projectTemplateResult = getRestResult("/basic/template/getList?templateTypeId=1");
+        if (projectTemplateResult.success && projectTemplateResult.data != null) {
+            $.each(projectTemplateResult.data, function (index, item) {
+                $("#projectTemplateCheck").append("<input type=\"checkbox\" name=\"chk-" + item.name + "\" title=\"" + item.name + "\">");
+            });
+        }
+        var codeTemplateResult = getRestResult("/basic/template/getList?templateTypeId=0");
+        if (codeTemplateResult.success && codeTemplateResult.data != null) {
+            $.each(codeTemplateResult.data, function (index, item) {
+                $("#codeTemplateCheck").append("<input type=\"checkbox\" name=\"chk-" + item.name + "\" title=\"" + item.name + "\">");
             });
         }
         form.render("checkbox");
@@ -316,7 +335,8 @@
                 "ignorePrefix": "",
                 "ignoreSuffix": ""
             });
-            form.val('templateFormFilter', strArrToCheckBoxByForm("templateForm", []));
+            form.val('projectTemplateFormFilter', strArrToCheckBoxByForm("projectTemplateForm", []));
+            form.val('codeTemplateFormFilter', strArrToCheckBoxByForm("codeTemplateForm", []));
             table.render(tableOption);
         } else if (type === 2) {
             document.getElementById("name").readOnly = true;
@@ -341,7 +361,8 @@
                 "ignorePrefix": obj.dbVO.ignorePrefix,
                 "ignoreSuffix": obj.dbVO.ignoreSuffix
             });
-            form.val('templateFormFilter', strArrToCheckBoxByForm("templateForm", obj.templateNames));
+            form.val('projectTemplateFormFilter', strArrToCheckBoxByForm("projectTemplateForm", obj.projectTemplateNames));
+            form.val('codeTemplateFormFilter', strArrToCheckBoxByForm("codeTemplateForm", obj.codeTemplateNames));
             tableOption["data"] = JSON.parse(JSON.stringify(obj.templateConfigs));
             table.render(tableOption);
         }
@@ -385,7 +406,7 @@
             msg.warn("服务路径不可为空！");
             return false;
         }
-        if ($("#dbType").val() === "") {
+        if ($("#dbTypeSelect").val() === "") {
             msg.warn("数据库类型不可为空！");
             return false;
         }

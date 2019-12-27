@@ -1,11 +1,11 @@
 server:
-  port: ${serverPort}
+  port: ${project.serverPort}
   servlet:
-    context-path: "${serverPath}"
+    context-path: "${project.serverPath}"
 
 spring:
   application:
-    name: ${name}
+    name: ${project.name}
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     url: ${datasource.url}

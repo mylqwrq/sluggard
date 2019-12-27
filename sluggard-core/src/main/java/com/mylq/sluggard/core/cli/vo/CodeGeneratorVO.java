@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 public class CodeGeneratorVO implements Serializable {
 
-    private String templateNames;
+    private String codeTemplateNames;
 
     private String templateConfigs;
 
