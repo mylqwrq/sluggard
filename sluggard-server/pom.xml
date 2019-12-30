@@ -22,11 +22,33 @@
     <build>
         <resources>
             <resource>
-                <directory>${project.basedir}/src/main/resources</directory>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>templates/**/*.ftl</exclude>
+                </excludes>
                 <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>templates/**/*.ftl</include>
+                </includes>
+                <filtering>false</filtering>
             </resource>
         </resources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -37,24 +59,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-            </plugin>
-            <!-- 解决SpringBoot引用font awesome不显示的问题 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <nonFilteredFileExtensions>
-                        <nonFilteredFileExtension>woff</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>woff2</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>eot</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>svg</nonFilteredFileExtension>
-                    </nonFilteredFileExtensions>
-                </configuration>
             </plugin>
         </plugins>
     </build>

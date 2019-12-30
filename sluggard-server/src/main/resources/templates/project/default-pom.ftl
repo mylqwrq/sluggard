@@ -13,9 +13,10 @@
     <description>${project.description}</description>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
 
         <spring-boot.version>2.2.1.RELEASE</spring-boot.version>
         <jackson-dataformat.version>2.10.1</jackson-dataformat.version>
@@ -23,6 +24,7 @@
         <mybatis-boot.version>2.1.1</mybatis-boot.version>
         <pagehelper-boot.version>1.2.13</pagehelper-boot.version>
         <swagger.version>2.9.2</swagger.version>
+        <swagger-bootstrap-ui.version>1.9.6</swagger-bootstrap-ui.version>
     </properties>
 
     <dependencyManagement>
@@ -115,6 +117,13 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${r'$'}{swagger.version}</version>
         </dependency>
+
+        <!-- Swagger-UI美化版 http://{ip}:{port}/{project}/doc.html -->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>swagger-bootstrap-ui</artifactId>
+            <version>${r'$'}{swagger-bootstrap-ui.version}</version>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -150,14 +159,30 @@
     <build>
         <resources>
             <resource>
-                <directory>${r'$'}{project.basedir}/src/main/resources</directory>
+                <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${r'$'}{maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${r'$'}{java.version}</source>
+                    <target>${r'$'}{java.version}</target>
+                    <encoding>${r'$'}{project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>${r'$'}{versions-maven-plugin.version}</version>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${r'$'}{spring-boot.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -165,10 +190,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

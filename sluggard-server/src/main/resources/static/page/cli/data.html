@@ -45,14 +45,14 @@
                                 <label class="layui-form-label">Version</label>
                                 <div class="layui-input-inline">
                                     <input class="layui-input" id="version" name="version" type="text"
-                                           autocomplete="off">
+                                           autocomplete="off" value="0.0.1-SNAPSHOT">
                                 </div>
                             </div>
                             <div class="layui-inline">
                                 <label class="layui-form-label">Packaging</label>
                                 <div class="layui-input-inline">
                                     <input class="layui-input" id="packaging" name="packaging" type="text"
-                                           autocomplete="off">
+                                           autocomplete="off" value="jar">
                                 </div>
                             </div>
                         </div>
@@ -202,8 +202,8 @@
         var table = layui.table;
 
         $("#serverPath").blur(function () {
-            if (this.val().indexOf("/") !== 0) {
-                this.val("/" + this.val());
+            if ($(this).val().indexOf("/") !== 0) {
+                $(this).val("/" + $(this).val());
             }
         });
 
@@ -431,12 +431,14 @@
                 msg.warn("请选择要生成的表！");
                 return;
             }
+            var dataSource = formToObj($("#dbForm"));
+            dataSource.dbType = $("#dbTypeSelect").find("option:selected").text();
             var obj = {};
             obj["projectTemplateNames"] = projectTemplateNames;
             obj["codeTemplateNames"] = codeTemplateNames;
             obj["templateConfigs"] = templateConfigs;
             obj["project"] = formToObj($("#projectForm"));
-            obj["dataSource"] = formToObj($("#dbForm"));
+            obj["dataSource"] = dataSource;
             obj["tables"] = tables;
             exportByPost('/cli/data/projectGenerator', obj);
         }
@@ -500,12 +502,15 @@
             var tableInfo = formToObj($(tableForm));
             var columnsInfo = $(layero).find('iframe')[0].contentWindow.getTableData();
 
+            var dataSource = formToObj($("#dbForm"));
+            dataSource.dbType = $("#dbTypeSelect").find("option:selected").text();
+
             var reqObj = {};
             reqObj["projectTemplateNames"] = checkToStrArr(formToObj($("#projectTemplateForm")));
             reqObj["codeTemplateNames"] = checkToStrArr(formToObj($("#codeTemplateForm")));
             reqObj["templateConfigs"] = table.cache["dtConfig"];
             reqObj["project"] = formToObj($("#projectForm"));
-            reqObj["dataSource"] = formToObj($("#dbForm"));
+            reqObj["dataSource"] = dataSource;
             reqObj["table"] = tableInfo;
             reqObj["columns"] = columnsInfo;
             return reqObj;

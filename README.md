@@ -48,8 +48,7 @@ project.packaging|项目打包方式
 project.serverPort|项目服务端口
 project.serverPath|项目服务基本路径
 datasource.url|数据库链接
-datasource.dbType.id|数据库类型索引
-datasource.dbType.name|数据库类型名称
+datasource.dbType.getName()|数据库类型
 datasource.ip|数据库地址
 datasource.port|数据库端口
 datasource.name|数据库地址

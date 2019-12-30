@@ -41,7 +41,7 @@ mybatis:
   mapper-locations: classpath:/mapper/*Mapper.xml
 
 pagehelper:
-  helperDialect: ${datasource.dbType.name}
+  helperDialect: ${datasource.dbType.getName()}
   reasonable: false
   supportMethodsArguments: true
   params: count=countSql

@@ -6,7 +6,7 @@ import com.mylq.core.base.service.BaseService;
 import ${project.basePackage}.dto.${table.moduleName}DTO;
 
 /**
- * ${tableComment}Service接口
+ * ${table.tableComment}Service接口
  *
  * @author ${author}
  * @date ${date}

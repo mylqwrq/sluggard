@@ -1,11 +1,12 @@
 package com.mylq.sluggard.core.common.enums;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.annotation.JSONCreator;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.mylq.sluggard.core.common.base.enums.BaseEnum;
 import com.mylq.sluggard.core.common.base.exception.SluggardCoreException;
 import com.mylq.sluggard.core.common.base.serializer.BaseEnumSerializer;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,7 +39,6 @@ public enum DbTypeEnum implements BaseEnum<Integer> {
     private String driver;
     private String url;
 
-    @JSONField
     @JsonCreator
     public static DbTypeEnum get(Integer id) {
         for (DbTypeEnum item : values()) {
@@ -49,6 +49,7 @@ public enum DbTypeEnum implements BaseEnum<Integer> {
         throw new SluggardCoreException("Unsupported db type: {0}.", id);
     }
 
+    @JSONCreator
     public static DbTypeEnum get(String name) {
         for (DbTypeEnum item : values()) {
             if (item.getName().equals(name)) {

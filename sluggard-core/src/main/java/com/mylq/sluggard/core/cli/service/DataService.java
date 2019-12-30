@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.mylq.sluggard.core.basic.service.TemplateService;
 import com.mylq.sluggard.core.basic.vo.TemplateVO;
@@ -101,6 +102,9 @@ public class DataService {
         }
 
         // 模板参数
+        if (Strings.isNullOrEmpty(project.getName())) {
+            project.setName(project.getArtifactId());
+        }
         Map<String, Object> projectDataModel = getProjectDataModel(templateConfigs, project, dataSource);
 
         // 遍历项目模板
@@ -158,7 +162,7 @@ public class DataService {
         }
 
         dataModel.put("project", project);
-        dataModel.put("dataSource", dataSource);
+        dataModel.put("datasource", dataSource);
         dataModel.put("date", DateUtil.getNowDateStr());
 
         return dataModel;
