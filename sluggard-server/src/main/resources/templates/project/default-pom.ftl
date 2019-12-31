@@ -25,6 +25,7 @@
         <pagehelper-boot.version>1.2.13</pagehelper-boot.version>
         <swagger.version>2.9.2</swagger.version>
         <swagger-bootstrap-ui.version>1.9.6</swagger-bootstrap-ui.version>
+        <guava.version>28.1-jre</guava.version>
         <mylq.version>1.0.1</mylq.version>
     </properties>
 
@@ -124,6 +125,13 @@
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>swagger-bootstrap-ui</artifactId>
             <version>${r'$'}{swagger-bootstrap-ui.version}</version>
+        </dependency>
+
+        <!-- Guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${r'$'}{guava.version}</version>
         </dependency>
 
         <dependency>

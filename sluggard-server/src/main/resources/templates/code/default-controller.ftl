@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.collect.Sets;
 import com.mylq.core.base.result.JsonResult;
 import com.mylq.core.base.result.PageResult;
 import com.mylq.core.util.BeanUtil;
@@ -55,6 +56,13 @@ public class ${table.moduleName}Controller {
     public JsonResult<${table.moduleName}VO> searchById(@RequestParam Long id) {
         ${table.moduleName}Entity result = ${table.moduleName ? uncap_first}Service.queryById(id);
         return JsonResult.success(convertToVO(result));
+    }
+
+    @ApiOperation(value = "批量查询", notes = "根据ID串批量查询数据")
+    @GetMapping("/searchByIds")
+    public JsonResult<List> searchByIds(@RequestParam String ids) {
+        List<${table.moduleName}Entity> result = ${table.moduleName ? uncap_first}Service.queryByIds(Sets.newHashSet(ids.split(",")));
+        return JsonResult.success(convertBatchToVO(result));
     }
 
     @ApiOperation(value = "物理删除", notes = "根据ID单行物理删除数据")
