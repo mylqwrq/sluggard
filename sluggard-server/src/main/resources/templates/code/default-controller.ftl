@@ -39,14 +39,14 @@ public class ${table.moduleName}Controller {
 
     @ApiOperation(value = "分页查询", notes = "分页精准查询")
     @PostMapping("/searchPage")
-    public JsonResult<PageResult> searchPage(@RequestBody ${table.moduleName}VO query, @RequestParam Integer pageNum, @RequestParam Integer pageSize) {
+    public JsonResult<PageResult<${table.moduleName}VO>> searchPage(@RequestBody ${table.moduleName}VO query, @RequestParam Integer pageNum, @RequestParam Integer pageSize) {
         PageResult<${table.moduleName}Entity> result = ${table.moduleName ? uncap_first}Service.queryPage(convertToDTO(query), pageNum, pageSize);
         return JsonResult.success(result.convertData(${table.moduleName}VO.class));
     }
 
     @ApiOperation(value = "列表查询", notes = "列表精准查询")
     @PostMapping("/searchList")
-    public JsonResult<List> searchList(@RequestBody ${table.moduleName}VO query) {
+    public JsonResult<List<${table.moduleName}VO>> searchList(@RequestBody ${table.moduleName}VO query) {
         List<${table.moduleName}Entity> result = ${table.moduleName ? uncap_first}Service.queryList(convertToDTO(query));
         return JsonResult.success(convertBatchToVO(result));
     }
@@ -60,27 +60,33 @@ public class ${table.moduleName}Controller {
 
     @ApiOperation(value = "批量查询", notes = "根据ID串批量查询数据")
     @GetMapping("/searchByIds")
-    public JsonResult<List> searchByIds(@RequestParam String ids) {
+    public JsonResult<List<${table.moduleName}VO>> searchByIds(@RequestParam String ids) {
         List<${table.moduleName}Entity> result = ${table.moduleName ? uncap_first}Service.queryByIds(Sets.newHashSet(ids.split(",")));
         return JsonResult.success(convertBatchToVO(result));
     }
 
-    @ApiOperation(value = "物理删除", notes = "根据ID单行物理删除数据")
+    @ApiOperation(value = "单行删除", notes = "根据ID单行物理删除数据")
     @GetMapping("/remove")
     public JsonResult<Integer> remove(@RequestParam Long id) {
         int result = ${table.moduleName ? uncap_first}Service.deleteById(id);
         return JsonResult.success(result);
     }
 
-    @ApiOperation(value = "修改", notes = "根据ID单行修改数据")
+    @ApiOperation(value = "批量删除", notes = "根据ID串批量物理删除数据")
+    @GetMapping("/removeBatch")
+    public JsonResult<Integer> removeBatch(@RequestParam String ids) {
+        int result = ${table.moduleName ? uncap_first}Service.deleteByIds(Sets.newHashSet(ids.split(",")));
+        return JsonResult.success(result);
+    }
+
+    @ApiOperation(value = "单行修改", notes = "根据ID单行修改数据")
     @PostMapping("/edit")
     public JsonResult<Integer> edit(@RequestBody ${table.moduleName}VO update) {
-    JsonResult<Integer> jsonResult;
         int result = ${table.moduleName ? uncap_first}Service.updateById(convertToEntity(update));
         return JsonResult.success(result);
     }
 
-    @ApiOperation(value = "创建", notes = "单行创建数据")
+    @ApiOperation(value = "单行创建", notes = "单行创建数据")
     @PostMapping("/create")
     public JsonResult<Integer> create(@RequestBody ${table.moduleName}VO update) {
         int result = ${table.moduleName ? uncap_first}Service.save(convertToEntity(update));
