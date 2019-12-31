@@ -25,6 +25,7 @@
         <pagehelper-boot.version>1.2.13</pagehelper-boot.version>
         <swagger.version>2.9.2</swagger.version>
         <swagger-bootstrap-ui.version>1.9.6</swagger-bootstrap-ui.version>
+        <mylq.version>1.0.1</mylq.version>
     </properties>
 
     <dependencyManagement>
@@ -123,6 +124,12 @@
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>swagger-bootstrap-ui</artifactId>
             <version>${r'$'}{swagger-bootstrap-ui.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mylq</groupId>
+            <artifactId>mylq-core</artifactId>
+            <version>${r'$'}{mylq.version}</version>
         </dependency>
     </dependencies>
 

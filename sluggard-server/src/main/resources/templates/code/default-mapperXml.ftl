@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"[]>
-<mapper namespace="${project.basePackage}.dao.${table.moduleName}Mapper">
- <resultMap id="BaseResultMap" type="${project.basePackage}.entity.${table.moduleName}Entity">
+<mapper namespace="${project.basePackage}.service.dao.${table.moduleName}Mapper">
+ <resultMap id="BaseResultMap" type="${project.basePackage}.common.entity.${table.moduleName}Entity">
   <id column="${primary.columnName}" jdbcType="${primary.jdbcType}" property="${primary.fieldName}" />
 <#if columns??>
  <#list columns as column>
@@ -13,9 +13,12 @@
  </resultMap>
 
  <sql id="Select_Field">
+  ${table.tableName}.${primary.columnName}
 <#if columns??>
  <#list columns as column>
-  ${table.tableName}.${column.columnName}
+  <#if !(column.columnName == primary.columnName)>
+  ,${table.tableName}.${column.columnName}
+  </#if>
  </#list>
 </#if>
  </sql>
@@ -39,12 +42,12 @@
   </if>
  </sql>
 
- <select id="selectCount" resultType="java.lang.Long" parameterType="${project.basePackage}.entity.${table.moduleName}Entity">
+ <select id="selectCount" resultType="java.lang.Long" parameterType="${project.basePackage}.common.dto.${table.moduleName}QueryDTO">
   select count(*) from ${table.tableName}
   <include refid="Base_Where_Clause" />
  </select>
 
- <select id="selectList" resultMap="BaseResultMap" parameterType="${project.basePackage}.entity.${table.moduleName}Entity">
+ <select id="selectList" resultMap="BaseResultMap" parameterType="${project.basePackage}.common.dto.${table.moduleName}QueryDTO">
   select
   <include refid="Select_Field" />
   from ${table.tableName}
@@ -58,12 +61,30 @@
   where ${table.tableName}.${primary.columnName} = ${r'#'}{${primary.fieldName}}
  </select>
 
+ <select id="selectByIds" resultMap="BaseResultMap">
+  select
+  <include refid="Select_Field" />
+  from ${table.tableName}
+  where ${table.tableName}.${primary.columnName} in
+   <foreach item="id" collection="ids" separator="," open="(" close=")" index="">
+    ${r'#'}{id}
+   </foreach>
+ </select>
+
  <delete id="deleteById" parameterType="${primary.javaType}">
   delete from ${table.tableName}
-  where ${table.tableName}.${primary.columnName} =${r'#'}{${primary.fieldName}}
+  where ${table.tableName}.${primary.columnName} = ${r'#'}{${primary.fieldName}}
  </delete>
 
- <update id="updateById" parameterType="${project.basePackage}.entity.${table.moduleName}Entity">
+ <delete id="deleteByIds">
+  delete from ${table.tableName}
+  where ${table.tableName}.${primary.columnName} in
+  <foreach item="id" collection="ids" separator="," open="(" close=")" index="">
+   ${r'#'}{id}
+  </foreach>
+ </delete>
+
+ <update id="updateById" parameterType="${project.basePackage}.common.entity.${table.moduleName}Entity">
   update ${table.tableName}
   <set>
  <#if columns??>
@@ -77,7 +98,7 @@
   </where>
  </update>
 
- <insert id="insert" parameterType="${project.basePackage}.entity.${table.moduleName}Entity">
+ <insert id="insert" parameterType="${project.basePackage}.common.entity.${table.moduleName}Entity">
   insert into ${table.tableName}
   <trim prefix="(" suffix=")" suffixOverrides=",">
  <#if columns??>

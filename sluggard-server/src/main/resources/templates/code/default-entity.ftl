@@ -1,15 +1,13 @@
-package ${project.basePackage}.entity;
+package ${project.basePackage}.common.entity;
 
 import java.io.Serializable;
 <#if javaTypeImports??>
-    <#list javaTypeImports as javaTypeImport>
-        <#if !(javaTypeImport ? starts_with("java.lang."))>
-            import ${javaTypeImport};
-        </#if>
-    </#list>
+<#list javaTypeImports as javaTypeImport>
+<#if !(javaTypeImport ? starts_with("java.lang."))>
+import ${javaTypeImport};
 </#if>
-
-import com.mylq.core.base.entity.BaseEntity;
+</#list>
+</#if>
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class ${table.moduleName}Entity extends BaseEntity {
+public class ${table.moduleName}Entity implements Serializable {
 
 <#if columns??>
 <#list columns as column>

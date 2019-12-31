@@ -1,17 +1,22 @@
 package ${project.basePackage}.controller;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mylq.core.base.controller.BaseController;
+import com.mylq.core.base.result.JsonResult;
+import com.mylq.core.base.result.PageResult;
 import com.mylq.core.util.BeanUtil;
-import ${project.basePackage}.dto.${table.moduleName}DTO;
-import ${project.basePackage}.service.${table.moduleName}Service;
-import ${project.basePackage}.vo.${table.moduleName}VO;
+import ${project.basePackage}.common.dto.${table.moduleName}QueryDTO;
+import ${project.basePackage}.common.entity.${table.moduleName}Entity;
+import ${project.basePackage}.common.vo.${table.moduleName}VO;
+import ${project.basePackage}.service.api.${table.moduleName}Service;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,31 +28,74 @@ import io.swagger.annotations.ApiOperation;
  * @date ${date}
  * @since 1.0.0
  */
-@RestController
+@Api(value = "/${table.moduleName ? uncap_first}", tags = "${table.tableComment}控制层接口")
 @RequestMapping("/${table.moduleName ? uncap_first}")
-@Api(value = "/${table.moduleName ? uncap_first}", description = "${table.tableComment}控制层接口")
-public class ${table.moduleName}Controller implements BaseController<${table.moduleName}VO, ${table.moduleName}DTO> {
+@RestController
+public class ${table.moduleName}Controller {
 
     @Autowired
     private ${table.moduleName}Service ${table.moduleName ? uncap_first}Service;
 
-    @Override
-    private ${table.moduleName}DTO convert(${table.moduleName}VO vo) {
-        return BeanUtil.copy(vo, ${table.moduleName}DTO.class);
+    @ApiOperation(value = "分页查询", notes = "分页精准查询")
+    @PostMapping("/searchPage")
+    public JsonResult<PageResult> searchPage(@RequestBody ${table.moduleName}VO query, @RequestParam Integer pageNum, @RequestParam Integer pageSize) {
+        PageResult<${table.moduleName}Entity> result = ${table.moduleName ? uncap_first}Service.queryPage(convertToDTO(query), pageNum, pageSize);
+        return JsonResult.success(result.convertData(${table.moduleName}VO.class));
     }
 
-    @Override
-    private Collection<${table.moduleName}DTO> convertBatch(Collection<${table.moduleName}VO> vos) {
-        return BeanUtil.copyBatch(vo, ${table.moduleName}DTO.class);
+    @ApiOperation(value = "列表查询", notes = "列表精准查询")
+    @PostMapping("/searchList")
+    public JsonResult<List> searchList(@RequestBody ${table.moduleName}VO query) {
+        List<${table.moduleName}Entity> result = ${table.moduleName ? uncap_first}Service.queryList(convertToDTO(query));
+        return JsonResult.success(convertBatchToVO(result));
     }
 
-    @Override
-    private ${table.moduleName}VO convert(${table.moduleName}DTO dto) {
-        return BeanUtil.copy(dto, ${table.moduleName}VO.class);
+    @ApiOperation(value = "单行查询", notes = "根据ID单行查询数据")
+    @GetMapping("/searchById")
+    public JsonResult<${table.moduleName}VO> searchById(@RequestParam Long id) {
+        ${table.moduleName}Entity result = ${table.moduleName ? uncap_first}Service.queryById(id);
+        return JsonResult.success(convertToVO(result));
     }
 
-    @Override
-    private List<${table.moduleName}VO> convertBatch(List<${table.moduleName}DTO> dtos) {
-        return BeanUtil.copyBatch(dtos, ${table.moduleName}VO.class);
+    @ApiOperation(value = "物理删除", notes = "根据ID单行物理删除数据")
+    @GetMapping("/remove")
+    public JsonResult<Integer> remove(@RequestParam Long id) {
+        int result = ${table.moduleName ? uncap_first}Service.deleteById(id);
+        return JsonResult.success(result);
+    }
+
+    @ApiOperation(value = "修改", notes = "根据ID单行修改数据")
+    @PostMapping("/edit")
+    public JsonResult<Integer> edit(@RequestBody ${table.moduleName}VO update) {
+    JsonResult<Integer> jsonResult;
+        int result = ${table.moduleName ? uncap_first}Service.updateById(convertToEntity(update));
+        return JsonResult.success(result);
+    }
+
+    @ApiOperation(value = "创建", notes = "单行创建数据")
+    @PostMapping("/create")
+    public JsonResult<Integer> create(@RequestBody ${table.moduleName}VO update) {
+        int result = ${table.moduleName ? uncap_first}Service.save(convertToEntity(update));
+        return JsonResult.success(result);
+    }
+
+    private ${table.moduleName}QueryDTO convertToDTO(${table.moduleName}VO vo) {
+        return BeanUtil.copy(vo, ${table.moduleName}QueryDTO.class);
+    }
+
+    private ${table.moduleName}Entity convertToEntity(${table.moduleName}VO vo) {
+        return BeanUtil.copy(vo, ${table.moduleName}Entity.class);
+    }
+
+    private ${table.moduleName}VO convertToVO(${table.moduleName}Entity entity) {
+        return BeanUtil.copy(entity, ${table.moduleName}VO.class);
+    }
+
+    private List<${table.moduleName}Entity> convertBatchToEntity(List<${table.moduleName}VO> vos) {
+        return BeanUtil.copyBatch(vos, ${table.moduleName}Entity.class);
+    }
+
+    private List<${table.moduleName}VO> convertBatchToVO(List<${table.moduleName}Entity> entities) {
+        return BeanUtil.copyBatch(entities, ${table.moduleName}VO.class);
     }
 }

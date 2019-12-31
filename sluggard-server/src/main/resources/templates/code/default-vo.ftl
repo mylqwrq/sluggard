@@ -1,15 +1,13 @@
-package ${project.basePackage}.vo;
+package ${project.basePackage}.common.vo;
 
 import java.io.Serializable;
 <#if javaTypeImports??>
-    <#list javaTypeImports as javaTypeImport>
-        <#if !(javaTypeImport ? starts_with("java.lang."))>
-            import ${javaTypeImport};
-        </#if>
-    </#list>
+<#list javaTypeImports as javaTypeImport>
+<#if !(javaTypeImport ? starts_with("java.lang."))>
+import ${javaTypeImport};
 </#if>
-
-import com.mylq.core.base.vo.BaseVO;
+</#list>
+</#if>
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -30,7 +28,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 @ApiModel(value = "${table.moduleName}VO", description = "${table.tableComment}视图对象")
-public class ${table.moduleName}VO extends BaseVO {
+public class ${table.moduleName}VO implements Serializable {
 
 <#if columns??>
 <#list columns as column>

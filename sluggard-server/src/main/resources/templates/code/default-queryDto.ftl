@@ -1,15 +1,13 @@
-package ${project.basePackage}.dto;
+package ${project.basePackage}.common.dto;
 
 import java.io.Serializable;
 <#if javaTypeImports??>
-    <#list javaTypeImports as javaTypeImport>
-        <#if !(javaTypeImport ? starts_with("java.lang."))>
-            import ${javaTypeImport};
-        </#if>
-    </#list>
+<#list javaTypeImports as javaTypeImport>
+<#if !(javaTypeImport ? starts_with("java.lang."))>
+import ${javaTypeImport};
 </#if>
-
-import com.mylq.core.base.dto.BaseDTO;
+</#list>
+</#if>
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * ${table.tableComment}数据传输对象
+ * ${table.tableComment}查询数据传输对象
  *
  * @author ${author}
  * @date ${date}
@@ -27,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class ${table.moduleName}DTO extends BaseDTO {
+public class ${table.moduleName}QueryDTO implements Serializable {
 
 <#if columns??>
 <#list columns as column>
@@ -37,4 +35,8 @@ public class ${table.moduleName}DTO extends BaseDTO {
     private ${column.columnType} ${column.fieldName};
 </#list>
 </#if>
+    /**
+     * 排序字符串
+     */
+    private String sortString;
 }
