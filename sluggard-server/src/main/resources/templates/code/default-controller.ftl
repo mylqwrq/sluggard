@@ -14,8 +14,8 @@ import com.google.common.collect.Sets;
 import com.mylq.core.base.result.JsonResult;
 import com.mylq.core.base.result.PageResult;
 import com.mylq.core.util.BeanUtil;
-import ${project.basePackage}.common.dto.${table.moduleName}QueryDTO;
 import ${project.basePackage}.common.entity.${table.moduleName}Entity;
+import ${project.basePackage}.common.query.${table.moduleName}Query;
 import ${project.basePackage}.common.vo.${table.moduleName}VO;
 import ${project.basePackage}.service.api.${table.moduleName}Service;
 
@@ -40,14 +40,14 @@ public class ${table.moduleName}Controller {
     @ApiOperation(value = "分页查询", notes = "分页精准查询")
     @PostMapping("/searchPage")
     public JsonResult<PageResult<${table.moduleName}VO>> searchPage(@RequestBody ${table.moduleName}VO query, @RequestParam Integer pageNum, @RequestParam Integer pageSize) {
-        PageResult<${table.moduleName}Entity> result = ${table.moduleName ? uncap_first}Service.queryPage(convertToDTO(query), pageNum, pageSize);
+        PageResult<${table.moduleName}Entity> result = ${table.moduleName ? uncap_first}Service.queryPage(convertToQuery(query), pageNum, pageSize);
         return JsonResult.success(result.convertData(${table.moduleName}VO.class));
     }
 
     @ApiOperation(value = "列表查询", notes = "列表精准查询")
     @PostMapping("/searchList")
     public JsonResult<List<${table.moduleName}VO>> searchList(@RequestBody ${table.moduleName}VO query) {
-        List<${table.moduleName}Entity> result = ${table.moduleName ? uncap_first}Service.queryList(convertToDTO(query));
+        List<${table.moduleName}Entity> result = ${table.moduleName ? uncap_first}Service.queryList(convertToQuery(query));
         return JsonResult.success(convertBatchToVO(result));
     }
 
@@ -93,8 +93,15 @@ public class ${table.moduleName}Controller {
         return JsonResult.success(result);
     }
 
-    private ${table.moduleName}QueryDTO convertToDTO(${table.moduleName}VO vo) {
-        return BeanUtil.copy(vo, ${table.moduleName}QueryDTO.class);
+    @ApiOperation(value = "批量创建", notes = "批量创建数据")
+    @PostMapping("/createBatch")
+    public JsonResult<Integer> createBatch(@RequestBody List<${table.moduleName}VO> updates) {
+        int result = ${table.moduleName ? uncap_first}Service.saveBatch(convertBatchToEntity(updates));
+        return JsonResult.success(result);
+    }
+
+    private ${table.moduleName}Query convertToQuery(${table.moduleName}VO vo) {
+        return BeanUtil.copy(vo, ${table.moduleName}Query.class);
     }
 
     private ${table.moduleName}Entity convertToEntity(${table.moduleName}VO vo) {

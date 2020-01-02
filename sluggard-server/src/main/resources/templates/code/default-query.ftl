@@ -1,4 +1,4 @@
-package ${project.basePackage}.common.dto;
+package ${project.basePackage}.common.query;
 
 import java.io.Serializable;
 <#if javaTypeImports??>
@@ -15,7 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * ${table.tableComment}查询数据传输对象
+ * ${table.tableComment}数据查询对象
  *
  * @author ${author}
  * @date ${date}
@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class ${table.moduleName}QueryDTO implements Serializable {
+public class ${table.moduleName}Query implements Serializable {
 
 <#if columns??>
 <#list columns as column>

@@ -13,14 +13,13 @@
  </resultMap>
 
  <sql id="Select_Field">
-  ${table.tableName}.${primary.columnName}
-<#if columns??>
- <#list columns as column>
-  <#if !(column.columnName == primary.columnName)>
-  ,${table.tableName}.${column.columnName}
-  </#if>
- </#list>
-</#if>
+  <trim suffixOverrides=",">
+ <#if columns??>
+  <#list columns as column>
+   ${column.columnName},
+  </#list>
+ </#if>
+  </trim>
  </sql>
 
  <sql id="Base_Where_Clause">
@@ -29,9 +28,9 @@
  <#if columns??>
   <#list columns as column>
    <#if column.javaType == "java.lang.String">
-    <if test="${column.fieldName} != null and ${column.fieldName} != ''">and ${table.tableName}.${column.columnName} = ${r'#'}{${column.fieldName}}</if>
+    <if test="${column.fieldName} != null and ${column.fieldName} != ''">and ${column.columnName} = ${r'#'}{${column.fieldName}}</if>
    <#else>
-    <if test="${column.fieldName} != null">and ${table.tableName}.${column.columnName} = ${r'#'}{${column.fieldName}}</if>
+    <if test="${column.fieldName} != null">and ${column.columnName} = ${r'#'}{${column.fieldName}}</if>
    </#if>
   </#list>
  </#if>
@@ -42,12 +41,12 @@
   </if>
  </sql>
 
- <select id="selectCount" resultType="java.lang.Long" parameterType="${project.basePackage}.common.dto.${table.moduleName}QueryDTO">
+ <select id="selectCount" resultType="java.lang.Long" parameterType="${project.basePackage}.common.query.${table.moduleName}Query">
   select count(*) from ${table.tableName}
   <include refid="Base_Where_Clause" />
  </select>
 
- <select id="selectList" resultMap="BaseResultMap" parameterType="${project.basePackage}.common.dto.${table.moduleName}QueryDTO">
+ <select id="selectList" resultMap="BaseResultMap" parameterType="${project.basePackage}.common.query.${table.moduleName}Query">
   select
   <include refid="Select_Field" />
   from ${table.tableName}
@@ -58,14 +57,14 @@
   select
   <include refid="Select_Field" />
   from ${table.tableName}
-  where ${table.tableName}.${primary.columnName} = ${r'#'}{${primary.fieldName}}
+  where ${primary.columnName} = ${r'#'}{${primary.fieldName}}
  </select>
 
  <select id="selectByIds" resultMap="BaseResultMap">
   select
   <include refid="Select_Field" />
   from ${table.tableName}
-  where ${table.tableName}.${primary.columnName} in
+  where ${primary.columnName} in
    <foreach item="id" collection="ids" separator="," open="(" close=")" index="">
     ${r'#'}{id}
    </foreach>
@@ -73,12 +72,12 @@
 
  <delete id="deleteById" parameterType="${primary.javaType}">
   delete from ${table.tableName}
-  where ${table.tableName}.${primary.columnName} = ${r'#'}{${primary.fieldName}}
+  where ${primary.columnName} = ${r'#'}{${primary.fieldName}}
  </delete>
 
  <delete id="deleteByIds">
   delete from ${table.tableName}
-  where ${table.tableName}.${primary.columnName} in
+  where ${primary.columnName} in
   <foreach item="id" collection="ids" separator="," open="(" close=")" index="">
    ${r'#'}{id}
   </foreach>
@@ -114,5 +113,22 @@
   </#list>
  </#if>
   </trim>
+ </insert>
+
+ <insert id="insertBatch">
+  insert into ${table.tableName}
+  <trim prefix="(" suffix=")">
+   <include refid="Select_Field" />
+  </trim>
+  values
+  <foreach item="entity" collection="entities" separator=",">
+   <trim prefix="(" suffix=")" suffixOverrides=",">
+  <#if columns??>
+   <#list columns as column>
+    ${r'#'}{entity.${column.fieldName}},
+   </#list>
+  </#if>
+   </trim>
+  </foreach>
  </insert>
 </mapper>

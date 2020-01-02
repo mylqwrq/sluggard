@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mylq.core.base.service.AbstractBaseService;
-import ${project.basePackage}.common.dto.${table.moduleName}QueryDTO;
 import ${project.basePackage}.common.entity.${table.moduleName}Entity;
+import ${project.basePackage}.common.query.${table.moduleName}Query;
 import ${project.basePackage}.service.api.${table.moduleName}Service;
 import ${project.basePackage}.service.dao.${table.moduleName}Mapper;
 
@@ -17,7 +17,7 @@ import ${project.basePackage}.service.dao.${table.moduleName}Mapper;
  * @since 1.0.0
  */
 @Service
-public class ${table.moduleName}ServiceImpl extends AbstractBaseService<${table.moduleName}QueryDTO, ${table.moduleName}Entity> implements ${table.moduleName}Service {
+public class ${table.moduleName}ServiceImpl extends AbstractBaseService<${table.moduleName}Query, ${table.moduleName}Entity> implements ${table.moduleName}Service {
 
     @Autowired
     private ${table.moduleName}Mapper ${table.moduleName ? uncap_first}Mapper;

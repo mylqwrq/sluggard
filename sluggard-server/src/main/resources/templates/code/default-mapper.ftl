@@ -3,8 +3,8 @@ package ${project.basePackage}.service.dao;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.mylq.core.base.dao.BaseMapper;
-import ${project.basePackage}.common.dto.${table.moduleName}QueryDTO;
 import ${project.basePackage}.common.entity.${table.moduleName}Entity;
+import ${project.basePackage}.common.query.${table.moduleName}Query;
 
 /**
  * ${table.tableComment}Mapper接口
@@ -14,5 +14,5 @@ import ${project.basePackage}.common.entity.${table.moduleName}Entity;
  * @since 1.0.0
  */
 @Mapper
-public interface ${table.moduleName}Mapper extends BaseMapper<${table.moduleName}QueryDTO, ${table.moduleName}Entity> {
+public interface ${table.moduleName}Mapper extends BaseMapper<${table.moduleName}Query, ${table.moduleName}Entity> {
 }
