@@ -4,7 +4,7 @@
 
 ## 描述
 
-基于SpringBoot、Lombok、Freemarker + Layui开发，提供项目和代码生成服务。
+基于SpringBoot、Freemarker + Layui开发，提供项目和代码生成服务。
 
 持久化采用自定义文件的方式实现，不依赖任何其他第三方组件，项目启动时会自动加载文件。
 
