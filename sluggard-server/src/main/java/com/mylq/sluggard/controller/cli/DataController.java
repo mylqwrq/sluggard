@@ -1,23 +1,27 @@
 package com.mylq.sluggard.controller.cli;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
 import com.mylq.sluggard.core.cli.service.DataService;
 import com.mylq.sluggard.core.cli.vo.CodeGeneratorVO;
 import com.mylq.sluggard.core.cli.vo.ProjectBasicVO;
 import com.mylq.sluggard.core.cli.vo.ProjectGeneratorVO;
 import com.mylq.sluggard.core.cli.vo.TemplateConfigVO;
 import com.mylq.sluggard.core.common.base.constant.Constant;
-import com.mylq.sluggard.core.common.base.exception.SluggardBusinessException;
+import com.mylq.sluggard.core.common.base.result.JsonResult;
 import com.mylq.sluggard.core.common.util.FileUtil;
 import com.mylq.sluggard.core.common.util.JsonUtil;
 import com.mylq.sluggard.core.common.util.ZipUtil;
@@ -36,21 +40,26 @@ import com.mylq.sluggard.core.db.vo.DbVO;
 @RequestMapping("/cli/data")
 public class DataController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataController.class);
+
     @Autowired
     private DataService dataService;
 
     @PostMapping("/codeGenerator")
-    public void codeGenerator(HttpServletRequest request, HttpServletResponse response, CodeGeneratorVO vo) {
+    public void codeGenerator(HttpServletRequest request, HttpServletResponse response, CodeGeneratorVO vo)
+            throws IOException {
         try {
             List<String> codeTemplateNames = JsonUtil.parseArray(vo.getCodeTemplateNames(), String.class);
-            List<TemplateConfigVO> templateConfigs = JsonUtil.parseArray(vo.getTemplateConfigs(), TemplateConfigVO.class);
+            List<TemplateConfigVO> templateConfigs = JsonUtil.parseArray(vo.getTemplateConfigs(),
+                    TemplateConfigVO.class);
             ProjectBasicVO project = JsonUtil.parseObject(vo.getProject(), ProjectBasicVO.class);
             DbVO dataSource = JsonUtil.parseObject(vo.getDataSource(), DbVO.class);
             TableEntity table = JsonUtil.parseObject(vo.getTable(), TableEntity.class);
             List<ColumnEntity> columns = JsonUtil.parseArray(vo.getColumns(), ColumnEntity.class);
 
             String folderDir = UUID.randomUUID().toString().replaceAll("-", "");
-            dataService.generatorCode(folderDir, codeTemplateNames, templateConfigs, project, dataSource, table, columns);
+            dataService.generatorCode(folderDir, codeTemplateNames, templateConfigs, project, dataSource, table,
+                    columns);
             String folderPath = Constant.FILE_ROOT_PATH_TEMP + folderDir;
             // 压缩文件
             response.setContentType("application/zip");
@@ -59,22 +68,29 @@ public class DataController {
             // 删除文件
             FileUtil.deleteFile(folderPath);
         } catch (Exception e) {
-            throw new SluggardBusinessException(e);
+            LOGGER.info("Code Generator Error.", e);
+            response.reset();
+            response.setContentType("application/json");
+            response.setCharacterEncoding("utf-8");
+            response.getWriter().println(JSON.toJSONString(JsonResult.error(e)));
         }
     }
 
     @PostMapping("/projectGenerator")
-    public void projectGenerator(HttpServletRequest request, HttpServletResponse response, ProjectGeneratorVO vo) {
+    public void projectGenerator(HttpServletRequest request, HttpServletResponse response, ProjectGeneratorVO vo)
+            throws IOException {
         try {
             List<String> projectTemplateNames = JsonUtil.parseArray(vo.getProjectTemplateNames(), String.class);
             List<String> codeTemplateNames = JsonUtil.parseArray(vo.getCodeTemplateNames(), String.class);
-            List<TemplateConfigVO> templateConfigs = JsonUtil.parseArray(vo.getTemplateConfigs(), TemplateConfigVO.class);
+            List<TemplateConfigVO> templateConfigs = JsonUtil.parseArray(vo.getTemplateConfigs(),
+                    TemplateConfigVO.class);
             ProjectBasicVO project = JsonUtil.parseObject(vo.getProject(), ProjectBasicVO.class);
             DbVO dataSource = JsonUtil.parseObject(vo.getDataSource(), DbVO.class);
             List<TableEntity> tables = JsonUtil.parseArray(vo.getTables(), TableEntity.class);
 
             String folderDir = UUID.randomUUID().toString().replaceAll("-", "");
-            dataService.generateProject(folderDir, projectTemplateNames, codeTemplateNames, templateConfigs, project, dataSource, tables);
+            dataService.generateProject(folderDir, projectTemplateNames, codeTemplateNames, templateConfigs, project,
+                    dataSource, tables);
             String folderPath = Constant.FILE_ROOT_PATH_TEMP + folderDir;
             // 压缩文件
             response.setContentType("application/zip");
@@ -83,7 +99,11 @@ public class DataController {
             // 删除文件
             FileUtil.deleteFile(folderPath);
         } catch (Exception e) {
-            throw new SluggardBusinessException(e);
+            LOGGER.info("Project Generator Error.", e);
+            response.reset();
+            response.setContentType("application/json");
+            response.setCharacterEncoding("utf-8");
+            response.getWriter().println(JSON.toJSONString(JsonResult.error(e)));
         }
     }
 }
