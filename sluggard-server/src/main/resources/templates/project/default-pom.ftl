@@ -16,17 +16,22 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
 
         <spring-boot.version>2.2.1.RELEASE</spring-boot.version>
-        <jackson-dataformat.version>2.10.1</jackson-dataformat.version>
+        <apache-commons-compress.vesion>1.19</apache-commons-compress.vesion>
         <druid.version>1.1.21</druid.version>
         <mybatis-boot.version>2.1.1</mybatis-boot.version>
         <pagehelper-boot.version>1.2.13</pagehelper-boot.version>
-        <swagger.version>2.9.2</swagger.version>
-        <swagger-bootstrap-ui.version>1.9.6</swagger-bootstrap-ui.version>
+        <cglib.version>3.3.0</cglib.version>
+        <jjwt.version>0.9.1</jjwt.version>
+        <fastjson.version>1.2.62</fastjson.version>
+        <jackson.version>2.10.1</jackson.version>
+        <knife4j.version>2.0.8</knife4j.version>
         <guava.version>28.1-jre</guava.version>
-        <mylq.version>1.0.1</mylq.version>
+        <pinyin4j.version>2.5.1</pinyin4j.version>
+        <easyexcel.version>2.1.6</easyexcel.version>
     </properties>
 
     <dependencyManagement>
@@ -80,11 +85,19 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- 加上这个才能辨认到log4j2.yml文件 -->
+        <!-- Apache -->
         <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-yaml</artifactId>
-            <version>${r'$'}{jackson-dataformat.version}</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${r'$'}{apache-commons-compress.vesion}</version>
         </dependency>
 
         <!-- Druid -->
@@ -94,37 +107,58 @@
             <version>${r'$'}{druid.version}</version>
         </dependency>
 
-        <!-- MyBatis Boot -->
+        <!-- MyBatis -->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>${r'$'}{mybatis-boot.version}</version>
         </dependency>
 
-        <!-- PageHelper Boot -->
+        <!-- PageHelper -->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
             <version>${r'$'}{pagehelper-boot.version}</version>
         </dependency>
 
-        <!-- Swagger http://{ip}:{port}/{project}/swagger-ui.html -->
+        <!-- Cglib -->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${r'$'}{swagger.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${r'$'}{swagger.version}</version>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>${r'$'}{cglib.version}</version>
         </dependency>
 
-        <!-- Swagger-UI美化版 http://{ip}:{port}/{project}/doc.html -->
+        <!-- JWT -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${r'$'}{jjwt.version}</version>
+        </dependency>
+
+        <!-- FastJson -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${r'$'}{fastjson.version}</version>
+        </dependency>
+
+        <!-- Jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${r'$'}{jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>${r'$'}{jackson.version}</version>
+        </dependency>
+
+        <!-- knife4j http://{ip}:{port}/{project}/doc.html -->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
-            <artifactId>swagger-bootstrap-ui</artifactId>
-            <version>${r'$'}{swagger-bootstrap-ui.version}</version>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <version>${r'$'}{knife4j.version}</version>
         </dependency>
 
         <!-- Guava -->
@@ -134,10 +168,18 @@
             <version>${r'$'}{guava.version}</version>
         </dependency>
 
+        <!-- Pinyin4j -->
         <dependency>
-            <groupId>com.mylq</groupId>
-            <artifactId>mylq-core</artifactId>
-            <version>${r'$'}{mylq.version}</version>
+            <groupId>com.belerweb</groupId>
+            <artifactId>pinyin4j</artifactId>
+            <version>${r'$'}{pinyin4j.version}</version>
+        </dependency>
+
+        <!-- EasyExcel -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>${r'$'}{easyexcel.version}</version>
         </dependency>
     </dependencies>
 
@@ -187,6 +229,20 @@
                     <source>${r'$'}{java.version}</source>
                     <target>${r'$'}{java.version}</target>
                     <encoding>${r'$'}{project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${r'$'}{maven-resources-plugin.version}</version>
+                <configuration>
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>woff</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>woff2</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>eot</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>svg</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
                 </configuration>
             </plugin>
             <plugin>

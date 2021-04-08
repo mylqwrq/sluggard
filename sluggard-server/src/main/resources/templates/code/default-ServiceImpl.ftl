@@ -3,9 +3,9 @@ package ${project.basePackage}.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mylq.core.base.service.AbstractBaseService;
 import ${project.basePackage}.common.entity.${table.moduleName}Entity;
 import ${project.basePackage}.common.query.${table.moduleName}Query;
+import ${project.basePackage}.core.base.service.AbstractBaseService;
 import ${project.basePackage}.service.api.${table.moduleName}Service;
 import ${project.basePackage}.service.dao.${table.moduleName}Mapper;
 

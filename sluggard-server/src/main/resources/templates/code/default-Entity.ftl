@@ -1,4 +1,4 @@
-package ${project.basePackage}.common.vo;
+package ${project.basePackage}.common.entity;
 
 import java.io.Serializable;
 <#if javaTypeImports??>
@@ -11,24 +11,18 @@ import ${javaTypeImport};
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
- * ${table.tableComment}视图对象
+ * ${table.tableComment}实体类
  *
  * @author ${author}
  * @date ${date}
  * @since 1.0.0
  */
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Data
-@ApiModel(value = "${table.moduleName}VO", description = "${table.tableComment}视图对象")
-public class ${table.moduleName}VO implements Serializable {
+@ApiModel(value = "${table.moduleName}Entity", description = "${table.tableComment}实体类")
+public class ${table.moduleName}Entity implements Serializable {
 
 <#if columns??>
 <#list columns as column>

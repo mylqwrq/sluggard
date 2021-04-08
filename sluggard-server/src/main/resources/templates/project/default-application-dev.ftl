@@ -35,7 +35,6 @@ spring:
 
 mybatis:
   configuration:
-    default-enum-type-handler: com.mylq.core.base.handler.BaseEnumTypeHandler
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
   mapper-locations: classpath:/mapper/*Mapper.xml
@@ -46,5 +45,13 @@ pagehelper:
   supportMethodsArguments: true
   params: count=countSql
 
-swagger:
-  enable: true
+knife4j:
+  # 是否开启增强模式
+  enable: false
+  # 是否开启生产环境保护策略
+  production: false
+  # 访问权限控制
+  basic:
+    enable: false
+    username: test
+    password: 123456

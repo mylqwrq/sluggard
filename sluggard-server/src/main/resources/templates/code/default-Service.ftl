@@ -1,8 +1,8 @@
 package ${project.basePackage}.service.api;
 
-import com.mylq.core.base.service.BaseService;
 import ${project.basePackage}.common.entity.${table.moduleName}Entity;
 import ${project.basePackage}.common.query.${table.moduleName}Query;
+import ${project.basePackage}.core.base.service.BaseService;
 
 /**
  * ${table.tableComment}Service接口

@@ -1,16 +1,16 @@
-package ${project.basePackage}.config;
+package ${project.basePackage}.core.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.mylq.core.base.interceptor.CostHandlerInterceptor;
+import ${project.basePackage}.core.base.interceptor.BaseHandlerInterceptor;
 
 @Configuration
-public class WebConfigurer implements WebMvcConfigurer {
+public class WebMvcConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new CostHandlerInterceptor()).addPathPatterns("/**");
+        registry.addInterceptor(new BaseHandlerInterceptor()).addPathPatterns("/**");
     }
 }

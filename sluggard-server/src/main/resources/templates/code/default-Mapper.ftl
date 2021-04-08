@@ -2,9 +2,9 @@ package ${project.basePackage}.service.dao;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.mylq.core.base.dao.BaseMapper;
 import ${project.basePackage}.common.entity.${table.moduleName}Entity;
 import ${project.basePackage}.common.query.${table.moduleName}Query;
+import ${project.basePackage}.core.base.dao.BaseMapper;
 
 /**
  * ${table.tableComment}Mapper接口
