@@ -20,9 +20,6 @@ import lombok.Data;
  * @date ${date}
  * @since 1.0.0
  */
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Data
 @ApiModel(value = "${table.moduleName}Query", description = "${table.tableComment}查询对象")
 public class ${table.moduleName}Query implements Serializable {

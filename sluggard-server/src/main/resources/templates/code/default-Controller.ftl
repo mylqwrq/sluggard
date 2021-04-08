@@ -48,10 +48,6 @@ public class ${table.moduleName}Controller {
 
     @ApiOperation(value = "单行查询", notes = "根据ID单行查询数据")
     @GetMapping("/searchById")
-    public JsonResult<${table.moduleName}VO> searchById(@RequestParam Long id) {
-        ${table.moduleName}Entity result = ${table.moduleName ? uncap_first}Service.queryById(id);
-        return JsonResult.success(convertToVO(result));
-    }
     public JsonResult<${table.moduleName}Entity> searchById(@RequestParam Long id) {
         return JsonResult.success(${table.moduleName ? uncap_first}Service.queryById(id));
     }
