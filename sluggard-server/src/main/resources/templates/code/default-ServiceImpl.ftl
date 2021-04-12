@@ -13,8 +13,8 @@ import ${project.basePackage}.service.dao.${table.moduleName}Mapper;
  * ${table.tableComment}Service实现
  *
  * @author ${author}
- * @date ${date}
- * @since 1.0.0
+ * @version 1.0.0
+ * @since ${date}
  */
 @Service
 public class ${table.moduleName}ServiceImpl extends AbstractBaseService<${table.moduleName}Query, ${table.moduleName}Entity> implements ${table.moduleName}Service {

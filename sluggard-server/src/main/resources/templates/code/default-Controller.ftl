@@ -23,8 +23,8 @@ import io.swagger.annotations.ApiOperation;
  * ${table.tableComment}控制层接口
  *
  * @author ${author}
- * @date ${date}
- * @since 1.0.0
+ * @version 1.0.0
+ * @since ${date}
  */
 @Api(tags = "${table.tableComment}控制层接口")
 @RequestMapping("/${table.moduleName ? uncap_first}")

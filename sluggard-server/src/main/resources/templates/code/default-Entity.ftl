@@ -17,8 +17,8 @@ import lombok.Data;
  * ${table.tableComment}实体类
  *
  * @author ${author}
- * @date ${date}
- * @since 1.0.0
+ * @version 1.0.0
+ * @since ${date}
  */
 @Data
 @ApiModel(value = "${table.moduleName}Entity", description = "${table.tableComment}实体类")

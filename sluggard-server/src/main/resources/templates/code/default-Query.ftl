@@ -17,8 +17,8 @@ import lombok.Data;
  * ${table.tableComment}查询对象
  *
  * @author ${author}
- * @date ${date}
- * @since 1.0.0
+ * @version 1.0.0
+ * @since ${date}
  */
 @Data
 @ApiModel(value = "${table.moduleName}Query", description = "${table.tableComment}查询对象")

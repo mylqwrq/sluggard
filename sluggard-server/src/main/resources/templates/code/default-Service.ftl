@@ -8,8 +8,8 @@ import ${project.basePackage}.core.base.service.BaseService;
  * ${table.tableComment}Service接口
  *
  * @author ${author}
- * @date ${date}
- * @since 1.0.0
+ * @version 1.0.0
+ * @since ${date}
  */
 public interface ${table.moduleName}Service extends BaseService<${table.moduleName}Query, ${table.moduleName}Entity> {
 }

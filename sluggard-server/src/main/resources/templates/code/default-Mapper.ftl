@@ -10,8 +10,8 @@ import ${project.basePackage}.core.base.dao.BaseMapper;
  * ${table.tableComment}Mapper接口
  *
  * @author ${author}
- * @date ${date}
- * @since 1.0.0
+ * @version 1.0.0
+ * @since ${date}
  */
 @Mapper
 public interface ${table.moduleName}Mapper extends BaseMapper<${table.moduleName}Query, ${table.moduleName}Entity> {
