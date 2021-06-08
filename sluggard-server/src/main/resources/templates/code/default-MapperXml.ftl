@@ -37,7 +37,7 @@
    </trim>
   </where>
   <if test="sortString != null and sortString != ''">
-   order by ${r'#'}{sortString}
+   order by ${r'$'}{sortString}
   </if>
  </sql>
 
