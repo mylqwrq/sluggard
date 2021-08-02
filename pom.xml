@@ -28,7 +28,7 @@
         <fastjson.version>1.2.62</fastjson.version>
         <guava.version>28.1-jre</guava.version>
         <apache-commons-dbutils.vesion>1.7</apache-commons-dbutils.vesion>
-        <apache-commons-compress.vesion>1.19</apache-commons-compress.vesion>
+        <apache-commons-compress.vesion>1.21</apache-commons-compress.vesion>
     </properties>
 
     <dependencyManagement>
