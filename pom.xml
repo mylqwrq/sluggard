@@ -25,7 +25,7 @@
 
         <spring-boot.version>2.2.1.RELEASE</spring-boot.version>
         <jackson-dataformat.version>2.10.1</jackson-dataformat.version>
-        <fastjson.version>1.2.62</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
         <guava.version>28.1-jre</guava.version>
         <apache-commons-dbutils.vesion>1.7</apache-commons-dbutils.vesion>
         <apache-commons-compress.vesion>1.19</apache-commons-compress.vesion>
