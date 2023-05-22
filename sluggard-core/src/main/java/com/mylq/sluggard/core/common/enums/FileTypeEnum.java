@@ -47,7 +47,11 @@ public enum FileTypeEnum implements BaseEnum<Integer> {
     /**
      * JS
      */
-    JS(5, ".js");
+    JS(5, ".js"),
+    /**
+     * properties
+     */
+    PROP(6, ".properties");
 
     private Integer id;
     private String name;
